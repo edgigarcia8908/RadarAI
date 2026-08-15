@@ -12,9 +12,16 @@ duplicar código.
   login/roles. El guard está listo (`src/auth/`) pero **ningún endpoint lo
   exige todavía** — Fase 1 igual que `ceo-ecosistema`, para que la demo no
   dependa de tener sesión.
-- **`ceo-storage-service`** (`https://storage.ceoclick.pro/api`, ya
-  desplegado) — pensado para cuando un ciudadano suba evidencia a una
-  veeduría (Fase 2, todavía no conectado en código).
+- **`ceo-storage-service`** — el servicio está desplegado en
+  `storage.ceoclick.pro`, pero **su `STORAGE_SERVICE_KEY` de producción no
+  vive en ningún archivo local** (verificado a mano: la llave de
+  `ceo-storage-service/.env`, que usan varias apps del ecosistema en su
+  entorno de desarrollo, da 401 "Llave de servicio inválida" contra la URL
+  de producción). Por eso `backend/.env` apunta a
+  `http://localhost:4300/api` por default — correr
+  `cd C:\apps\ceo-storage-service && npm run dev` en paralelo. En
+  producción, pegar ahí la llave real del VPS. Ya conectado en código
+  (`src/storage/`) — subida de documentos a veedurías, ver más abajo.
 - **`ceo-intelligence-service`** — **NO está desplegado todavía**. RadarAI lo
   usa para redactar la respuesta en lenguaje natural (`/ai/complete`); si no
   está corriendo o no hay `INTELLIGENCE_SERVICE_KEY`, cae automáticamente a
@@ -143,6 +150,39 @@ crear → marcar checklist → comentar, con tildes/UTF-8 correctos.
 **Sin auth aplicado todavía** — cualquiera puede crear/comentar cualquier
 veeduría (`colaboradores` es hoy una lista de emails en texto, no usuarios
 reales). Ver punto 4 de "qué falta".
+
+### Documentos de la veeduría — por qué el captcha de SECOP sigue siendo manual
+
+El link `urlproceso` (`community.secop.gov.co`) pide "no soy un robot" antes
+de mostrar los documentos del proceso. Se evaluó dejar que un humano resuelva
+ese captcha en una sesión y que la app retome sola el scraping de ahí en
+adelante — **se descartó a propósito**: el captcha está puesto específicamente
+para bloquear acceso automatizado, y automatizar todo lo que sigue después de
+que un humano lo pasa es exactamente el patrón de evadir esa protección,
+tenga o no la intención de usarlo así.
+
+Lo que sí se construyó (`POST /veedurias/:id/documentos`): el colaborador
+consigue el PDF él mismo — pasa el captcha en su propio navegador, lo
+descarga, o lo consigue por derecho de petición — y lo sube a la veeduría.
+De ahí en adelante todo es automático:
+1. Sube a `ceo-storage-service` (URL firmada real).
+2. Si es PDF de texto, se parsea (`ceo-intelligence-service`) y se indexa
+   en una colección de Qdrant propia de esa veeduría (`veeduria_<id>`) vía
+   `ragIngest()` — método nuevo, se agregó al cliente compartido
+   `@ceo-core/intelligence-client` porque el servicio ya tenía
+   `POST /rag/ingest` pero el cliente empaquetado no lo exponía (cambio
+   aditivo en `ceo-core-modules`, no rompe a otras apps que lo usan).
+3. `POST /veedurias/:id/preguntar` — RAG real con citas sobre los
+   documentos ya indexados de esa veeduría.
+
+Si el parseo/indexado falla (servicio caído, PDF escaneado sin texto), el
+archivo se guarda igual con `indexado:false` y un motivo — nunca rompe la
+subida. Probado con `ceo-storage-service` corriendo en local: subida real,
+URL firmada funcional, fallback correcto sin `ceo-intelligence-service`
+corriendo. El indexado real (que sí necesita Qdrant) no se pudo verificar en
+esta sesión por no haber Qdrant/Docker disponible en esta máquina — el
+código está escrito y debería andar, pero eso específicamente queda como
+"no verificado", no como asumido.
 
 ## Competencia histórica por categoría UNSPSC (ya no es aproximada)
 
