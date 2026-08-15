@@ -22,6 +22,11 @@ export class VeeduriasController {
     return this.service.obtener(id);
   }
 
+  @Get(':id/evidencia-detalle')
+  obtenerEvidenciaDetalle(@Param('id') id: string) {
+    return this.service.obtenerEvidenciaDetalle(id);
+  }
+
   @Post(':id/hallazgos')
   agregarHallazgo(@Param('id') id: string, @Body() body: Omit<Hallazgo, 'fecha'>) {
     return this.service.agregarHallazgo(id, body);

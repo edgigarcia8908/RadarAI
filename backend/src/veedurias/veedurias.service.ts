@@ -4,6 +4,8 @@ import { Model } from 'mongoose';
 import { CeoStorageClient } from '@ceo-core/storage-client';
 import { CeoIntelligenceClient } from '@ceo-core/intelligence-client';
 import { Veeduria, Comentario, Hallazgo } from './veeduria.schema';
+import { Proceso } from '../ingestion/proceso.schema';
+import { Contrato } from '../ingestion/contrato.schema';
 import { CEO_STORAGE_CLIENT } from '../storage/ceo-storage-client.provider';
 import { CEO_INTELLIGENCE_CLIENT } from '../intelligence/ceo-intelligence-client.provider';
 
@@ -23,6 +25,8 @@ export class VeeduriasService {
 
   constructor(
     @InjectModel(Veeduria.name) private readonly model: Model<Veeduria>,
+    @InjectModel(Proceso.name) private readonly procesoModel: Model<Proceso>,
+    @InjectModel(Contrato.name) private readonly contratoModel: Model<Contrato>,
     @Inject(CEO_STORAGE_CLIENT) private readonly storage: CeoStorageClient,
     @Inject(CEO_INTELLIGENCE_CLIENT) private readonly intelligence: CeoIntelligenceClient,
   ) {}
@@ -69,6 +73,21 @@ export class VeeduriasService {
     if (data.procesoId && !v.procesosVinculados.includes(data.procesoId)) v.procesosVinculados.push(data.procesoId);
     if (data.contratoId && !v.contratosVinculados.includes(data.contratoId)) v.contratosVinculados.push(data.contratoId);
     return v.save();
+  }
+
+  /**
+   * Trae los procesos/contratos completos (no solo los ids) vinculados a
+   * esta veeduría — es la "tabla con toda la data" que se muestra antes del
+   * link de "revisar en SECOP", para que el colaborador sepa exactamente
+   * qué proceso está a punto de ir a buscar manualmente.
+   */
+  async obtenerEvidenciaDetalle(id: string) {
+    const v = await this.obtener(id);
+    const [procesos, contratos] = await Promise.all([
+      v.procesosVinculados.length ? this.procesoModel.find({ idProceso: { $in: v.procesosVinculados } }).lean() : [],
+      v.contratosVinculados.length ? this.contratoModel.find({ idContrato: { $in: v.contratosVinculados } }).lean() : [],
+    ]);
+    return { procesos, contratos };
   }
 
   async agregarColaborador(id: string, colaborador: string) {

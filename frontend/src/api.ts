@@ -137,7 +137,15 @@ export interface Veeduria {
   createdAt: string;
 }
 
-export function crearVeeduria(input: { titulo: string; descripcion?: string; departamento?: string; ciudad?: string; tema?: string }): Promise<Veeduria> {
+export function crearVeeduria(input: {
+  titulo: string;
+  descripcion?: string;
+  departamento?: string;
+  ciudad?: string;
+  tema?: string;
+  procesosVinculados?: string[];
+  contratosVinculados?: string[];
+}): Promise<Veeduria> {
   return fetch('/api/veedurias', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -187,4 +195,27 @@ export function preguntarSobreDocumentos(id: string, pregunta: string): Promise<
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ pregunta }),
   }).then(manejar);
+}
+
+export interface EvidenciaDetalle {
+  procesos: {
+    idProceso: string;
+    entidad: string;
+    nombreProcedimiento: string;
+    departamentoEntidad: string;
+    ciudadEntidad: string;
+    precioBase: number;
+  }[];
+  contratos: {
+    idContrato: string;
+    nombreEntidad: string;
+    objetoDelContrato: string;
+    proveedorAdjudicado: string;
+    valorDelContrato: number;
+    urlProceso: string;
+  }[];
+}
+
+export function obtenerEvidenciaDetalle(id: string): Promise<EvidenciaDetalle> {
+  return fetch(`/api/veedurias/${id}/evidencia-detalle`).then(manejar);
 }

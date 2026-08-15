@@ -7,11 +7,24 @@ type Modo = 'home' | 'ciudadano' | 'empresa' | 'veedurias';
 
 export default function App() {
   const [modo, setModo] = useState<Modo>('home');
+  // Cuando CiudadanoView crea una veeduría desde un hallazgo, salta directo a su detalle.
+  const [veeduriaAbierta, setVeeduriaAbierta] = useState<string | null>(null);
+
+  function irAVeeduria(id: string) {
+    setVeeduriaAbierta(id);
+    setModo('veedurias');
+  }
 
   return (
     <div style={{ maxWidth: 720, margin: '40px auto', fontFamily: 'system-ui, sans-serif', padding: '0 16px' }}>
       {modo !== 'home' && (
-        <button onClick={() => setModo('home')} style={{ marginBottom: 16, background: 'transparent', color: '#1a2b6d', border: '1px solid #1a2b6d' }}>
+        <button
+          onClick={() => {
+            setModo('home');
+            setVeeduriaAbierta(null);
+          }}
+          style={{ marginBottom: 16, background: 'transparent', color: '#1a2b6d', border: '1px solid #1a2b6d' }}
+        >
           ← Volver
         </button>
       )}
@@ -35,9 +48,9 @@ export default function App() {
         </div>
       )}
 
-      {modo === 'ciudadano' && <CiudadanoView />}
+      {modo === 'ciudadano' && <CiudadanoView onRevisar={irAVeeduria} />}
       {modo === 'empresa' && <EmpresaView />}
-      {modo === 'veedurias' && <VeeduriasView />}
+      {modo === 'veedurias' && <VeeduriasView abrirId={veeduriaAbierta} onAbierta={() => setVeeduriaAbierta(null)} />}
     </div>
   );
 }

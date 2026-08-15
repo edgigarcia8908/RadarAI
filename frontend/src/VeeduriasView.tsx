@@ -4,9 +4,11 @@ import {
   crearVeeduria,
   listarVeedurias,
   marcarChecklist,
+  obtenerEvidenciaDetalle,
   obtenerVeeduria,
   preguntarSobreDocumentos,
   subirDocumento,
+  EvidenciaDetalle,
   Veeduria,
 } from './api';
 
@@ -94,6 +96,7 @@ function NuevaVeeduria({ onCreada, onCancelar }: { onCreada: (id: string) => voi
 
 function DetalleVeeduria({ id, onVolver }: { id: string; onVolver: () => void }) {
   const [v, setV] = useState<Veeduria | null>(null);
+  const [evidencia, setEvidencia] = useState<EvidenciaDetalle | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [nuevoComentario, setNuevoComentario] = useState('');
   const [autor, setAutor] = useState('');
@@ -104,6 +107,7 @@ function DetalleVeeduria({ id, onVolver }: { id: string; onVolver: () => void })
 
   function recargar() {
     obtenerVeeduria(id).then(setV).catch((e) => setError(e.message));
+    obtenerEvidenciaDetalle(id).then(setEvidencia).catch(() => {});
   }
   useEffect(recargar, [id]);
 
@@ -180,11 +184,47 @@ function DetalleVeeduria({ id, onVolver }: { id: string; onVolver: () => void })
         </div>
       ))}
 
-      <h3>Documentos ({v.documentos.length})</h3>
-      <p style={{ fontSize: 13, color: '#888' }}>
-        Subí acá un PDF que ya conseguiste vos (por ej. descargado de SECOP después de pasar el captcha, o por derecho de petición) —
-        eso no se automatiza, ver README.
+      <h3>Evidencia ({(evidencia?.procesos.length ?? 0) + (evidencia?.contratos.length ?? 0)})</h3>
+      {evidencia && evidencia.contratos.length > 0 && (
+        <div style={{ overflowX: 'auto', marginBottom: 12 }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
+            <thead>
+              <tr style={{ textAlign: 'left', borderBottom: '2px solid #ddd' }}>
+                <th style={{ padding: 6 }}>Entidad</th>
+                <th style={{ padding: 6 }}>Objeto</th>
+                <th style={{ padding: 6 }}>Proveedor</th>
+                <th style={{ padding: 6 }}>Valor</th>
+                <th style={{ padding: 6 }}>SECOP</th>
+              </tr>
+            </thead>
+            <tbody>
+              {evidencia.contratos.map((c) => (
+                <tr key={c.idContrato} style={{ borderBottom: '1px solid #eee' }}>
+                  <td style={{ padding: 6 }}>{c.nombreEntidad}</td>
+                  <td style={{ padding: 6, maxWidth: 260 }}>{c.objetoDelContrato}</td>
+                  <td style={{ padding: 6 }}>{c.proveedorAdjudicado}</td>
+                  <td style={{ padding: 6 }}>${c.valorDelContrato.toLocaleString('es-CO')}</td>
+                  <td style={{ padding: 6 }}>
+                    {c.urlProceso && (
+                      <a href={c.urlProceso} target="_blank" rel="noreferrer">
+                        Revisar →
+                      </a>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+      <p style={{ fontSize: 13, background: '#eef2ff', border: '1px solid #c7d2fe', borderRadius: 6, padding: 10 }}>
+        Al hacer clic en "Revisar →" se abre SECOP en una pestaña nueva. SECOP pide confirmar que "no sos un robot" —
+        eso lo tenés que pasar vos. Una vez adentro, buscá el documento que te interese (pliegos, estudios previos, contrato
+        firmado) y descargalo. Volvé acá y subilo abajo en "Documentos": por el bloqueo de SECOP no podemos traerlo
+        automáticamente, pero desde que lo subís, RadarAI sí lo analiza solo.
       </p>
+
+      <h3>Documentos ({v.documentos.length})</h3>
       {v.documentos.map((d, i) => (
         <div key={i} style={{ border: '1px solid #eee', borderRadius: 6, padding: 8, marginBottom: 6 }}>
           <a href={d.url} target="_blank" rel="noreferrer">{d.nombre}</a> — subido por {d.subidoPor}{' '}
@@ -224,8 +264,18 @@ function DetalleVeeduria({ id, onVolver }: { id: string; onVolver: () => void })
   );
 }
 
-export default function VeeduriasView() {
-  const [vista, setVista] = useState<{ modo: 'lista' } | { modo: 'nueva' } | { modo: 'detalle'; id: string }>({ modo: 'lista' });
+export default function VeeduriasView({ abrirId, onAbierta }: { abrirId?: string | null; onAbierta?: () => void } = {}) {
+  const [vista, setVista] = useState<{ modo: 'lista' } | { modo: 'nueva' } | { modo: 'detalle'; id: string }>(
+    abrirId ? { modo: 'detalle', id: abrirId } : { modo: 'lista' },
+  );
+
+  useEffect(() => {
+    if (abrirId) {
+      setVista({ modo: 'detalle', id: abrirId });
+      onAbierta?.();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [abrirId]);
 
   if (vista.modo === 'nueva') {
     return <NuevaVeeduria onCreada={(id) => setVista({ modo: 'detalle', id })} onCancelar={() => setVista({ modo: 'lista' })} />;
