@@ -180,6 +180,53 @@ export function useRadarApp() {
   }
 
   // ---------------------------------------------------------------------
+  // Empresas: Encontrar oportunidades (datos reales)
+  // ---------------------------------------------------------------------
+  const empresaPicker = useMunicipioPicker('Cundinamarca', 'Tocancipá');
+  const [empresaNombre, setEmpresaNombre] = useState('');
+  const [empresaProductos, setEmpresaProductos] = useState(
+    'Vendemos computadores empresariales, servidores y soluciones de infraestructura tecnológica.',
+  );
+  const [empresaFechaDesde, setEmpresaFechaDesde] = useState(haceUnAno());
+  const [empresaFechaHasta, setEmpresaFechaHasta] = useState(hoy());
+  const [empresaStatus, setEmpresaStatus] = useState('idle');
+  const [empresaError, setEmpresaError] = useState('');
+  const [empresaSyncInfo, setEmpresaSyncInfo] = useState('');
+  const [empresaPerfil, setEmpresaPerfil] = useState(null);
+  const [oportunidades, setOportunidades] = useState(null);
+
+  async function handleBuscarOportunidades() {
+    setEmpresaStatus('loading');
+    setEmpresaError('');
+    setOportunidades(null);
+    try {
+      // 1. Crea (o re-crea) el perfil de la empresa — genera palabrasClave automaticamente.
+      const emp = await radarService.crearEmpresa({
+        nombre: empresaNombre,
+        productosServicios: empresaProductos,
+        departamentos: [empresaPicker.departamento],
+      });
+      setEmpresaPerfil(emp);
+
+      // 2. Trae procesos abiertos recientes del departamento (mismo dataset que Ciudadania).
+      const r = await radarService.sincronizar({
+        departamento: empresaPicker.departamento,
+        fechaDesde: empresaFechaDesde,
+        fechaHasta: empresaFechaHasta,
+      });
+      setEmpresaSyncInfo(`Procesos revisados en ${empresaPicker.departamento} (${empresaFechaDesde} a ${empresaFechaHasta}): ${r.procesos}.`);
+
+      // 3. Calcula compatibilidad contra los procesos ya sincronizados.
+      const ops = await radarService.oportunidadesParaEmpresa(emp._id);
+      setOportunidades(ops);
+      setEmpresaStatus('success');
+    } catch (error) {
+      setEmpresaStatus('error');
+      setEmpresaError(error.message);
+    }
+  }
+
+  // ---------------------------------------------------------------------
   // Mapa de riesgo (datos reales)
   // ---------------------------------------------------------------------
   const [mapaDatos, setMapaDatos] = useState([]);
@@ -384,6 +431,24 @@ export function useRadarApp() {
     handleSincronizarCitizen,
     handleConsultarCitizen,
     handleCrearVeeduria,
+
+    // Empresas
+    empresaDepartamento: empresaPicker.departamento,
+    setEmpresaDepartamento: empresaPicker.setDepartamento,
+    empresaNombre,
+    setEmpresaNombre,
+    empresaProductos,
+    setEmpresaProductos,
+    empresaFechaDesde,
+    setEmpresaFechaDesde,
+    empresaFechaHasta,
+    setEmpresaFechaHasta,
+    empresaStatus,
+    empresaError,
+    empresaSyncInfo,
+    empresaPerfil,
+    oportunidades,
+    handleBuscarOportunidades,
 
     // Mapa de riesgo
     mapaDatos,

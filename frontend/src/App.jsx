@@ -14,6 +14,7 @@ import CitizenWorkspaceReal from './CitizenWorkspace';
 import RiskMapWorkspaceReal from './RiskMapWorkspace';
 import MarketWorkspaceReal from './MarketWorkspace';
 import OversightWorkspaceReal from './OversightWorkspace';
+import BusinessWorkspaceReal from './BusinessWorkspace';
 
 function App() {
   const radar = useRadarApp();
@@ -253,7 +254,7 @@ function WorkspaceContent({ view, radar }) {
   }
 
   if (view === VIEWS.BUSINESS) {
-    return <BusinessWorkspace />;
+    return <BusinessWorkspaceReal radar={radar} />;
   }
 
   if (view === VIEWS.OVERSIGHT) {
@@ -269,42 +270,6 @@ function WorkspaceContent({ view, radar }) {
   }
 
   return <MarketWorkspaceReal radar={radar} />;
-}
-
-function BusinessWorkspace() {
-  return (
-    <div className="content-grid">
-      <article className="detail-card large">
-        <p className="section-label">Compatibilidad comercial</p>
-        <h2>Oportunidades abiertas para proveedores locales</h2>
-        <div className="data-table compact" role="table" aria-label="Oportunidades empresariales">
-          <div className="table-row table-head" role="row">
-            <span>Proceso</span>
-            <span>Entidad</span>
-            <span>Valor</span>
-            <span>Compatibilidad</span>
-          </div>
-          <div className="table-row" role="row">
-            <span>TI-082</span>
-            <span>Alcaldia de Tocancipa</span>
-            <span>$980M</span>
-            <span><Badge tone="Alta">86%</Badge></span>
-          </div>
-          <div className="table-row" role="row">
-            <span>OB-114</span>
-            <span>Gobernacion de Cundinamarca</span>
-            <span>$2.4B</span>
-            <span><Badge tone="Media">64%</Badge></span>
-          </div>
-        </div>
-      </article>
-      <aside className="detail-card">
-        <p className="section-label">Perfil detectado</p>
-        <h3>Infraestructura tecnologica</h3>
-        <p className="muted">Computadores empresariales, servidores y soporte operativo.</p>
-      </aside>
-    </div>
-  );
 }
 
 function RiskMapWorkspace() {
