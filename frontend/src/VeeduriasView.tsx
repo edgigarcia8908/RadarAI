@@ -1,5 +1,14 @@
 import { useEffect, useState } from 'react';
-import { agregarComentario, crearVeeduria, listarVeedurias, marcarChecklist, obtenerVeeduria, Veeduria } from './api';
+import {
+  agregarComentario,
+  crearVeeduria,
+  listarVeedurias,
+  marcarChecklist,
+  obtenerVeeduria,
+  preguntarSobreDocumentos,
+  subirDocumento,
+  Veeduria,
+} from './api';
 
 function ListaVeedurias({ onAbrir, onNueva }: { onAbrir: (id: string) => void; onNueva: () => void }) {
   const [veedurias, setVeedurias] = useState<Veeduria[] | null>(null);
@@ -88,6 +97,10 @@ function DetalleVeeduria({ id, onVolver }: { id: string; onVolver: () => void })
   const [error, setError] = useState<string | null>(null);
   const [nuevoComentario, setNuevoComentario] = useState('');
   const [autor, setAutor] = useState('');
+  const [subiendo, setSubiendo] = useState(false);
+  const [pregunta, setPregunta] = useState('');
+  const [respuesta, setRespuesta] = useState<string | null>(null);
+  const [preguntando, setPreguntando] = useState(false);
 
   function recargar() {
     obtenerVeeduria(id).then(setV).catch((e) => setError(e.message));
@@ -104,6 +117,36 @@ function DetalleVeeduria({ id, onVolver }: { id: string; onVolver: () => void })
   async function handleChecklist(indice: number, hecho: boolean) {
     await marcarChecklist(id, indice, hecho);
     recargar();
+  }
+
+  async function handleSubirArchivo(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setSubiendo(true);
+    setError(null);
+    try {
+      await subirDocumento(id, file, autor || 'anónimo');
+      recargar();
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setSubiendo(false);
+      e.target.value = '';
+    }
+  }
+
+  async function handlePreguntar() {
+    if (!pregunta.trim()) return;
+    setPreguntando(true);
+    setRespuesta(null);
+    try {
+      const r = await preguntarSobreDocumentos(id, pregunta);
+      setRespuesta(r.answer);
+    } catch (err: any) {
+      setRespuesta(`Error: ${err.message}`);
+    } finally {
+      setPreguntando(false);
+    }
   }
 
   if (error) return <p style={{ color: 'crimson' }}>{error}</p>;
@@ -136,6 +179,35 @@ function DetalleVeeduria({ id, onVolver }: { id: string; onVolver: () => void })
           <p style={{ fontSize: 12, color: '#888' }}>{h.autor}</p>
         </div>
       ))}
+
+      <h3>Documentos ({v.documentos.length})</h3>
+      <p style={{ fontSize: 13, color: '#888' }}>
+        Subí acá un PDF que ya conseguiste vos (por ej. descargado de SECOP después de pasar el captcha, o por derecho de petición) —
+        eso no se automatiza, ver README.
+      </p>
+      {v.documentos.map((d, i) => (
+        <div key={i} style={{ border: '1px solid #eee', borderRadius: 6, padding: 8, marginBottom: 6 }}>
+          <a href={d.url} target="_blank" rel="noreferrer">{d.nombre}</a> — subido por {d.subidoPor}{' '}
+          {d.indexado ? <span style={{ color: 'green' }}>· indexado ✓</span> : <span style={{ color: '#b58900' }}> · sin indexar ({d.motivoNoIndexado})</span>}
+        </div>
+      ))}
+      <div style={{ marginTop: 8 }}>
+        <input type="file" accept="application/pdf" onChange={handleSubirArchivo} disabled={subiendo} />
+        {subiendo && <span style={{ marginLeft: 8 }}>Subiendo…</span>}
+      </div>
+
+      {v.documentos.some((d) => d.indexado) && (
+        <div style={{ marginTop: 12 }}>
+          <label>
+            Preguntar sobre los documentos indexados{' '}
+            <input value={pregunta} onChange={(e) => setPregunta(e.target.value)} style={{ width: 300 }} />
+          </label>
+          <button onClick={handlePreguntar} disabled={preguntando} style={{ marginLeft: 8 }}>
+            {preguntando ? 'Buscando…' : 'Preguntar'}
+          </button>
+          {respuesta && <p style={{ fontStyle: 'italic', marginTop: 8 }}>{respuesta}</p>}
+        </div>
+      )}
 
       <h3>Comentarios ({v.comentarios.length})</h3>
       {v.comentarios.map((c, i) => (

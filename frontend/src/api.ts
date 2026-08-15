@@ -110,6 +110,15 @@ export interface ComentarioVeeduria {
   texto: string;
   fecha: string;
 }
+export interface DocumentoVeeduria {
+  storageId: string;
+  nombre: string;
+  url: string;
+  subidoPor: string;
+  fecha: string;
+  indexado: boolean;
+  motivoNoIndexado?: string;
+}
 export interface Veeduria {
   _id: string;
   titulo: string;
@@ -122,6 +131,7 @@ export interface Veeduria {
   hallazgos: HallazgoVeeduria[];
   comentarios: ComentarioVeeduria[];
   checklist: ChecklistItem[];
+  documentos: DocumentoVeeduria[];
   colaboradores: string[];
   estado: 'ABIERTA' | 'CERRADA';
   createdAt: string;
@@ -156,5 +166,25 @@ export function marcarChecklist(id: string, indice: number, hecho: boolean): Pro
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ hecho }),
+  }).then(manejar);
+}
+
+export function subirDocumento(id: string, file: File, subidoPor: string): Promise<Veeduria> {
+  const form = new FormData();
+  form.append('file', file);
+  form.append('subidoPor', subidoPor);
+  return fetch(`/api/veedurias/${id}/documentos`, { method: 'POST', body: form }).then(manejar);
+}
+
+export interface RespuestaDocumentos {
+  answer: string;
+  citations: { id: string | number; score: number; file?: string; page?: number }[];
+}
+
+export function preguntarSobreDocumentos(id: string, pregunta: string): Promise<RespuestaDocumentos> {
+  return fetch(`/api/veedurias/${id}/preguntar`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ pregunta }),
   }).then(manejar);
 }

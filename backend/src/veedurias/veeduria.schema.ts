@@ -21,6 +21,18 @@ export interface ChecklistItem {
   hecho: boolean;
 }
 
+export interface DocumentoVeeduria {
+  storageId: string;
+  nombre: string;
+  url: string;
+  subidoPor: string;
+  fecha: Date;
+  /** true si se pudo parsear+indexar en ceo-intelligence-service (RAG). false = solo queda el archivo, sin búsqueda por contenido. */
+  indexado: boolean;
+  /** Motivo si `indexado` es false (ej. "ceo-intelligence-service no disponible", "el PDF es escaneado, sin texto"). */
+  motivoNoIndexado?: string;
+}
+
 /** Checklist por defecto — mismo que sugiere el documento de producto de RADAR. */
 export const CHECKLIST_DEFAULT: ChecklistItem[] = [
   { texto: 'Revisar contrato', hecho: false },
@@ -47,6 +59,8 @@ export class Veeduria extends Document {
   @Prop({ type: [Object], default: [] }) hallazgos: Hallazgo[];
   @Prop({ type: [Object], default: [] }) comentarios: Comentario[];
   @Prop({ type: [Object], default: () => CHECKLIST_DEFAULT.map((c) => ({ ...c })) }) checklist: ChecklistItem[];
+  /** Documentos subidos manualmente por un colaborador (ej. conseguidos por derecho de petición) — ver README, sección "documentos del proceso". */
+  @Prop({ type: [Object], default: [] }) documentos: DocumentoVeeduria[];
 
   /** Emails/nombres de quienes colaboran — Fase 1: sin cuentas reales vinculadas (ver README, auth no aplicado todavía). */
   @Prop({ type: [String], default: [] }) colaboradores: string[];

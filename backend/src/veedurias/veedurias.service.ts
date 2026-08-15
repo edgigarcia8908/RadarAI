@@ -1,7 +1,11 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { CeoStorageClient } from '@ceo-core/storage-client';
+import { CeoIntelligenceClient } from '@ceo-core/intelligence-client';
 import { Veeduria, Comentario, Hallazgo } from './veeduria.schema';
+import { CEO_STORAGE_CLIENT } from '../storage/ceo-storage-client.provider';
+import { CEO_INTELLIGENCE_CLIENT } from '../intelligence/ceo-intelligence-client.provider';
 
 export interface CrearVeeduriaInput {
   titulo: string;
@@ -15,7 +19,13 @@ export interface CrearVeeduriaInput {
 
 @Injectable()
 export class VeeduriasService {
-  constructor(@InjectModel(Veeduria.name) private readonly model: Model<Veeduria>) {}
+  private readonly logger = new Logger(VeeduriasService.name);
+
+  constructor(
+    @InjectModel(Veeduria.name) private readonly model: Model<Veeduria>,
+    @Inject(CEO_STORAGE_CLIENT) private readonly storage: CeoStorageClient,
+    @Inject(CEO_INTELLIGENCE_CLIENT) private readonly intelligence: CeoIntelligenceClient,
+  ) {}
 
   crear(data: CrearVeeduriaInput) {
     return this.model.create(data);
@@ -65,5 +75,66 @@ export class VeeduriasService {
     const v = await this.obtener(id);
     if (!v.colaboradores.includes(colaborador)) v.colaboradores.push(colaborador);
     return v.save();
+  }
+
+  /**
+   * Sube un documento que un colaborador consiguió MANUALMENTE (ej. por
+   * derecho de petición, o descargándolo él mismo de SECOP después de
+   * pasar el captcha) — nunca se automatiza esa parte, ver README. Este
+   * método solo hace lo que sí es automatizable una vez el humano ya tiene
+   * el archivo: subirlo a `ceo-storage-service` y, si es un PDF de texto,
+   * parsearlo e indexarlo en `ceo-intelligence-service` para que el
+   * asistente de la veeduría pueda responder preguntas sobre su contenido.
+   */
+  async subirDocumento(id: string, archivo: { buffer: Buffer; filename: string; mimeType?: string }, subidoPor: string) {
+    const v = await this.obtener(id);
+
+    const subido = await this.storage.upload({
+      buffer: archivo.buffer,
+      filename: archivo.filename,
+      mimeType: archivo.mimeType,
+      ownerId: id,
+    });
+
+    let indexado = false;
+    let motivoNoIndexado: string | undefined;
+    try {
+      const parseado = await this.intelligence.parseDocument({ fileBuffer: archivo.buffer, fileName: archivo.filename });
+      const paginasConTexto = parseado.pages.filter((p) => p.text?.trim());
+      if (paginasConTexto.length === 0) {
+        motivoNoIndexado = 'El PDF no tiene texto extraíble (probablemente escaneado) — ceo-intelligence-service no hace OCR todavía.';
+      } else {
+        await this.intelligence.ragIngest({
+          collection: `veeduria_${id}`,
+          sourceId: archivo.filename,
+          chunks: paginasConTexto.map((p) => ({ text: p.text, metadata: { page: p.pageNumber, archivo: archivo.filename } })),
+          embeddingProvider: 'openai',
+        });
+        indexado = true;
+      }
+    } catch (err) {
+      motivoNoIndexado = `No se pudo indexar (¿ceo-intelligence-service no está corriendo?): ${(err as Error).message}`;
+      this.logger.warn(motivoNoIndexado);
+    }
+
+    v.documentos.push({
+      storageId: subido.id,
+      nombre: archivo.filename,
+      url: subido.url,
+      subidoPor,
+      fecha: new Date(),
+      indexado,
+      motivoNoIndexado,
+    });
+    return v.save();
+  }
+
+  /** Pregunta en lenguaje natural sobre los documentos ya indexados de esta veeduría (RAG real, con citas). */
+  async preguntarSobreDocumentos(id: string, pregunta: string) {
+    const v = await this.obtener(id);
+    if (!v.documentos.some((d) => d.indexado)) {
+      return { answer: 'Todavía no hay documentos indexados en esta veeduría — subí un PDF de texto primero.', citations: [], matches: [] };
+    }
+    return this.intelligence.ragQuery({ collection: `veeduria_${id}`, query: pregunta, topK: 5 });
   }
 }
