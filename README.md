@@ -46,6 +46,29 @@ ToS y es frágil). En su lugar:
   `ceo-intelligence-service` (`/documents/parse` + `/rag/ingest` — ya
   existen, no hay que construir nada nuevo para eso).
 
+## Cosas de la API de Socrata que costó descubrir (verificadas a mano)
+
+- `urlproceso` viene como **objeto** `{ "url": "..." }`, no como string — si
+  lo guardás directo, queda `[object Object]`. Ver `ingestion.service.ts`.
+- El campo `ciudad`/`ciudad_entidad` sí viene consistentemente acentuado
+  igual al nombre oficial DANE (verificado con Tocancipá: `upper(ciudad) =
+  upper('Tocancipá')` da resultados correctos) — filtrar por
+  departamento+ciudad directo en Socrata funciona bien y es mucho más preciso
+  que traer todo el departamento. Igual guardamos `*Normalizado` (sin
+  tildes/mayúsculas) en Mongo como respaldo, porque el objeto contractual
+  (`objeto_del_contrato`) sí es inconsistente entre entidades.
+- El parámetro `$q` (búsqueda de texto libre) de Socrata es **estricto**:
+  con una sola palabra ("mantenimiento") da resultados; con dos palabras
+  ("mantenimiento colegios") puede dar 0 aunque haya cientos de contratos que
+  las contienen por separado. Por eso `tema` **no** se manda como `$q` — se
+  filtra del lado de Mongo contra `textoNormalizado` con un regex OR-de-
+  palabras, mucho más permisivo.
+- El dataset `jbjy-vk9h` (Contratos Electrónicos, 85 columnas) devuelve
+  500/503 con bastante frecuencia sin `SOCRATA_APP_TOKEN` — la misma query
+  repetida puede dar 500, luego 503, luego 200 con datos reales, sin cambiar
+  nada. `SocrataClient.fetchRows()` reintenta 3 veces con backoff antes de
+  fallar. Conseguir un `SOCRATA_APP_TOKEN` (gratis) reduce esto bastante.
+
 ## Qué hace el motor cívico hoy (`src/civic-intel/`)
 
 Dado territorio + tema + pregunta, filtra procesos/contratos ya sincronizados
@@ -89,12 +112,19 @@ después "Preguntar".
    `ceo-storage-service` + subida de PDFs a veedurías, el `/rag/ingest` de
    `ceo-intelligence-service` trocea por caracteres, no por oración — puede
    cortar mal, es una limitación conocida y documentada ahí mismo.
-6. **`deploy.sh`** — no existe todavía, a propósito (Fase 1 es local). Seguir
-   el patrón de `uniminuto/deploy.sh` cuando se decida productizar.
+6. **Configurar Virtualmin** — `deploy.sh` (raíz del repo) ya existe y sube
+   backend+frontend con PM2, pero el proxy `/api -> :4500` del dominio
+   `radar.ceoclick.pro` hay que crearlo a mano en Virtualmin (el script lo
+   recuerda al final, no lo puede hacer solo).
 
-## No validado en ejecución todavía
+## Estado de validación
 
-Este scaffold se escribió sin `npm install` ni `npm run dev` reales en esta
-sesión (no había `MONGO_URI` propio disponible). Antes de la demo: correr
-`npm run install:all`, configurar Mongo, y probar el flujo completo
-end-to-end una vez.
+Probado en vivo en esta sesión, con datos reales: sincronicé Cundinamarca +
+Tocancipá contra SECOP y consulté "mantenimiento de colegios" — trajo 11
+contratos reales por $3.560.548.081 con 9 proveedores, y detectó los 2
+hallazgos (concentración de proveedores 95%, 3 contratos con objeto similar)
+con evidencia real y link a SECOP. Repositorio: privado en
+`github.com/edgigarcia8908/RadarAI`.
+
+Lo que NO se probó todavía: el flujo completo de `deploy.sh` en el VPS real
+(Virtualmin, PM2), ni ningún territorio/tema fuera de Cundinamarca/Tocancipá.

@@ -30,25 +30,32 @@ export class IngestionService {
   ) {}
 
   /**
-   * Solo filtramos por DEPARTAMENTO en el propio Socrata (`upper()` sirve
-   * ahí porque el departamento casi siempre está bien escrito en el dato
-   * fuente). Ciudad y tema NO se filtran acá: SoQL `upper()` no le quita
-   * tildes a nada, y SECOP es inconsistente entre entidades (una entidad
-   * escribe "Bogotá", otra "BOGOTA", otra "bogota d.c."). Se trae todo el
-   * departamento y se filtra ciudad/tema del lado de Mongo contra los
-   * campos ya normalizados (ver `normalizar()`), que sí ignoran
-   * tildes/mayúsculas/puntuación.
+   * Filtramos por departamento Y ciudad directo en Socrata con `upper()` —
+   * verificado a mano (ver README): el campo ciudad en SECOP viene
+   * consistentemente acentuado igual que el nombre oficial DANE que usa
+   * nuestro propio selector (`frontend/src/colombia.json`), así que
+   * `upper()` alcanza para igualarlos sin falsos negativos. Igual guardamos
+   * los campos *Normalizado (sin tildes/mayúsculas) como respaldo para el
+   * matching de `tema` en Mongo, donde SECOP sí es inconsistente (objetos
+   * contractuales en mayúsculas, sin tildes, etc. — ahí `upper()` no
+   * alcanza porque el problema no es solo mayúsculas sino tildes).
    */
-  private construirWhere(filtro: FiltroTerritorio, campoDepartamento: string): string[] {
+  private construirWhere(filtro: FiltroTerritorio, campoDepartamento: string, campoCiudad: string): string[] {
     const where: string[] = [];
     if (filtro.departamento) where.push(`upper(${campoDepartamento}) = upper('${soqlString(filtro.departamento)}')`);
+    if (filtro.ciudad) where.push(`upper(${campoCiudad}) = upper('${soqlString(filtro.ciudad)}')`);
     return where;
   }
 
   async sincronizarProcesos(filtro: FiltroTerritorio) {
     const rows = await this.procesosClient.fetchRows({
-      where: this.construirWhere(filtro, 'departamento_entidad'),
-      q: filtro.tema,
+      where: this.construirWhere(filtro, 'departamento_entidad', 'ciudad_entidad'),
+      // NO mandamos `tema` como $q acá a propósito: Socrata `$q` con 2+
+      // palabras exige casi frase exacta (probado a mano: "mantenimiento
+      // colegios" da 0 resultados aunque "mantenimiento" solo da 172) — muy
+      // estricto para lenguaje libre de un ciudadano. El filtro real por
+      // tema lo hace `CivicIntelService` contra `textoNormalizado` en Mongo,
+      // que sí matchea por OR de palabras.
       limit: filtro.limit ?? 500,
       order: 'fecha_de_publicacion_del DESC',
     });
@@ -94,8 +101,7 @@ export class IngestionService {
 
   async sincronizarContratos(filtro: FiltroTerritorio) {
     const rows = await this.contratosClient.fetchRows({
-      where: this.construirWhere(filtro, 'departamento'),
-      q: filtro.tema,
+      where: this.construirWhere(filtro, 'departamento', 'ciudad'),
       limit: filtro.limit ?? 500,
       order: 'fecha_de_firma DESC',
     });
