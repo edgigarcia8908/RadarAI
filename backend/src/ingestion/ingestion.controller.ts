@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Inject, Post } from '@nestjs/common';
 import { IngestionService, FiltroTerritorio } from './ingestion.service';
 
 /**
@@ -8,7 +8,10 @@ import { IngestionService, FiltroTerritorio } from './ingestion.service';
  */
 @Controller('ingestion')
 export class IngestionController {
-  constructor(private readonly service: IngestionService) {}
+  // @Inject() explícito a propósito: tsx/esbuild no siempre emite
+  // design:paramtypes confiable para inyección implícita por tipo — mismo
+  // patrón que ceo-ecosistema (ver organizaciones.controller.ts).
+  constructor(@Inject(IngestionService) private readonly service: IngestionService) {}
 
   @Post('sync')
   sync(@Body() body: FiltroTerritorio) {

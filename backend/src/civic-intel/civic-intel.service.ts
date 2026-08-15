@@ -5,6 +5,7 @@ import { Proceso } from '../ingestion/proceso.schema';
 import { Contrato } from '../ingestion/contrato.schema';
 import { CeoIntelligenceClient } from '@ceo-core/intelligence-client';
 import { CEO_INTELLIGENCE_CLIENT } from '../intelligence/ceo-intelligence-client.provider';
+import { normalizar } from '../common/normalizar';
 
 export interface ConsultaInput {
   departamento?: string;
@@ -23,17 +24,6 @@ interface Hallazgo {
   evidencia: { entidad: string; id: string; link?: string }[];
 }
 
-/** Normaliza texto para comparar objetos contractuales sin que difieran por tildes/mayúsculas/puntuación. */
-function normalizar(texto: string): string {
-  return texto
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[̀-ͯ]/g, '')
-    .replace(/[^a-z0-9\s]/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim();
-}
-
 @Injectable()
 export class CivicIntelService {
   private readonly logger = new Logger(CivicIntelService.name);
@@ -44,10 +34,11 @@ export class CivicIntelService {
     @Inject(CEO_INTELLIGENCE_CLIENT) private readonly intelligence: CeoIntelligenceClient,
   ) {}
 
-  private filtroTerritorio(departamento?: string, ciudad?: string, campoDepto = 'departamentoEntidad', campoCiudad = 'ciudadEntidad') {
+  /** Compara siempre contra los campos *Normalizado guardados en la ingesta — ignora tildes/mayúsculas/puntuación. */
+  private filtroTerritorio(departamento?: string, ciudad?: string, campoDepto = 'departamentoEntidadNormalizado', campoCiudad = 'ciudadEntidadNormalizado') {
     const filtro: Record<string, unknown> = {};
-    if (departamento) filtro[campoDepto] = new RegExp(`^${departamento}$`, 'i');
-    if (ciudad) filtro[campoCiudad] = new RegExp(`^${ciudad}$`, 'i');
+    if (departamento) filtro[campoDepto] = normalizar(departamento);
+    if (ciudad) filtro[campoCiudad] = normalizar(ciudad);
     return filtro;
   }
 
@@ -103,13 +94,21 @@ export class CivicIntelService {
   }
 
   async consultar(input: ConsultaInput) {
-    const temaRegex = input.tema ? new RegExp(input.tema.split(/\s+/).filter(Boolean).join('|'), 'i') : null;
+    // Palabras normalizadas (sin tildes/mayúsculas) del tema, para matchear contra `textoNormalizado`
+    // sin que importe cómo cada entidad escribió el objeto contractual en SECOP.
+    const palabrasTema = normalizar(input.tema).split(' ').filter((p) => p.length > 2);
+    const temaRegex = palabrasTema.length ? new RegExp(palabrasTema.join('|'), 'i') : null;
 
     const filtroProcesos: Record<string, unknown> = this.filtroTerritorio(input.departamento, input.ciudad);
-    const filtroContratos: Record<string, unknown> = this.filtroTerritorio(input.departamento, input.ciudad, 'departamento', 'ciudad');
+    const filtroContratos: Record<string, unknown> = this.filtroTerritorio(
+      input.departamento,
+      input.ciudad,
+      'departamentoNormalizado',
+      'ciudadNormalizado',
+    );
     if (temaRegex) {
-      filtroProcesos.$or = [{ nombreProcedimiento: temaRegex }, { descripcionProcedimiento: temaRegex }];
-      filtroContratos.$or = [{ objetoDelContrato: temaRegex }, { descripcionDelProceso: temaRegex }];
+      filtroProcesos.textoNormalizado = temaRegex;
+      filtroContratos.textoNormalizado = temaRegex;
     }
 
     const [procesos, contratos] = await Promise.all([

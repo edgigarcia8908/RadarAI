@@ -23,6 +23,9 @@ export class Contrato extends Document {
   @Prop({ type: String, default: '' }) nitEntidad: string;
   @Prop({ type: String, default: '', index: true }) departamento: string;
   @Prop({ type: String, default: '', index: true }) ciudad: string;
+  /** Sin tildes/mayúsculas/puntuación — para filtrar sin que importe cómo lo escribió cada entidad. */
+  @Prop({ type: String, default: '', index: true }) departamentoNormalizado: string;
+  @Prop({ type: String, default: '', index: true }) ciudadNormalizado: string;
 
   @Prop({ type: String, default: '' }) estadoContrato: string;
   @Prop({ type: String, default: '' }) tipoDeContrato: string;
@@ -32,6 +35,7 @@ export class Contrato extends Document {
 
   @Prop({ type: String, default: '' }) objetoDelContrato: string;
   @Prop({ type: String, default: '' }) descripcionDelProceso: string;
+  @Prop({ type: String, default: '' }) textoNormalizado: string;
 
   @Prop({ type: String, default: '', index: true }) proveedorAdjudicado: string;
   @Prop({ type: String, default: '', index: true }) nitProveedor: string;

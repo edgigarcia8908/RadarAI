@@ -1,9 +1,20 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { consultar, sincronizar, ConsultaResultado } from './api';
+import colombia from './colombia.json';
+
+interface DeptoColombia {
+  departamento: string;
+  ciudades: string[];
+}
+const DEPARTAMENTOS = colombia as DeptoColombia[];
 
 export default function App() {
   const [departamento, setDepartamento] = useState('Cundinamarca');
   const [ciudad, setCiudad] = useState('Tocancipá');
+  const ciudadesDisponibles = useMemo(
+    () => DEPARTAMENTOS.find((d) => d.departamento === departamento)?.ciudades ?? [],
+    [departamento],
+  );
   const [tema, setTema] = useState('mantenimiento de colegios');
   const [pregunta, setPregunta] = useState('¿Cuánto ha gastado el municipio en mantenimiento de colegios este año?');
   const [cargandoSync, setCargandoSync] = useState(false);
@@ -45,8 +56,32 @@ export default function App() {
       <p style={{ color: '#555' }}>Inteligencia pública sobre contratación estatal, con datos reales de SECOP II (datos.gov.co).</p>
 
       <div style={{ display: 'grid', gap: 8, marginTop: 24 }}>
-        <label>Departamento <input value={departamento} onChange={(e) => setDepartamento(e.target.value)} /></label>
-        <label>Ciudad/Municipio <input value={ciudad} onChange={(e) => setCiudad(e.target.value)} /></label>
+        <label>
+          Departamento{' '}
+          <select
+            value={departamento}
+            onChange={(e) => {
+              setDepartamento(e.target.value);
+              setCiudad(DEPARTAMENTOS.find((d) => d.departamento === e.target.value)?.ciudades[0] ?? '');
+            }}
+          >
+            {DEPARTAMENTOS.map((d) => (
+              <option key={d.departamento} value={d.departamento}>
+                {d.departamento}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label>
+          Ciudad/Municipio{' '}
+          <select value={ciudad} onChange={(e) => setCiudad(e.target.value)}>
+            {ciudadesDisponibles.map((c) => (
+              <option key={c} value={c}>
+                {c}
+              </option>
+            ))}
+          </select>
+        </label>
         <label>Tema <input value={tema} onChange={(e) => setTema(e.target.value)} style={{ width: '100%' }} /></label>
         <label>Pregunta <textarea value={pregunta} onChange={(e) => setPregunta(e.target.value)} rows={2} style={{ width: '100%' }} /></label>
       </div>

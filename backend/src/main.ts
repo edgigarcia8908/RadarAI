@@ -1,4 +1,4 @@
-import 'dotenv/config';
+import './env';
 import 'reflect-metadata';
 // IMPORTANTE: se conecta con `connectMongoose` de @ceo-core/database dentro
 // de app.module.ts, NO con `MongooseModule.forRoot(uri)` a secas — el simple

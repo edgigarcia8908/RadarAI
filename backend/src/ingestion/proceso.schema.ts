@@ -17,9 +17,13 @@ export class Proceso extends Document {
   @Prop({ type: String, default: '' }) nitEntidad: string;
   @Prop({ type: String, default: '', index: true }) departamentoEntidad: string;
   @Prop({ type: String, default: '', index: true }) ciudadEntidad: string;
+  /** Sin tildes/mayúsculas/puntuación — para filtrar sin que importe cómo lo escribió cada entidad. */
+  @Prop({ type: String, default: '', index: true }) departamentoEntidadNormalizado: string;
+  @Prop({ type: String, default: '', index: true }) ciudadEntidadNormalizado: string;
 
   @Prop({ type: String, default: '' }) nombreProcedimiento: string;
   @Prop({ type: String, default: '' }) descripcionProcedimiento: string;
+  @Prop({ type: String, default: '' }) textoNormalizado: string;
   @Prop({ type: String, default: '' }) modalidadContratacion: string;
   @Prop({ type: String, default: '' }) codigoCategoriaUnspsc: string;
 

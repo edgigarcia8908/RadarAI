@@ -16,7 +16,15 @@ export interface SocrataQuery {
 export class SocrataClient {
   constructor(private readonly datasetId: string) {}
 
-  async fetchRows(query: SocrataQuery = {}): Promise<Record<string, any>[]> {
+  /**
+   * `jbjy-vk9h` (Contratos Electrónicos, 85 columnas) en particular devuelve
+   * 500/503 con bastante frecuencia sin `SOCRATA_APP_TOKEN` — verificado a
+   * mano: la misma query a veces da 500, a veces 503, a veces 200 con datos
+   * reales, sin cambiar nada. No es un error del cliente, es la API pública
+   * de datos.gov.co bajo carga/rate-limit anónimo. Reintenta con backoff
+   * antes de rendirse.
+   */
+  async fetchRows(query: SocrataQuery = {}, intentos = 3): Promise<Record<string, any>[]> {
     const url = new URL(`https://www.datos.gov.co/resource/${this.datasetId}.json`);
     if (query.where?.length) url.searchParams.set('$where', query.where.join(' AND '));
     if (query.q) url.searchParams.set('$q', query.q);
@@ -27,12 +35,16 @@ export class SocrataClient {
     const headers: Record<string, string> = { Accept: 'application/json' };
     if (process.env.SOCRATA_APP_TOKEN) headers['X-App-Token'] = process.env.SOCRATA_APP_TOKEN;
 
-    const res = await fetch(url.toString(), { headers });
-    if (!res.ok) {
+    let ultimoError: Error | null = null;
+    for (let intento = 1; intento <= intentos; intento++) {
+      const res = await fetch(url.toString(), { headers });
+      if (res.ok) return res.json();
       const body = await res.text().catch(() => '');
-      throw new Error(`Socrata (${this.datasetId}) respondió ${res.status}: ${body.slice(0, 300)}`);
+      ultimoError = new Error(`Socrata (${this.datasetId}) respondió ${res.status}: ${body.slice(0, 300)}`);
+      if (res.status !== 500 && res.status !== 503) throw ultimoError; // error real (ej. SoQL mal formado) — no reintentar
+      if (intento < intentos) await new Promise((r) => setTimeout(r, 500 * intento));
     }
-    return res.json();
+    throw ultimoError;
   }
 }
 

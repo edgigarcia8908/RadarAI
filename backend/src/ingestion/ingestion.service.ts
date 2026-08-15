@@ -4,6 +4,7 @@ import { Model } from 'mongoose';
 import { Proceso } from './proceso.schema';
 import { Contrato } from './contrato.schema';
 import { SocrataClient, soqlString, toDate, toNumber } from './socrata.client';
+import { normalizar } from '../common/normalizar';
 
 /** Datasets reales de datos.gov.co — ver README de RadarAI para el análisis completo. */
 const DATASET_PROCESOS = 'p6dx-8zbt'; // SECOP II - Procesos de Contratación
@@ -28,24 +29,35 @@ export class IngestionService {
     @InjectModel(Contrato.name) private readonly contratoModel: Model<Contrato>,
   ) {}
 
-  private construirWhere(filtro: FiltroTerritorio, campoDepartamento: string, campoCiudad: string): string[] {
+  /**
+   * Solo filtramos por DEPARTAMENTO en el propio Socrata (`upper()` sirve
+   * ahí porque el departamento casi siempre está bien escrito en el dato
+   * fuente). Ciudad y tema NO se filtran acá: SoQL `upper()` no le quita
+   * tildes a nada, y SECOP es inconsistente entre entidades (una entidad
+   * escribe "Bogotá", otra "BOGOTA", otra "bogota d.c."). Se trae todo el
+   * departamento y se filtra ciudad/tema del lado de Mongo contra los
+   * campos ya normalizados (ver `normalizar()`), que sí ignoran
+   * tildes/mayúsculas/puntuación.
+   */
+  private construirWhere(filtro: FiltroTerritorio, campoDepartamento: string): string[] {
     const where: string[] = [];
     if (filtro.departamento) where.push(`upper(${campoDepartamento}) = upper('${soqlString(filtro.departamento)}')`);
-    if (filtro.ciudad) where.push(`upper(${campoCiudad}) = upper('${soqlString(filtro.ciudad)}')`);
     return where;
   }
 
   async sincronizarProcesos(filtro: FiltroTerritorio) {
     const rows = await this.procesosClient.fetchRows({
-      where: this.construirWhere(filtro, 'departamento_entidad', 'ciudad_entidad'),
+      where: this.construirWhere(filtro, 'departamento_entidad'),
       q: filtro.tema,
-      limit: filtro.limit ?? 300,
+      limit: filtro.limit ?? 500,
       order: 'fecha_de_publicacion_del DESC',
     });
 
     let escritos = 0;
     for (const row of rows) {
       if (!row.id_del_proceso) continue;
+      const nombreProcedimiento = row.nombre_del_procedimiento || '';
+      const descripcionProcedimiento = row.descripci_n_del_procedimiento || '';
       await this.procesoModel.findOneAndUpdate(
         { idProceso: row.id_del_proceso },
         {
@@ -55,8 +67,11 @@ export class IngestionService {
           nitEntidad: row.nit_entidad || '',
           departamentoEntidad: row.departamento_entidad || '',
           ciudadEntidad: row.ciudad_entidad || '',
-          nombreProcedimiento: row.nombre_del_procedimiento || '',
-          descripcionProcedimiento: row.descripci_n_del_procedimiento || '',
+          departamentoEntidadNormalizado: normalizar(row.departamento_entidad || ''),
+          ciudadEntidadNormalizado: normalizar(row.ciudad_entidad || ''),
+          nombreProcedimiento,
+          descripcionProcedimiento,
+          textoNormalizado: normalizar(`${nombreProcedimiento} ${descripcionProcedimiento}`),
           modalidadContratacion: row.modalidad_de_contratacion || '',
           codigoCategoriaUnspsc: row.codigo_principal_de_categoria || '',
           precioBase: toNumber(row.precio_base),
@@ -79,33 +94,39 @@ export class IngestionService {
 
   async sincronizarContratos(filtro: FiltroTerritorio) {
     const rows = await this.contratosClient.fetchRows({
-      where: this.construirWhere(filtro, 'departamento', 'ciudad'),
+      where: this.construirWhere(filtro, 'departamento'),
       q: filtro.tema,
-      limit: filtro.limit ?? 300,
+      limit: filtro.limit ?? 500,
       order: 'fecha_de_firma DESC',
     });
 
     let escritos = 0;
     for (const row of rows) {
       if (!row.id_contrato) continue;
+      const objetoDelContrato = row.objeto_del_contrato || '';
+      const descripcionDelProceso = row.descripcion_del_proceso || '';
       await this.contratoModel.findOneAndUpdate(
         { idContrato: row.id_contrato },
         {
           idContrato: row.id_contrato,
           referenciaContrato: row.referencia_del_contrato || '',
           procesoDeCompra: row.proceso_de_compra || '',
-          urlProceso: row.urlproceso || '',
+          // Socrata devuelve este campo como objeto { url: "..." }, no como string plano.
+          urlProceso: (typeof row.urlproceso === 'object' ? row.urlproceso?.url : row.urlproceso) || '',
           nombreEntidad: row.nombre_entidad || '',
           nitEntidad: row.nit_entidad || '',
           departamento: row.departamento || '',
           ciudad: row.ciudad || '',
+          departamentoNormalizado: normalizar(row.departamento || ''),
+          ciudadNormalizado: normalizar(row.ciudad || ''),
           estadoContrato: row.estado_contrato || '',
           tipoDeContrato: row.tipo_de_contrato || '',
           fechaDeFirma: toDate(row.fecha_de_firma),
           fechaDeInicio: toDate(row.fecha_de_inicio_del_contrato),
           fechaDeFin: toDate(row.fecha_de_fin_del_contrato),
-          objetoDelContrato: row.objeto_del_contrato || '',
-          descripcionDelProceso: row.descripcion_del_proceso || '',
+          objetoDelContrato,
+          descripcionDelProceso,
+          textoNormalizado: normalizar(`${objetoDelContrato} ${descripcionDelProceso}`),
           proveedorAdjudicado: row.proveedor_adjudicado || '',
           nitProveedor: row.documento_proveedor || '',
           valorDelContrato: toNumber(row.valor_del_contrato),
