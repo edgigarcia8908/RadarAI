@@ -47,25 +47,34 @@ export class OportunidadesService {
     return empresa.ciudades.some((c) => normalizar(c) === proceso.ciudadEntidadNormalizado) ? 1 : 0.7;
   }
 
+  /** UNSPSC viene como "V1.70151802" (prefijo de versión + 8 dígitos: segmento-familia-clase-producto). "Familia+clase" = los primeros 6 dígitos después del prefijo — suficientemente específico sin ser tan estrecho como el producto exacto. */
+  private familiaClaseUnspsc(codigo: string): string {
+    const digitos = codigo.replace(/^V\d+\./, '');
+    return digitos.slice(0, 6);
+  }
+
   /**
-   * Competencia histórica: cuántos proveedores únicos ganaron contratos en
-   * la misma categoría UNSPSC (primeros 8 caracteres = familia/clase) en el
-   * mismo departamento — señal real derivada de `Contrato`, no inventada.
+   * Competencia histórica: proveedores únicos que YA ganaron contratos en la
+   * MISMA familia+clase UNSPSC en el mismo departamento — señal real
+   * derivada de `Contrato.codigoCategoriaUnspsc`, cruzada por categoría (no
+   * solo por territorio como antes). Si el proceso no trae UNSPSC o no hay
+   * contratos históricos de esa categoría en la zona, cae a 'MEDIA' — ni
+   * optimista ni pesimista sin evidencia.
    */
   private async competenciaHistorica(codigoUnspsc: string, departamentoNormalizado: string): Promise<'BAJA' | 'MEDIA' | 'ALTA'> {
     if (!codigoUnspsc) return 'MEDIA';
-    const prefijo = codigoUnspsc.slice(0, 10); // ej "V1.8011160" — familia+clase
+    const familiaClase = this.familiaClaseUnspsc(codigoUnspsc);
+    if (!familiaClase) return 'MEDIA';
+
     const contratos = await this.contratoModel
-      .find({ departamentoNormalizado, textoNormalizado: { $exists: true } })
+      .find({ departamentoNormalizado, codigoCategoriaUnspsc: new RegExp(`^V\\d+\\.${familiaClase}`) })
       .limit(300)
       .lean<Contrato[]>();
-    // Sin campo de categoría propio en Contrato, aproximamos competencia con proveedores
-    // únicos del territorio que ya le vendieron a esa entidad — señal ruidosa pero real,
-    // no inventada. Ver README: mejora pendiente es cruzar por categoría UNSPSC real.
-    void prefijo;
+
+    if (contratos.length === 0) return 'MEDIA'; // sin histórico de esta categoría en la zona — no hay evidencia para decir baja o alta
     const proveedores = new Set(contratos.map((c) => c.nitProveedor || c.proveedorAdjudicado).filter(Boolean));
-    if (proveedores.size <= 5) return 'BAJA';
-    if (proveedores.size <= 15) return 'MEDIA';
+    if (proveedores.size <= 3) return 'BAJA';
+    if (proveedores.size <= 8) return 'MEDIA';
     return 'ALTA';
   }
 

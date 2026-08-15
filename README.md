@@ -128,27 +128,52 @@ oportunidades (`oportunidades.service.ts`) ahora filtra por
 `estadoApertura: 'Abierto'` + excluye `Cancelado`/`Borrador` explícitamente,
 en vez de solo `adjudicado: false` (que dejaba pasar falsos positivos).
 
+## Veedurías colaborativas (`src/veedurias/`)
+
+`civika` resultó tener menos armado de lo documentado antes acá (solo
+schemas de Jac/Proyecto, sin colaboradores/hallazgos reales) — se construyó
+de cero, siguiendo el mismo patrón de módulo que el resto de RadarAI. Modelo:
+título/descripción/territorio/tema, `procesosVinculados`/`contratosVinculados`
+(ids reales de SECOP, no texto suelto), `hallazgos` y `comentarios`
+embebidos, y un `checklist` con los 6 ítems que sugiere el documento de
+producto original (Revisar contrato, estudios previos, comparar valor,
+modificaciones, ejecución, proveedor). Probado end-to-end en el navegador:
+crear → marcar checklist → comentar, con tildes/UTF-8 correctos.
+
+**Sin auth aplicado todavía** — cualquiera puede crear/comentar cualquier
+veeduría (`colaboradores` es hoy una lista de emails en texto, no usuarios
+reales). Ver punto 4 de "qué falta".
+
+## Competencia histórica por categoría UNSPSC (ya no es aproximada)
+
+Antes `competenciaHistorica()` contaba proveedores únicos de TODO el
+departamento sin filtrar por categoría — daba 'ALTA' para las 12
+oportunidades de la prueba con TechCorp SAS, una señal sin poder de
+discriminar. Se agregó `Contrato.codigoCategoriaUnspsc` (campo
+`codigo_de_categoria_principal` de Socrata, no se estaba guardando) y ahora
+se cruza por familia+clase UNSPSC real (primeros 6 dígitos después del
+prefijo de versión) + departamento. Resultado verificado: las mismas 12
+oportunidades pasaron a 'MEDIA' — más honesto, porque con el volumen actual
+de contratos sincronizados (500 por corrida, ver punto 1 de abajo) rara vez
+hay suficiente histórico de la misma categoría exacta en la zona para
+afirmar 'BAJA' o 'ALTA' con evidencia real. Va a discriminar mejor cuando
+haya más volumen ingerido (cron de ingesta, punto 1).
+
 ## Qué falta (en orden de impacto)
 
 1. **Cron de ingesta + backfill por país** — hoy `/api/ingestion/sync` es
    manual y por territorio (botón en la demo), con tope de 500 por corrida y
    sin paginación. Pasarlo a job programado (BullMQ, mismo patrón que
    `ceo-notifications-service`) recorriendo territorios "vigilados" — es el
-   ítem que resuelve las 3 primeras preguntas de la sección de arriba.
-2. **Veedurías colaborativas** — copiar el patrón de `civika` (proyecto +
-   colaboradores + hallazgos) en vez de construirlo de cero.
-3. **Competencia histórica por categoría UNSPSC real** — hoy
-   `oportunidades.service.ts` aproxima competencia con proveedores únicos
-   del departamento (sin cruzar por categoría, porque `Contrato` no guarda
-   el código UNSPSC todavía) — señal real pero ruidosa, documentado en el
-   código como mejora pendiente.
-4. **Auth real conectado** — el guard existe, no está aplicado a ningún
+   ítem que resuelve las 3 primeras preguntas de la sección de arriba, y el
+   que le da más volumen a la competencia por categoría UNSPSC.
+2. **Auth real conectado** — el guard existe, no está aplicado a ningún
    endpoint todavía (mismo estado que tenía `ceo-ecosistema` en su Fase 1).
-5. **Chunker semántico para RAG de documentos subidos** — cuando se conecte
+3. **Chunker semántico para RAG de documentos subidos** — cuando se conecte
    `ceo-storage-service` + subida de PDFs a veedurías, el `/rag/ingest` de
    `ceo-intelligence-service` trocea por caracteres, no por oración — puede
    cortar mal, es una limitación conocida y documentada ahí mismo.
-6. **Configurar Virtualmin** — `deploy.sh` (raíz del repo) ya existe y sube
+4. **Configurar Virtualmin** — `deploy.sh` (raíz del repo) ya existe y sube
    backend+frontend con PM2, pero el proxy `/api -> :4500` del dominio
    `radar.ceoclick.pro` hay que crearlo a mano en Virtualmin (el script lo
    recuerda al final, no lo puede hacer solo).

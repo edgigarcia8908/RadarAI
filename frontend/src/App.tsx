@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import CiudadanoView from './CiudadanoView';
 import EmpresaView from './EmpresaView';
+import VeeduriasView from './VeeduriasView';
 
-type Modo = 'home' | 'ciudadano' | 'empresa';
+type Modo = 'home' | 'ciudadano' | 'empresa' | 'veedurias';
 
 export default function App() {
   const [modo, setModo] = useState<Modo>('home');
@@ -20,12 +21,15 @@ export default function App() {
           <h1>🛰️ RADAR</h1>
           <p style={{ color: '#555', marginBottom: 32 }}>Inteligencia pública y de mercado sobre contratación estatal.</p>
           <p style={{ marginBottom: 16 }}>¿Qué querés hacer?</p>
-          <div style={{ display: 'flex', gap: 16, justifyContent: 'center' }}>
+          <div style={{ display: 'flex', gap: 16, justifyContent: 'center', flexWrap: 'wrap' }}>
             <button onClick={() => setModo('ciudadano')} style={{ padding: '16px 24px', fontSize: 16 }}>
               🏛️ Vigilar mi territorio
             </button>
             <button onClick={() => setModo('empresa')} style={{ padding: '16px 24px', fontSize: 16 }}>
               💼 Encontrar oportunidades
+            </button>
+            <button onClick={() => setModo('veedurias')} style={{ padding: '16px 24px', fontSize: 16 }}>
+              🔍 Ver veedurías
             </button>
           </div>
         </div>
@@ -33,6 +37,7 @@ export default function App() {
 
       {modo === 'ciudadano' && <CiudadanoView />}
       {modo === 'empresa' && <EmpresaView />}
+      {modo === 'veedurias' && <VeeduriasView />}
     </div>
   );
 }

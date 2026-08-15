@@ -145,6 +145,7 @@ export class IngestionService {
           objetoDelContrato,
           descripcionDelProceso,
           textoNormalizado: normalizar(`${objetoDelContrato} ${descripcionDelProceso}`),
+          codigoCategoriaUnspsc: row.codigo_de_categoria_principal || '',
           proveedorAdjudicado: row.proveedor_adjudicado || '',
           nitProveedor: row.documento_proveedor || '',
           valorDelContrato: toNumber(row.valor_del_contrato),

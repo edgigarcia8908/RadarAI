@@ -94,3 +94,67 @@ export interface Oportunidad {
 export function oportunidadesParaEmpresa(empresaId: string): Promise<Oportunidad[]> {
   return fetch(`/api/oportunidades/empresa/${empresaId}`).then(manejar);
 }
+
+export interface ChecklistItem {
+  texto: string;
+  hecho: boolean;
+}
+export interface HallazgoVeeduria {
+  titulo: string;
+  detalle: string;
+  autor: string;
+  fecha: string;
+}
+export interface ComentarioVeeduria {
+  autor: string;
+  texto: string;
+  fecha: string;
+}
+export interface Veeduria {
+  _id: string;
+  titulo: string;
+  descripcion: string;
+  departamento: string;
+  ciudad: string;
+  tema: string;
+  procesosVinculados: string[];
+  contratosVinculados: string[];
+  hallazgos: HallazgoVeeduria[];
+  comentarios: ComentarioVeeduria[];
+  checklist: ChecklistItem[];
+  colaboradores: string[];
+  estado: 'ABIERTA' | 'CERRADA';
+  createdAt: string;
+}
+
+export function crearVeeduria(input: { titulo: string; descripcion?: string; departamento?: string; ciudad?: string; tema?: string }): Promise<Veeduria> {
+  return fetch('/api/veedurias', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(input),
+  }).then(manejar);
+}
+
+export function listarVeedurias(): Promise<Veeduria[]> {
+  return fetch('/api/veedurias').then(manejar);
+}
+
+export function obtenerVeeduria(id: string): Promise<Veeduria> {
+  return fetch(`/api/veedurias/${id}`).then(manejar);
+}
+
+export function agregarComentario(id: string, autor: string, texto: string): Promise<Veeduria> {
+  return fetch(`/api/veedurias/${id}/comentarios`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ autor, texto }),
+  }).then(manejar);
+}
+
+export function marcarChecklist(id: string, indice: number, hecho: boolean): Promise<Veeduria> {
+  return fetch(`/api/veedurias/${id}/checklist/${indice}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ hecho }),
+  }).then(manejar);
+}

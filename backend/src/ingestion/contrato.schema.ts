@@ -36,6 +36,8 @@ export class Contrato extends Document {
   @Prop({ type: String, default: '' }) objetoDelContrato: string;
   @Prop({ type: String, default: '' }) descripcionDelProceso: string;
   @Prop({ type: String, default: '' }) textoNormalizado: string;
+  /** UNSPSC del contrato (campo `codigo_de_categoria_principal` en Socrata) — permite competencia histórica real por categoría, no solo por territorio. */
+  @Prop({ type: String, default: '', index: true }) codigoCategoriaUnspsc: string;
 
   @Prop({ type: String, default: '', index: true }) proveedorAdjudicado: string;
   @Prop({ type: String, default: '', index: true }) nitProveedor: string;
