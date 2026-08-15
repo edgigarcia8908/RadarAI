@@ -1,0 +1,37 @@
+{
+  "name": "radarai-backend",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "dev": "tsx watch src/main.ts",
+    "start": "tsx src/main.ts",
+    "build": "tsc -p tsconfig.json --noCheck"
+  },
+  "dependencies": {
+    "@ceo-core/auth-client": "file:../../ceo-core-modules/packages/ceo-auth-client/ceo-core-auth-client-1.0.0.tgz",
+    "@ceo-core/intelligence-client": "file:../../ceo-core-modules/packages/ceo-intelligence-client/ceo-core-intelligence-client-1.0.0.tgz",
+    "@ceo-core/database": "file:../../ceo-core-modules/packages/ceo-database/ceo-core-database-1.0.0.tgz",
+    "@nestjs/common": "11.0.21",
+    "@nestjs/core": "11.0.21",
+    "@nestjs/mongoose": "11.0.4",
+    "@nestjs/platform-express": "11.0.21",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.15.1",
+    "dotenv": "^17.4.2",
+    "mongoose": "^8.10.0",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.2"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^22.10.0",
+    "tsx": "^4.23.1",
+    "typescript": "^5.7.2"
+  },
+  "overrides": {
+    "@nestjs/common": "11.0.21",
+    "@nestjs/core": "11.0.21",
+    "@nestjs/platform-express": "11.0.21",
+    "@nestjs/mongoose": "11.0.4"
+  }
+}
