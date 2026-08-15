@@ -284,6 +284,7 @@ export class CivicIntelService {
         nombreEntidad: c.nombreEntidad,
         ciudad: c.ciudad,
         departamento: c.departamento,
+        objetoDelContrato: c.objetoDelContrato,
         proveedorAdjudicado: c.proveedorAdjudicado,
         valorDelContrato: c.valorDelContrato,
         fechaDeFirma: c.fechaDeFirma,

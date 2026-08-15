@@ -105,6 +105,7 @@ export default function PerfilFuncionario({ nombre }: { nombre: string }) {
                       <tr style={{ textAlign: 'left', borderBottom: '1px solid #cbd5e1' }}>
                         <th style={{ padding: '3px 6px' }}>Entidad</th>
                         <th style={{ padding: '3px 6px' }}>Municipio</th>
+                        <th style={{ padding: '3px 6px' }}>Objeto</th>
                         <th style={{ padding: '3px 6px' }}>Proveedor</th>
                         <th style={{ padding: '3px 6px' }}>Valor</th>
                         <th style={{ padding: '3px 6px' }}>Firmado</th>
@@ -116,6 +117,7 @@ export default function PerfilFuncionario({ nombre }: { nombre: string }) {
                         <tr key={c.idContrato} style={{ borderBottom: '1px solid #e2e8f0' }}>
                           <td style={{ padding: '3px 6px' }}>{c.nombreEntidad}</td>
                           <td style={{ padding: '3px 6px' }}>{c.ciudad}</td>
+                          <td style={{ padding: '3px 6px', maxWidth: 260 }}>{c.objetoDelContrato}</td>
                           <td style={{ padding: '3px 6px' }}>{c.proveedorAdjudicado}</td>
                           <td style={{ padding: '3px 6px' }}>${c.valorDelContrato.toLocaleString('es-CO')}</td>
                           <td style={{ padding: '3px 6px' }}>{fecha(c.fechaDeFirma)}</td>

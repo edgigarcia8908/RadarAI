@@ -296,6 +296,7 @@ export interface PerfilFuncionario {
     nombreEntidad: string;
     ciudad: string;
     departamento: string;
+    objetoDelContrato: string;
     proveedorAdjudicado: string;
     valorDelContrato: number;
     fechaDeFirma: string | null;
