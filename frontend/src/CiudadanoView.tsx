@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { consultar, crearVeeduria, sincronizar, ConsultaResultado, Hallazgo } from './api';
 import colombia from './colombia.json';
+import BotonUbicacion from './BotonUbicacion';
 
 interface DeptoColombia {
   departamento: string;
@@ -88,6 +89,16 @@ export default function CiudadanoView({ onRevisar }: { onRevisar: (veeduriaId: s
       <p style={{ color: '#555' }}>Inteligencia pública sobre contratación estatal, con datos reales de SECOP II (datos.gov.co).</p>
 
       <div style={{ display: 'grid', gap: 8, marginTop: 24 }}>
+        <BotonUbicacion
+          onSugerir={(d, c) => {
+            // colombia.json y colombiaCoords.ts vienen de fuentes distintas — validar que el
+            // departamento sugerido exista en el selector antes de aplicarlo, si no, no cambiar nada.
+            const depto = DEPARTAMENTOS.find((x) => x.departamento === d);
+            if (!depto) return;
+            setDepartamento(d);
+            setCiudad(depto.ciudades.includes(c) ? c : depto.ciudades[0]);
+          }}
+        />
         <label>
           Departamento{' '}
           <select

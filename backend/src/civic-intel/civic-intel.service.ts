@@ -154,6 +154,55 @@ export class CivicIntelService {
     };
   }
 
+  /**
+   * Mapa de calor: agrega TODO lo ya sincronizado en Mongo (sin volver a
+   * pegarle a Socrata) por municipio, y calcula un score de riesgo simple
+   * — hoy solo concentración de proveedores (mismo criterio que
+   * `detectarConcentracion`, aplicado por municipio en vez de por
+   * consulta puntual). Con más volumen ingerido (ver "Cron de ingesta" en
+   * el README) esto se vuelve más representativo — con poca data, un
+   * municipio con 2 contratos y 1 solo proveedor da 100% "riesgo" sin que
+   * signifique gran cosa; por eso se devuelve también `totalContratos`,
+   * para que el frontend pueda pesarlo (ej. tamaño del punto en el mapa).
+   */
+  async mapaRiesgo() {
+    const contratos = await this.contratoModel
+      .find({ departamento: { $ne: '' }, ciudad: { $ne: '' } })
+      .lean<Contrato[]>();
+
+    const porMunicipio = new Map<
+      string,
+      { departamento: string; ciudad: string; contratos: Contrato[]; valorTotal: number }
+    >();
+    for (const c of contratos) {
+      const key = `${c.departamento}|||${c.ciudad}`;
+      if (!porMunicipio.has(key)) porMunicipio.set(key, { departamento: c.departamento, ciudad: c.ciudad, contratos: [], valorTotal: 0 });
+      const entry = porMunicipio.get(key)!;
+      entry.contratos.push(c);
+      entry.valorTotal += c.valorDelContrato || 0;
+    }
+
+    return [...porMunicipio.values()].map((m) => {
+      const porProveedor = new Map<string, number>();
+      for (const c of m.contratos) {
+        const key = c.nitProveedor || c.proveedorAdjudicado;
+        if (!key) continue;
+        porProveedor.set(key, (porProveedor.get(key) || 0) + (c.valorDelContrato || 0));
+      }
+      const top2 = [...porProveedor.values()].sort((a, b) => b - a).slice(0, 2).reduce((s, v) => s + v, 0);
+      const concentracion = m.valorTotal > 0 ? Math.round((top2 / m.valorTotal) * 100) : 0;
+
+      return {
+        departamento: m.departamento,
+        ciudad: m.ciudad,
+        totalContratos: m.contratos.length,
+        valorTotal: m.valorTotal,
+        proveedoresUnicos: porProveedor.size,
+        concentracionProveedores: concentracion,
+      };
+    });
+  }
+
   /** Si ceo-intelligence-service está disponible (URL+key configuradas), redacta con IA; si no, usa una plantilla simple. */
   private async redactarRespuesta(input: ConsultaInput, resumen: Record<string, unknown>, hallazgos: Hallazgo[]): Promise<string> {
     const plantilla = () =>

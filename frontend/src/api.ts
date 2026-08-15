@@ -219,3 +219,16 @@ export interface EvidenciaDetalle {
 export function obtenerEvidenciaDetalle(id: string): Promise<EvidenciaDetalle> {
   return fetch(`/api/veedurias/${id}/evidencia-detalle`).then(manejar);
 }
+
+export interface MunicipioRiesgo {
+  departamento: string;
+  ciudad: string;
+  totalContratos: number;
+  valorTotal: number;
+  proveedoresUnicos: number;
+  concentracionProveedores: number;
+}
+
+export function obtenerMapaRiesgo(): Promise<MunicipioRiesgo[]> {
+  return fetch('/api/civic-intel/mapa').then(manejar);
+}

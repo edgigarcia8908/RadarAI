@@ -6,6 +6,20 @@ SECOP II, siguiendo el mismo estándar de arquitectura que el resto de
 Mongo, consumiendo los servicios centrales del ecosistema por HTTP en vez de
 duplicar código.
 
+## Repo autocontenido — sin dependencias privadas externas
+
+Este repo se comparte públicamente (hackathon), así que no depende de
+ningún paquete privado. Los 4 clientes delgados que hablan con los servicios
+centrales (`backend/src/lib/`) están vendorizados directo acá — son solo
+wrappers de fetch/JWT sin lógica de negocio (login vía JWT+JWKS,
+upload/download de archivos, llamadas a un LLM/RAG), nunca tuvieron
+secretos ni código propietario. Los servicios reales
+(`auth.ceoclick.pro`, `storage.ceoclick.pro`, etc.) siguen siendo privados y
+externos — este repo solo les habla por HTTP, igual que antes; lo único que
+cambió es que el código del *cliente* vive acá en vez de en un paquete
+aparte. `npm install` ya no necesita nada fuera de este repo ni de npm
+público.
+
 ## Servicios del ecosistema que usa
 
 - **`ceo-auth-service`** (`https://auth.ceoclick.pro/api`, ya desplegado) —
@@ -165,13 +179,12 @@ Lo que sí se construyó (`POST /veedurias/:id/documentos`): el colaborador
 consigue el PDF él mismo — pasa el captcha en su propio navegador, lo
 descarga, o lo consigue por derecho de petición — y lo sube a la veeduría.
 De ahí en adelante todo es automático:
-1. Sube a `ceo-storage-service` (URL firmada real).
+1. Sube a `ceo-storage-service` (URL firmada real) vía el cliente delgado
+   vendorizado en `backend/src/lib/storage-client.ts` (ver sección
+   "Repo autocontenido" más abajo).
 2. Si es PDF de texto, se parsea (`ceo-intelligence-service`) y se indexa
    en una colección de Qdrant propia de esa veeduría (`veeduria_<id>`) vía
-   `ragIngest()` — método nuevo, se agregó al cliente compartido
-   `@ceo-core/intelligence-client` porque el servicio ya tenía
-   `POST /rag/ingest` pero el cliente empaquetado no lo exponía (cambio
-   aditivo en `ceo-core-modules`, no rompe a otras apps que lo usan).
+   `ragIngest()`, en `backend/src/lib/intelligence-client.ts`.
 3. `POST /veedurias/:id/preguntar` — RAG real con citas sobre los
    documentos ya indexados de esa veeduría.
 

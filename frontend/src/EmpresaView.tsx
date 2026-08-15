@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { crearEmpresa, oportunidadesParaEmpresa, sincronizar, Empresa, Oportunidad } from './api';
 import colombia from './colombia.json';
+import BotonUbicacion from './BotonUbicacion';
 
 interface DeptoColombia {
   departamento: string;
@@ -73,6 +74,11 @@ export default function EmpresaView() {
           ¿Qué vendés? (lenguaje libre, sin necesidad de saber códigos UNSPSC)
           <textarea value={productosServicios} onChange={(e) => setProductosServicios(e.target.value)} rows={2} style={{ width: '100%' }} />
         </label>
+        <BotonUbicacion
+          onSugerir={(d) => {
+            if (DEPARTAMENTOS.some((x) => x.departamento === d)) setDepartamento(d);
+          }}
+        />
         <label>
           Departamento donde querés operar{' '}
           <select value={departamento} onChange={(e) => setDepartamento(e.target.value)}>
