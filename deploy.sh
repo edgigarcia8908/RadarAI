@@ -52,7 +52,9 @@ echo "3. Instalando dependencias del backend..."
 # aborta con EINTEGRITY. Se borra lockfile + caché + node_modules/@ceo-core
 # para forzar una extracción real en cada deploy.
 rm -f package-lock.json
+rm -f ../package-lock.json
 rm -rf node_modules/@ceo-core
+rm -rf ../node_modules/@ceo-core
 npm cache clean --force
 npm install --no-fund --no-audit
 
