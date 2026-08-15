@@ -65,7 +65,7 @@ export default function EmpresaView() {
 
   return (
     <div>
-      <h1>💼 RADAR — demo empresa</h1>
+      <h1>💼 Encontrar oportunidades</h1>
       <p style={{ color: '#555' }}>Encontrá oportunidades de contratación pública compatibles con lo que vendés.</p>
 
       <div style={{ display: 'grid', gap: 8, marginTop: 24 }}>

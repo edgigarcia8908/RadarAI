@@ -63,3 +63,9 @@ export function toDate(value: unknown): Date | null {
 export function soqlString(value: string): string {
   return value.replace(/'/g, "''");
 }
+
+/** SECOP manda booleanos como texto "Si"/"No" (a veces con tilde, a veces no). */
+export function toBool(value: unknown): boolean {
+  const s = String(value).trim().toLowerCase();
+  return s === 'si' || s === 'sí' || s === 'true';
+}

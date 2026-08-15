@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { consultar, crearVeeduria, sincronizar, ConsultaResultado, Hallazgo } from './api';
 import colombia from './colombia.json';
 import BotonUbicacion from './BotonUbicacion';
+import ContratoCard from './ContratoCard';
 
 interface DeptoColombia {
   departamento: string;
@@ -85,7 +86,7 @@ export default function CiudadanoView({ onRevisar }: { onRevisar: (veeduriaId: s
 
   return (
     <div>
-      <h1>🏛️ RADAR — demo ciudadano</h1>
+      <h1>🏛️ Vigilar mi territorio</h1>
       <p style={{ color: '#555' }}>Inteligencia pública sobre contratación estatal, con datos reales de SECOP II (datos.gov.co).</p>
 
       <div style={{ display: 'grid', gap: 8, marginTop: 24 }}>
@@ -176,6 +177,15 @@ export default function CiudadanoView({ onRevisar }: { onRevisar: (veeduriaId: s
                     {creandoVeeduria === i ? 'Creando veeduría…' : 'Revisar →'}
                   </button>
                 </div>
+              ))}
+            </>
+          )}
+
+          {resultado.evidenciaContratos.length > 0 && (
+            <>
+              <h3 style={{ marginTop: 24 }}>Contratos ({resultado.evidenciaContratos.length})</h3>
+              {resultado.evidenciaContratos.map((c) => (
+                <ContratoCard key={c.idContrato} c={c} />
               ))}
             </>
           )}

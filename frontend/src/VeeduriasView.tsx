@@ -11,6 +11,7 @@ import {
   EvidenciaDetalle,
   Veeduria,
 } from './api';
+import ContratoCard from './ContratoCard';
 
 function ListaVeedurias({ onAbrir, onNueva }: { onAbrir: (id: string) => void; onNueva: () => void }) {
   const [veedurias, setVeedurias] = useState<Veeduria[] | null>(null);
@@ -186,35 +187,10 @@ function DetalleVeeduria({ id, onVolver }: { id: string; onVolver: () => void })
 
       <h3>Evidencia ({(evidencia?.procesos.length ?? 0) + (evidencia?.contratos.length ?? 0)})</h3>
       {evidencia && evidencia.contratos.length > 0 && (
-        <div style={{ overflowX: 'auto', marginBottom: 12 }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
-            <thead>
-              <tr style={{ textAlign: 'left', borderBottom: '2px solid #ddd' }}>
-                <th style={{ padding: 6 }}>Entidad</th>
-                <th style={{ padding: 6 }}>Objeto</th>
-                <th style={{ padding: 6 }}>Proveedor</th>
-                <th style={{ padding: 6 }}>Valor</th>
-                <th style={{ padding: 6 }}>SECOP</th>
-              </tr>
-            </thead>
-            <tbody>
-              {evidencia.contratos.map((c) => (
-                <tr key={c.idContrato} style={{ borderBottom: '1px solid #eee' }}>
-                  <td style={{ padding: 6 }}>{c.nombreEntidad}</td>
-                  <td style={{ padding: 6, maxWidth: 260 }}>{c.objetoDelContrato}</td>
-                  <td style={{ padding: 6 }}>{c.proveedorAdjudicado}</td>
-                  <td style={{ padding: 6 }}>${c.valorDelContrato.toLocaleString('es-CO')}</td>
-                  <td style={{ padding: 6 }}>
-                    {c.urlProceso && (
-                      <a href={c.urlProceso} target="_blank" rel="noreferrer">
-                        Revisar →
-                      </a>
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div style={{ marginBottom: 12 }}>
+          {evidencia.contratos.map((c) => (
+            <ContratoCard key={c.idContrato} c={c} />
+          ))}
         </div>
       )}
       <p style={{ fontSize: 13, background: '#eef2ff', border: '1px solid #c7d2fe', borderRadius: 6, padding: 10 }}>

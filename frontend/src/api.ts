@@ -1,3 +1,5 @@
+import { ContratoInfo } from './contratoUtils';
+
 export interface ConsultaInput {
   departamento?: string;
   ciudad?: string;
@@ -26,7 +28,7 @@ export interface ConsultaResultado {
   };
   hallazgos: Hallazgo[];
   respuesta: string;
-  evidenciaContratos: any[];
+  evidenciaContratos: ContratoInfo[];
 }
 
 async function manejar(res: Response) {
@@ -206,14 +208,7 @@ export interface EvidenciaDetalle {
     ciudadEntidad: string;
     precioBase: number;
   }[];
-  contratos: {
-    idContrato: string;
-    nombreEntidad: string;
-    objetoDelContrato: string;
-    proveedorAdjudicado: string;
-    valorDelContrato: number;
-    urlProceso: string;
-  }[];
+  contratos: ContratoInfo[];
 }
 
 export function obtenerEvidenciaDetalle(id: string): Promise<EvidenciaDetalle> {
@@ -233,17 +228,6 @@ export function obtenerMapaRiesgo(): Promise<MunicipioRiesgo[]> {
   return fetch('/api/civic-intel/mapa').then(manejar);
 }
 
-export interface ContratoComparable {
-  idContrato: string;
-  nombreEntidad: string;
-  objetoDelContrato: string;
-  proveedorAdjudicado: string;
-  valorDelContrato: number;
-  fechaDeFirma: string | null;
-  estadoContrato: string;
-  urlProceso: string;
-}
-
 export interface EstudioMercado {
   totalContratos: number;
   mensaje?: string;
@@ -254,7 +238,7 @@ export interface EstudioMercado {
   duracionPromedioDias?: number | null;
   proveedoresUnicos?: number;
   proveedoresFrecuentes?: { nombre: string; contratos: number; valorTotal: number }[];
-  contratosComparables?: ContratoComparable[];
+  contratosComparables?: ContratoInfo[];
 }
 
 export function generarEstudioMercado(input: {

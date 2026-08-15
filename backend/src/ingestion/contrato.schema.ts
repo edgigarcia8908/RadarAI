@@ -42,8 +42,42 @@ export class Contrato extends Document {
   @Prop({ type: String, default: '', index: true }) proveedorAdjudicado: string;
   @Prop({ type: String, default: '', index: true }) nitProveedor: string;
 
+  /** Quién firmó por el proveedor — campo pedido por retroalimentación: "quién firmó" para que un ciudadano común lo entienda de un vistazo. */
+  @Prop({ type: String, default: '' }) nombreRepresentanteLegal: string;
+  /** Quién autorizó el gasto por la entidad. */
+  @Prop({ type: String, default: '' }) nombreOrdenadorDelGasto: string;
+  /** Quién supervisa la ejecución por la entidad. */
+  @Prop({ type: String, default: '' }) nombreSupervisor: string;
+
   @Prop({ type: Number, default: 0 }) valorDelContrato: number;
   @Prop({ type: Number, default: 0 }) valorPagado: number;
+  /** `valor_pendiente_de_pago` — lo que falta pagar según SECOP, más preciso que restar valorPagado (puede haber facturado sin pagar todavía). */
+  @Prop({ type: Number, default: 0 }) valorPendientePago: number;
+
+  /**
+   * `liquidaci_n` (Sí/No de SECOP) — señal REAL de si el contrato ya se
+   * liquidó, no una aproximación por `estadoContrato` (ver README: se
+   * había documentado que SECOP "no tiene un estado literal liquidado" —
+   * error, sí lo tiene, en este campo separado, descubierto después).
+   */
+  @Prop({ type: Boolean, default: false }) liquidado: boolean;
+  /**
+   * `dias_adicionados` — días de prórroga sumados al contrato. Es
+   * literalmente la señal de "modificaciones posteriores a la
+   * adjudicación" que se había documentado como no disponible en SECOP —
+   * sí está, en este campo.
+   */
+  @Prop({ type: Number, default: 0 }) diasAdicionados: number;
+  @Prop({ type: Boolean, default: false }) puedeSerProrrogado: boolean;
+
+  /** "Inversión" o "Funcionamiento" — para qué se gastó la plata. */
+  @Prop({ type: String, default: '' }) destinoGasto: string;
+  /** "Recursos propios", "Sistema General de Regalías", crédito, etc. — de dónde salió la plata (relevante para veeduría: regalías mal usadas es un vector clásico). */
+  @Prop({ type: String, default: '' }) origenDeLosRecursos: string;
+  /** Dirección física donde se ejecuta el contrato — útil para georreferenciar obras puntuales (no todos los contratos la traen). */
+  @Prop({ type: String, default: '' }) direccionEjecucion: string;
+  /** Quién autoriza el pago (distinto del ordenador del gasto que autoriza el contrato). */
+  @Prop({ type: String, default: '' }) nombreOrdenadorDePago: string;
 
   @Prop({ type: Object, default: {} }) crudo: Record<string, unknown>;
 }

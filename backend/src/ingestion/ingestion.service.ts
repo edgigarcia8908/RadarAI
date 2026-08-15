@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Proceso } from './proceso.schema';
 import { Contrato } from './contrato.schema';
-import { SocrataClient, soqlString, toDate, toNumber } from './socrata.client';
+import { SocrataClient, soqlString, toBool, toDate, toNumber } from './socrata.client';
 import { normalizar } from '../common/normalizar';
 import { departamentoRealSecop } from '../common/departamento-secop';
 
@@ -151,8 +151,19 @@ export class IngestionService {
           codigoCategoriaUnspsc: row.codigo_de_categoria_principal || '',
           proveedorAdjudicado: row.proveedor_adjudicado || '',
           nitProveedor: row.documento_proveedor || '',
+          nombreRepresentanteLegal: row.nombre_representante_legal || '',
+          nombreOrdenadorDelGasto: row.nombre_ordenador_del_gasto || '',
+          nombreOrdenadorDePago: row.nombre_ordenador_de_pago || '',
+          nombreSupervisor: row.nombre_supervisor || '',
           valorDelContrato: toNumber(row.valor_del_contrato),
           valorPagado: toNumber(row.valor_pagado),
+          valorPendientePago: toNumber(row.valor_pendiente_de_pago),
+          liquidado: toBool(row.liquidaci_n),
+          diasAdicionados: toNumber(row.dias_adicionados),
+          puedeSerProrrogado: toBool(row.el_contrato_puede_ser_prorrogado),
+          destinoGasto: row.destino_gasto || '',
+          origenDeLosRecursos: row.origen_de_los_recursos || '',
+          direccionEjecucion: row.direcci_n_de_ejecuci_n_del_contrato || '',
           crudo: row,
         },
         { upsert: true, new: true },

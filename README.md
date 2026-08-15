@@ -1,10 +1,9 @@
 # RadarAI — Inteligencia Pública y de Mercado
 
-Fase 1 (demo funcional): flujo ciudadano completo con datos **reales** de
+Flujo ciudadano, empresa y de veedurías completos con datos **reales** de
 SECOP II, siguiendo el mismo estándar de arquitectura que el resto de
 `C:\apps` (ver `C:\apps\ARCHITECTURE.md`) — app propia con su propia base
-Mongo, consumiendo los servicios centrales del ecosistema por HTTP en vez de
-duplicar código.
+Mongo, 100% autocontenida (ver sección más abajo).
 
 ## Estudios de mercado para entidades públicas (`src/estudios-mercado/`)
 
@@ -22,9 +21,11 @@ dato nuevo. Verificado con datos reales: "mantenimiento" en Cundinamarca
 da 39 contratos comparables ($3.6M–$872M, mediana $15M, 122 días promedio,
 28 proveedores).
 
-SECOP no tiene un estado literal "liquidado" en el dataset de Contratos
-Electrónicos — se usa `terminado`/`Cerrado`/`cedido` como proxy (ver
-`ESTADOS_TERMINADOS` en el servicio), documentado como aproximación.
+Corrección: sí existe un campo literal de liquidación (`liquidaci_n`, Sí/No)
+en el dataset de Contratos Electrónicos — se descubrió después de escribir
+esta sección y ahora es la señal principal para el semáforo visual
+(`liquidado` en `Contrato`, ver `contratoUtils.ts`). `ESTADOS_TERMINADOS`
+sigue como filtro adicional para estudios de mercado.
 
 ## Repo 100% autocontenido — cero servicios que no podés desplegar vos
 
@@ -121,9 +122,9 @@ en Mongo y calcula dos hallazgos reales sobre los datos (no simulados):
    del objeto contractual, señala grupos de 2+ (fraccionamiento potencial).
 
 "Modificaciones posteriores a la adjudicación" (mencionado en el documento de
-producto original) **no está implementado** — SECOP II no tiene un dataset
-público de adiciones/otrosíes fácilmente enlazable a un contrato; queda
-pendiente de investigar como Fase 2.
+producto original) — corrección: sí hay una señal directa en el dataset,
+`dias_adicionados` (prórroga en días sobre el plazo pactado), ya capturada
+en `Contrato.diasAdicionados` y mostrada en `ContratoCard`.
 
 ## Cómo correrlo
 
@@ -238,7 +239,7 @@ haya más volumen ingerido (cron de ingesta, punto 1).
 ## Qué falta (en orden de impacto)
 
 1. **Cron de ingesta + backfill por país** — hoy `/api/ingestion/sync` es
-   manual y por territorio (botón en la demo), con tope de 500 por corrida y
+   manual y por territorio (botón en la app), con tope de 500 por corrida y
    sin paginación. Pasarlo a job programado (BullMQ, mismo patrón que
    `ceo-notifications-service`) recorriendo territorios "vigilados" — es el
    ítem que resuelve las 3 primeras preguntas de la sección de arriba, y el
