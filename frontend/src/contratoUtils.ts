@@ -71,6 +71,20 @@ export function analizarTiempo(c: ContratoInfo): AnalisisTemporal {
 
   if (c.liquidado) {
     const dias = inicio && fin ? (fin.getTime() - inicio.getTime()) / 86_400_000 : null;
+    // Anomalía real, no un bug de la app: SECOP dice "liquidado" (campo
+    // liquidaci_n) pero la fecha de fin pactada todavía no llegó — o se
+    // cerró antes de tiempo, o las fechas quedaron mal registradas. Vale la
+    // pena señalarlo en vez de mostrar un verde "todo normal" engañoso.
+    if (fin && hoy.getTime() < fin.getTime()) {
+      return {
+        semaforo: 'finalizado',
+        colorFondo: '#fef3c7',
+        colorTexto: '#92400e',
+        etiqueta: `⚠️ Liquidado antes de la fecha de fin pactada (${fin.toLocaleDateString('es-CO')})`,
+        duracionLegible: dias !== null && dias > 0 ? `El plazo pactado era de ${duracionLegible(dias)}` : null,
+        porcentajeTiempo: 100,
+      };
+    }
     return {
       semaforo: 'finalizado',
       colorFondo: '#dcfce7',
