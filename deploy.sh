@@ -6,8 +6,18 @@ echo "=== RadarAI — Deploy ==="
 cd /home/radar/repo
 
 echo "1. Descargando cambios de GitHub..."
-git checkout -- backend/package-lock.json package-lock.json 2>/dev/null || true
-git pull origin main
+# "git checkout -- <archivo>" no alcanza acá: el "npm install" del paso 2
+# reescribe package-lock.json/frontend/package-lock.json con lo que resolvió
+# ESTE server (puede diferir de lo que se generó en desarrollo — versión de
+# npm distinta, dependencias opcionales por SO/arquitectura, etc.), y esa
+# reescritura nunca se commitea. Un simple "checkout" del path exacto ya
+# fallaba (confirmado en despliegue real: "Your local changes... would be
+# overwritten by merge"). Esta carpeta es un target de deploy, no un lugar
+# de trabajo — nunca debería tener cambios locales reales que valga la pena
+# proteger, así que se descarta TODO cambio local sin preguntar y se aterriza
+# exacto en el último commit de GitHub.
+git fetch origin main
+git reset --hard origin/main
 
 echo "2. Instalando dependencias..."
 npm install --no-fund --no-audit
