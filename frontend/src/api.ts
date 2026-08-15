@@ -309,6 +309,25 @@ export function obtenerPerfilFuncionario(nombre: string): Promise<PerfilFunciona
   return fetch(`/api/civic-intel/funcionario?nombre=${encodeURIComponent(nombre)}`).then(manejar);
 }
 
+export interface PuestoSensible {
+  nombreCompleto: string;
+  cargo: string;
+  entidad: string;
+  dependencia: string;
+  nivelJerarquico: string;
+  tipoNombramiento: string;
+  asignacionBasica: string;
+}
+
+export function verificarSigep(nombres: string[]): Promise<Record<string, PuestoSensible[]>> {
+  if (nombres.length === 0) return Promise.resolve({});
+  return fetch('/api/sigep/verificar', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ nombres }),
+  }).then(manejar);
+}
+
 export function generarEstudioMercado(input: {
   objeto: string;
   departamento?: string;

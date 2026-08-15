@@ -1,5 +1,5 @@
 import { ContratoInfo, analizarTiempo, duracionLegible } from './contratoUtils';
-import { SancionSiri } from './api';
+import { SancionSiri, PuestoSensible } from './api';
 import PerfilFuncionario from './PerfilFuncionario';
 
 function fecha(d: string | null | undefined): string {
@@ -25,16 +25,43 @@ function AlertaSiri({ sanciones }: { sanciones: SancionSiri[] }) {
 }
 
 /**
+ * Info de SIGEP (puestos sensibles a corrupción) para un nombre — a
+ * diferencia de SIRI esto NO es una acusación (tener un cargo de confianza
+ * no es una falta), es contexto público. Mismo disclaimer de coincidencia
+ * de nombre, por eso mismo umbral y mismo tono no-acusatorio (azul, no
+ * rojo).
+ */
+function InfoSigep({ puestos }: { puestos: PuestoSensible[] }) {
+  return (
+    <div style={{ marginTop: 4, fontSize: 12, background: '#eff6ff', border: '1px solid #93c5fd', borderRadius: 6, padding: '4px 8px', color: '#1e40af' }}>
+      ℹ️ Nombre coincide con un cargo de confianza en SIGEP: {puestos[0].cargo} — {puestos[0].entidad}
+      {puestos[0].asignacionBasica ? ` (asignación básica: $${puestos[0].asignacionBasica})` : ''}. Coincidencia de NOMBRE, no de
+      identidad verificada — confirmá antes de asumir que es la misma persona.
+    </div>
+  );
+}
+
+/**
  * Tarjeta visual de un contrato — pensada para "gente normal", no para
  * alguien que sabe leer un JSON de SECOP. Muestra de un vistazo: quién
  * contrató a quién, quién firmó, cuándo empezó/terminó (o si va tarde),
  * cuánto se ha pagado, y si hubo prórrogas.
  */
-export default function ContratoCard({ c, sanciones }: { c: ContratoInfo; sanciones?: Record<string, SancionSiri[]> }) {
+export default function ContratoCard({
+  c,
+  sanciones,
+  puestosSensibles,
+}: {
+  c: ContratoInfo;
+  sanciones?: Record<string, SancionSiri[]>;
+  puestosSensibles?: Record<string, PuestoSensible[]>;
+}) {
   const analisis = analizarTiempo(c);
   const porcentajePagado = c.valorDelContrato > 0 && c.valorPagado != null ? Math.min(100, (c.valorPagado / c.valorDelContrato) * 100) : null;
   const sancionesRepresentante = c.nombreRepresentanteLegal ? sanciones?.[c.nombreRepresentanteLegal] : undefined;
   const sancionesOrdenador = c.nombreOrdenadorDelGasto ? sanciones?.[c.nombreOrdenadorDelGasto] : undefined;
+  const puestoOrdenador = c.nombreOrdenadorDelGasto ? puestosSensibles?.[c.nombreOrdenadorDelGasto] : undefined;
+  const puestoSupervisor = c.nombreSupervisor ? puestosSensibles?.[c.nombreSupervisor] : undefined;
 
   return (
     <div style={{ border: '1px solid #ddd', borderRadius: 10, padding: 14, marginBottom: 12, background: '#fff' }}>
@@ -74,6 +101,8 @@ export default function ContratoCard({ c, sanciones }: { c: ContratoInfo; sancio
 
       {sancionesRepresentante?.length ? <AlertaSiri sanciones={sancionesRepresentante} /> : null}
       {sancionesOrdenador?.length ? <AlertaSiri sanciones={sancionesOrdenador} /> : null}
+      {puestoOrdenador?.length ? <InfoSigep puestos={puestoOrdenador} /> : null}
+      {puestoSupervisor?.length ? <InfoSigep puestos={puestoSupervisor} /> : null}
       {c.nombreSupervisor && <PerfilFuncionario nombre={c.nombreSupervisor} />}
 
       <div style={{ marginTop: 10 }}>

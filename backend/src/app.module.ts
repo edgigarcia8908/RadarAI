@@ -10,6 +10,7 @@ import { StorageModule } from './storage/storage.module';
 import { EstudiosMercadoModule } from './estudios-mercado/estudios-mercado.module';
 import { CuipoModule } from './cuipo/cuipo.module';
 import { SiriModule } from './siri/siri.module';
+import { SigepModule } from './sigep/sigep.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { SiriModule } from './siri/siri.module';
     EstudiosMercadoModule,
     CuipoModule,
     SiriModule,
+    SigepModule,
   ],
 })
 export class AppModule {}

@@ -37,7 +37,8 @@ de un usuario que compartió esta tabla:
 | --- | --- | --- |
 | **CUIPO** (presupuesto territorial) | `d9mu-h6ar` (programación de gastos) + `4f7r-epif` (ejecución de gastos) | ✅ Integrado |
 | **SIRI** (sanciones disciplinarias) | `iaeu-rcn6` | ✅ Integrado — cruza representante legal/ordenador del gasto contra sancionados (coincidencia de nombre, ver sección abajo) |
-| SIGEP II (servidores + puestos sensibles a corrupción + declaración de bienes) | `h8rs-jxum`, `5u9e-g5w9`, `8tz7-h3eu` | Investigado, pendiente |
+| **SIGEP II — puestos sensibles a corrupción** | `5u9e-g5w9` | ✅ Integrado — cruza ordenador del gasto/supervisor contra cargos de confianza (informativo, no acusatorio) |
+| SIGEP II — servidores en general + declaración de bienes | `h8rs-jxum`, `8tz7-h3eu` | Investigado, pendiente — declaración de bienes se dejó fuera por ahora: el riesgo de atribuirle datos financieros de OTRA persona a alguien por coincidencia de nombre es mayor que con cargo/salario público |
 | SGR/SUIFP (regalías) | `mzgh-shtp` + `qkv4-ek54` | Investigado, pendiente |
 | TerriData (indicadores territoriales) | `64cq-xb2k` | Investigado, pendiente — daría contexto socioeconómico al mapa de riesgo |
 | Cuentas Claras (financiación de campañas) | Solo encontramos `jgra-rz2t` (2019, local) — nada nacional/reciente vía API | Baja prioridad, datos viejos |
@@ -90,6 +91,25 @@ municipio. Botón "🔍 Ver historial" bajo demanda en `ContratoCard`
 cruzada más pesada. Con un solo municipio sincronizado, hoy solo confirma
 el conteo de contratos por persona; el cruce entre municipios se vuelve
 útil en cuanto se sincroniza más de un territorio.
+
+## SIGEP II — puestos sensibles a corrupción (`src/sigep/`)
+
+Mismo patrón que SIRI: `POST /api/sigep/verificar { nombres: string[] }`
+busca cada nombre (ordenador del gasto / supervisor, es decir servidores
+públicos de la entidad, no el proveedor) contra el listado de cargos de
+confianza (libre nombramiento y remoción, alto nivel jerárquico) del
+dataset `5u9e-g5w9`. A diferencia de SIRI esto **no es una acusación** —
+tener un cargo de confianza no es una falta, es contexto público (cargo,
+entidad, salario asignado, todos datos que SIGEP publica por ley). Mismo
+disclaimer de "coincidencia de nombre, no de identidad verificada" y mismo
+umbral de 3+ palabras coincidentes, con badge azul informativo en vez de
+rojo de alerta en `ContratoCard`. Verificado con datos reales del dataset.
+
+Se dejó fuera, a propósito, la **declaración de bienes y rentas**
+(`8tz7-h3eu`): a diferencia de cargo/salario público, ahí sí hay datos
+patrimoniales más sensibles — el riesgo de mostrarle el patrimonio de una
+persona equivocada a un ciudadano por una coincidencia de nombre pesa más
+que el valor agregado, así que no se integró en esta pasada.
 
 ## Repo 100% autocontenido — cero servicios que no podés desplegar vos
 
