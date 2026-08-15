@@ -10,6 +10,10 @@ import {
 } from './constants';
 import { useRadarApp } from './useRadarApp.hook';
 import FichaTerritorialWorkspace from './FichaTerritorialWorkspace';
+import CitizenWorkspaceReal from './CitizenWorkspace';
+import RiskMapWorkspaceReal from './RiskMapWorkspace';
+import MarketWorkspaceReal from './MarketWorkspace';
+import OversightWorkspaceReal from './OversightWorkspace';
 
 function App() {
   const radar = useRadarApp();
@@ -243,9 +247,9 @@ function WorkspaceView({ radar }) {
   );
 }
 
-function WorkspaceContent({ view, context, radar }) {
+function WorkspaceContent({ view, radar }) {
   if (view === VIEWS.CITIZEN) {
-    return <CitizenWorkspace context={context} radar={radar} />;
+    return <CitizenWorkspaceReal radar={radar} />;
   }
 
   if (view === VIEWS.BUSINESS) {
@@ -253,40 +257,18 @@ function WorkspaceContent({ view, context, radar }) {
   }
 
   if (view === VIEWS.OVERSIGHT) {
-    return <OversightWorkspace radar={radar} />;
+    return <OversightWorkspaceReal radar={radar} />;
   }
 
   if (view === VIEWS.RISK_MAP) {
-    return <RiskMapWorkspace />;
+    return <RiskMapWorkspaceReal radar={radar} />;
   }
 
   if (view === VIEWS.TERRITORY_PROFILE) {
     return <FichaTerritorialWorkspace radar={radar} />;
   }
 
-  return <MarketWorkspace />;
-}
-
-function CitizenWorkspace({ context, radar }) {
-  return (
-    <div className="content-grid">
-      <article className="detail-card large">
-        <p className="section-label">Resultados de busqueda</p>
-        <h2>Buscando informacion sobre: <mark>{context.topic}</mark></h2>
-        <div className="stat-row">
-          <Stat label="Entidad gestora" value="Prosperidad Social" />
-          <Stat label="Monto total" value="$1.200 Millones" />
-          <Stat label="Estado general" value="Programado" highlighted />
-        </div>
-        <Timeline />
-        <SigepPanel radar={radar} />
-      </article>
-      <aside className="side-stack">
-        <MapCard />
-        <AlertsPanel />
-      </aside>
-    </div>
-  );
+  return <MarketWorkspaceReal radar={radar} />;
 }
 
 function BusinessWorkspace() {
@@ -320,23 +302,6 @@ function BusinessWorkspace() {
         <p className="section-label">Perfil detectado</p>
         <h3>Infraestructura tecnologica</h3>
         <p className="muted">Computadores empresariales, servidores y soporte operativo.</p>
-      </aside>
-    </div>
-  );
-}
-
-function OversightWorkspace({ radar }) {
-  return (
-    <div className="content-grid">
-      <article className="detail-card large">
-        <p className="section-label">Veeduria activa</p>
-        <h2>Seguimiento a contratos de pavimentacion</h2>
-        <Checklist />
-        <SigepPanel radar={radar} compact />
-      </article>
-      <aside className="detail-card">
-        <p className="section-label">Documentacion</p>
-        <DocumentList />
       </aside>
     </div>
   );
