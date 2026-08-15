@@ -72,7 +72,19 @@ export class OportunidadesService {
   async paraEmpresa(empresaId: string, limit = 30): Promise<Oportunidad[]> {
     const empresa = await this.empresas.obtener(empresaId);
 
-    const filtro: Record<string, unknown> = { adjudicado: false };
+    // "Oportunidad real" = SECOP todavía acepta algo en este proceso
+    // (`estadoApertura: 'Abierto'`, señal real y verificada — ver comentario
+    // en proceso.schema.ts) Y no está cancelado/en borrador (esos SÍ pueden
+    // venir con estadoApertura='Abierto' en SECOP, pero no son biddable) Y
+    // no adjudicado. `estadoProcedimiento: 'Seleccionado'` se incluye a
+    // propósito — NO significa "proveedor ya elegido" en SECOP, es una fase
+    // administrativa (verificado: la mayoría de "Seleccionado" siguen
+    // abiertos a ofertas).
+    const filtro: Record<string, unknown> = {
+      adjudicado: false,
+      estadoApertura: 'Abierto',
+      estadoProcedimiento: { $nin: ['Cancelado', 'Borrador'] },
+    };
     if (empresa.departamentos.length) {
       filtro.departamentoEntidadNormalizado = { $in: empresa.departamentos.map((d) => normalizar(d)) };
     }
@@ -99,6 +111,7 @@ export class OportunidadesService {
       if (c.compTerritorio >= 1) porQue.push('Territorio seleccionado');
       else if (c.compTerritorio > 0) porQue.push('Territorio parcialmente compatible');
       porQue.push(`Competencia histórica ${competencia.toLowerCase()} en la zona`);
+      porQue.push(`Proceso abierto en SECOP (fase: ${c.proceso.fase || c.proceso.estadoProcedimiento})`);
 
       oportunidades.push({ proceso: c.proceso, compatibilidad: c.compatibilidad, competencia, prioridad, porQue });
     }

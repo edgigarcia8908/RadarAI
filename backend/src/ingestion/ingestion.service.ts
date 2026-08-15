@@ -94,6 +94,8 @@ export class IngestionService {
           precioBase: toNumber(row.precio_base),
           fechaPublicacion: toDate(row.fecha_de_publicacion_del || row.fecha_de_publicacion),
           estadoProcedimiento: row.estado_del_procedimiento || '',
+          estadoApertura: row.estado_de_apertura_del_proceso || '',
+          fase: row.fase || '',
           adjudicado: String(row.adjudicado).toLowerCase() === 'si' || String(row.adjudicado).toLowerCase() === 'true',
           valorTotalAdjudicacion: toNumber(row.valor_total_adjudicacion),
           fechaAdjudicacion: toDate(row.fecha_adjudicacion),

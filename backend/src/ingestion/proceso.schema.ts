@@ -29,7 +29,19 @@ export class Proceso extends Document {
 
   @Prop({ type: Number, default: 0 }) precioBase: number;
   @Prop({ type: Date, default: null }) fechaPublicacion: Date | null;
+  /**
+   * OJO: NO es lo mismo que `estadoApertura`. `estadoProcedimiento` es el
+   * paso del flujo interno de SECOP (Borrador/Publicado/Seleccionado/
+   * Evaluación/Aprobado/Cancelado) — "Seleccionado" acá NO significa
+   * "proveedor ya elegido", es el nombre de una fase administrativa (fuente
+   * de confusión real, verificado a mano: 1015 de 1093 procesos
+   * "Seleccionado" en Cundinamarca siguen con `estadoApertura = 'Abierto'`
+   * y `adjudicado = false`).
+   */
   @Prop({ type: String, default: '' }) estadoProcedimiento: string;
+  /** Señal real de si SECOP todavía acepta algo en este proceso — 'Abierto' | 'Cerrado'. Este es el campo que importa para "¿es una oportunidad real?". */
+  @Prop({ type: String, default: '', index: true }) estadoApertura: string;
+  @Prop({ type: String, default: '' }) fase: string;
 
   @Prop({ type: Boolean, default: false }) adjudicado: boolean;
   @Prop({ type: Number, default: 0 }) valorTotalAdjudicacion: number;

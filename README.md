@@ -95,17 +95,53 @@ En el navegador (`http://localhost:5490`): elegí territorio + tema, dale
 "Sincronizar datos de SECOP" (trae datos reales, puede tardar unos segundos),
 después "Preguntar".
 
+## Cómo funciona la ingesta hoy — preguntas frecuentes
+
+**¿Se actualiza cuando un proceso cambia de estado en SECOP?** Solo si volvés
+a sincronizar ese mismo territorio/rango de fechas — cada sync hace `upsert`
+por `idProceso`/`idContrato` (pisa el registro con lo último que devuelve
+Socrata). **No hay nada automático todavía**: sin cron, un proceso puede
+cambiar de estado en SECOP y tu copia queda vieja hasta que alguien apriete
+"Sincronizar" de nuevo para ese territorio. Ver punto 3 de "qué falta".
+
+**¿En algún momento tendría copia de todo el país?** No con el diseño
+actual. Solo se guarda lo que se sincronizó explícitamente (un
+departamento/municipio/rango de fechas a la vez). Para tener el país
+completo habría que recorrer los 32 departamentos (y sus ~1100 municipios)
+periódicamente — no existe ese job, es trabajo de Fase 2.
+
+**¿Solo trae por búsqueda?** Sí, y con tope de **500 registros por sync**
+(los más recientes según el rango de fechas pedido) — sin paginación. Si un
+territorio tiene más de 500 procesos en el rango, los que exceden ese tope
+no se traen.
+
+**Los estados de SECOP importan y pueden romper la lógica — corregido.**
+Verificado a mano contra datos reales: `estado_del_procedimiento` (Borrador/
+Publicado/Seleccionado/Evaluación/Aprobado/Cancelado) es el paso del flujo
+interno de SECOP, **no** dice si el proceso sigue aceptando ofertas —
+"Seleccionado" NO significa "proveedor ya elegido" (fuente de confusión
+real: 1015 de 1093 procesos "Seleccionado" en Cundinamarca seguían con
+`adjudicado=false`). La señal correcta es un campo separado,
+`estado_de_apertura_del_proceso` ('Abierto'/'Cerrado'), que no se estaba
+guardando y ya se agregó (`Proceso.estadoApertura`). El motor de
+oportunidades (`oportunidades.service.ts`) ahora filtra por
+`estadoApertura: 'Abierto'` + excluye `Cancelado`/`Borrador` explícitamente,
+en vez de solo `adjudicado: false` (que dejaba pasar falsos positivos).
+
 ## Qué falta (en orden de impacto)
 
-1. **Empresas/Oportunidades** — copiar y adaptar `matching.service.ts` de
-   `ceo-ecosistema` (Jaccard de tags → luego embeddings vía
-   `ceo-intelligence-service`) para el flujo de empresas del documento
-   original. No se construyó en esta iteración.
+1. **Cron de ingesta + backfill por país** — hoy `/api/ingestion/sync` es
+   manual y por territorio (botón en la demo), con tope de 500 por corrida y
+   sin paginación. Pasarlo a job programado (BullMQ, mismo patrón que
+   `ceo-notifications-service`) recorriendo territorios "vigilados" — es el
+   ítem que resuelve las 3 primeras preguntas de la sección de arriba.
 2. **Veedurías colaborativas** — copiar el patrón de `civika` (proyecto +
    colaboradores + hallazgos) en vez de construirlo de cero.
-3. **Cron de ingesta** — hoy `/api/ingestion/sync` es manual (botón en la
-   demo). Pasarlo a job programado (BullMQ, mismo patrón que
-   `ceo-notifications-service`) por territorio "vigilado".
+3. **Competencia histórica por categoría UNSPSC real** — hoy
+   `oportunidades.service.ts` aproxima competencia con proveedores únicos
+   del departamento (sin cruzar por categoría, porque `Contrato` no guarda
+   el código UNSPSC todavía) — señal real pero ruidosa, documentado en el
+   código como mejora pendiente.
 4. **Auth real conectado** — el guard existe, no está aplicado a ningún
    endpoint todavía (mismo estado que tenía `ceo-ecosistema` en su Fase 1).
 5. **Chunker semántico para RAG de documentos subidos** — cuando se conecte
