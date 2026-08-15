@@ -232,3 +232,41 @@ export interface MunicipioRiesgo {
 export function obtenerMapaRiesgo(): Promise<MunicipioRiesgo[]> {
   return fetch('/api/civic-intel/mapa').then(manejar);
 }
+
+export interface ContratoComparable {
+  idContrato: string;
+  nombreEntidad: string;
+  objetoDelContrato: string;
+  proveedorAdjudicado: string;
+  valorDelContrato: number;
+  fechaDeFirma: string | null;
+  estadoContrato: string;
+  urlProceso: string;
+}
+
+export interface EstudioMercado {
+  totalContratos: number;
+  mensaje?: string;
+  valorMinimo?: number;
+  valorMaximo?: number;
+  valorPromedio?: number;
+  valorMediana?: number;
+  duracionPromedioDias?: number | null;
+  proveedoresUnicos?: number;
+  proveedoresFrecuentes?: { nombre: string; contratos: number; valorTotal: number }[];
+  contratosComparables?: ContratoComparable[];
+}
+
+export function generarEstudioMercado(input: {
+  objeto: string;
+  departamento?: string;
+  ciudad?: string;
+  fechaDesde?: string;
+  fechaHasta?: string;
+}): Promise<EstudioMercado> {
+  return fetch('/api/estudios-mercado', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(input),
+  }).then(manejar);
+}

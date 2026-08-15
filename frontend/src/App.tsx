@@ -3,8 +3,9 @@ import CiudadanoView from './CiudadanoView';
 import EmpresaView from './EmpresaView';
 import VeeduriasView from './VeeduriasView';
 import MapaView from './MapaView';
+import EstudioMercadoView from './EstudioMercadoView';
 
-type Modo = 'home' | 'ciudadano' | 'empresa' | 'veedurias' | 'mapa';
+type Modo = 'home' | 'ciudadano' | 'empresa' | 'veedurias' | 'mapa' | 'estudio';
 
 export default function App() {
   const [modo, setModo] = useState<Modo>('home');
@@ -48,6 +49,9 @@ export default function App() {
             <button onClick={() => setModo('mapa')} style={{ padding: '16px 24px', fontSize: 16 }}>
               🗺️ Mapa de riesgo
             </button>
+            <button onClick={() => setModo('estudio')} style={{ padding: '16px 24px', fontSize: 16 }}>
+              🏛️ Estudio de mercado
+            </button>
           </div>
         </div>
       )}
@@ -56,6 +60,7 @@ export default function App() {
       {modo === 'empresa' && <EmpresaView />}
       {modo === 'veedurias' && <VeeduriasView abrirId={veeduriaAbierta} onAbierta={() => setVeeduriaAbierta(null)} />}
       {modo === 'mapa' && <MapaView />}
+      {modo === 'estudio' && <EstudioMercadoView />}
     </div>
   );
 }

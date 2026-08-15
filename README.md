@@ -6,6 +6,26 @@ SECOP II, siguiendo el mismo estándar de arquitectura que el resto de
 Mongo, consumiendo los servicios centrales del ecosistema por HTTP en vez de
 duplicar código.
 
+## Estudios de mercado para entidades públicas (`src/estudios-mercado/`)
+
+Cuarto mercado, además de ciudadano/empresa/veeduría: por ley, una entidad
+colombiana debe hacer un "estudio de mercado" antes de sacar un proceso —
+hoy normalmente a mano. Con la data que RadarAI ya sincroniza, es casi
+gratis: `POST /api/estudios-mercado` busca contratos **ya
+terminados/cerrados** (no en ejecución, para no comparar contra un precio
+que todavía puede cambiar) que coincidan con el objeto + territorio +
+sinónimos, y devuelve valor mínimo/máximo/promedio/mediana, duración
+promedio de ejecución, proveedores más frecuentes, y la lista de contratos
+comparables con link a SECOP. Reusa 100% infraestructura existente
+(ingesta, `normalizar()`, `palabrasConSinonimos()`) — no se agregó ningún
+dato nuevo. Verificado con datos reales: "mantenimiento" en Cundinamarca
+da 39 contratos comparables ($3.6M–$872M, mediana $15M, 122 días promedio,
+28 proveedores).
+
+SECOP no tiene un estado literal "liquidado" en el dataset de Contratos
+Electrónicos — se usa `terminado`/`Cerrado`/`cedido` como proxy (ver
+`ESTADOS_TERMINADOS` en el servicio), documentado como aproximación.
+
 ## Repo 100% autocontenido — cero servicios que no podés desplegar vos
 
 Este repo se comparte públicamente (hackathon), así que **nada** de lo que

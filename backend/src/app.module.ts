@@ -7,6 +7,7 @@ import { EmpresasModule } from './empresas/empresas.module';
 import { OportunidadesModule } from './oportunidades/oportunidades.module';
 import { VeeduriasModule } from './veedurias/veedurias.module';
 import { StorageModule } from './storage/storage.module';
+import { EstudiosMercadoModule } from './estudios-mercado/estudios-mercado.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { StorageModule } from './storage/storage.module';
     OportunidadesModule,
     VeeduriasModule,
     StorageModule,
+    EstudiosMercadoModule,
   ],
 })
 export class AppModule {}
