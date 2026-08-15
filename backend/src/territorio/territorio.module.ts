@@ -5,5 +5,6 @@ import { TerritorioController } from './territorio.controller';
 @Module({
   controllers: [TerritorioController],
   providers: [TerritorioService],
+  exports: [TerritorioService],
 })
 export class TerritorioModule {}

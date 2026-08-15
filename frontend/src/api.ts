@@ -350,6 +350,46 @@ export function obtenerContextoTerritorial(ciudad: string): Promise<ContextoTerr
   return fetch(`/api/territorio/contexto?ciudad=${encodeURIComponent(ciudad)}`).then(manejar);
 }
 
+export interface IdentidadMunicipio {
+  codigoDivipola: string;
+  codigoDepartamento: string;
+  nombreMunicipio: string;
+  nombreDepartamento: string;
+  lat: number | null;
+  lng: number | null;
+}
+
+export interface ResumenContratacion {
+  totalContratos: number;
+  valorTotal: number;
+  proveedoresUnicos: number;
+  concentracionProveedores: number;
+}
+
+export interface AlertasIdentidad {
+  nombresRevisados: number;
+  totalNombresDistintos: number;
+  coincidenciasSiri: number;
+  coincidenciasSigep: number;
+}
+
+export interface FichaTerritorial {
+  identidad: IdentidadMunicipio | null;
+  contratacion: ResumenContratacion;
+  presupuesto: EstadoPresupuestal;
+  desempenoMunicipal: { anio: string | null; puntaje: number | null };
+  proyectosRegalias: ProyectoRegalias[];
+  alertaRegalias: string | null;
+  alertasIdentidad: AlertasIdentidad;
+}
+
+export function obtenerFichaTerritorial(departamento: string, ciudad: string): Promise<FichaTerritorial> {
+  const params = new URLSearchParams();
+  if (departamento) params.set('departamento', departamento);
+  params.set('ciudad', ciudad);
+  return fetch(`/api/ficha-territorial?${params.toString()}`).then(manejar);
+}
+
 export function generarEstudioMercado(input: {
   objeto: string;
   departamento?: string;

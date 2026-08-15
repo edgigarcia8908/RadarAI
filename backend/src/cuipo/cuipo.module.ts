@@ -7,5 +7,6 @@ import { CuipoController } from './cuipo.controller';
   imports: [IngestionModule],
   controllers: [CuipoController],
   providers: [CuipoService],
+  exports: [CuipoService],
 })
 export class CuipoModule {}

@@ -138,6 +138,38 @@ tiene su propia convención de texto).
 Se muestra junto al presupuesto CUIPO en `CiudadanoView` como panel
 "Contexto territorial" (`ContextoTerritorialCard.tsx`).
 
+## Identidad territorial + Ficha Territorial (`src/divipola/`, `src/ficha-territorial/`)
+
+Fase 0 de la hoja de ruta (ver documento de planeación compartido con el
+equipo). Dos piezas:
+
+**DIVIPOLA** (`src/divipola/`, dataset `pqwj-3fi4`, cobertura nacional):
+resuelve un municipio contra la llave oficial DANE/IGAC (código DIVIPOLA,
+lat/lng). Existe porque cada fuente integrada hasta ahora escribe el
+nombre del municipio distinto — van 3 bugs de matching encontrados y
+corregidos por eso (Bogotá/Cundinamarca en SECOP, tildes en CUIPO, tildes
+en SGR). No reemplaza el matching por nombre que ya usa cada fuente (sería
+un refactor mayor), pero es el punto de partida para no repetir el mismo
+bug con la próxima fuente.
+
+**Ficha Territorial** (`GET /api/ficha-territorial?departamento=&ciudad=`,
+vista `FichaTerritorialView.tsx`): consolida en una sola pantalla lo que
+hoy vive repartido entre Vigilar mi territorio, Estudio de mercado y Mapa
+de riesgo — identidad DIVIPOLA, resumen de contratación, presupuesto
+CUIPO, regalías SGR con su brecha, desempeño MDM, y un resumen de alertas
+SIRI/SIGEP. No agrega ninguna fuente nueva, solo reusa los servicios ya
+construidos.
+
+Límite importante descubierto al construirla: un municipio con mucho
+histórico sincronizado puede tener 500+ nombres de firmantes/ordenadores
+distintos, y SIRI/SIGEP no tienen un endpoint "IN" — es una consulta por
+nombre. Sin tope, la ficha disparaba cientos de fetch en paralelo y
+saturaba la conexión (verificado: 517 nombres reales hicieron fallar
+*todas* las consultas). Se limitó a una muestra de 40 nombres, mostrando
+siempre cuántos se revisaron sobre el total real — la ficha es un
+resumen, no pretende ser exhaustiva; el detalle completo con disclaimer
+sigue disponible por contrato en Vigilar mi territorio.
+
 ## Repo 100% autocontenido — cero servicios que no podés desplegar vos
 
 Este repo se comparte públicamente (hackathon), así que **nada** de lo que

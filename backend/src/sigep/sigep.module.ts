@@ -5,5 +5,6 @@ import { SigepController } from './sigep.controller';
 @Module({
   controllers: [SigepController],
   providers: [SigepService],
+  exports: [SigepService],
 })
 export class SigepModule {}

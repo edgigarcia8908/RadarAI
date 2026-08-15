@@ -5,5 +5,6 @@ import { SiriController } from './siri.controller';
 @Module({
   controllers: [SiriController],
   providers: [SiriService],
+  exports: [SiriService],
 })
 export class SiriModule {}

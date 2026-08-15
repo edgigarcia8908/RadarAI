@@ -4,8 +4,9 @@ import EmpresaView from './EmpresaView';
 import VeeduriasView from './VeeduriasView';
 import MapaView from './MapaView';
 import EstudioMercadoView from './EstudioMercadoView';
+import FichaTerritorialView from './FichaTerritorialView';
 
-type Modo = 'home' | 'ciudadano' | 'empresa' | 'veedurias' | 'mapa' | 'estudio';
+type Modo = 'home' | 'ciudadano' | 'empresa' | 'veedurias' | 'mapa' | 'estudio' | 'ficha';
 
 export default function App() {
   const [modo, setModo] = useState<Modo>('home');
@@ -52,6 +53,9 @@ export default function App() {
             <button onClick={() => setModo('estudio')} style={{ padding: '16px 24px', fontSize: 16 }}>
               🏛️ Estudio de mercado
             </button>
+            <button onClick={() => setModo('ficha')} style={{ padding: '16px 24px', fontSize: 16 }}>
+              📍 Ficha territorial
+            </button>
           </div>
         </div>
       )}
@@ -61,6 +65,7 @@ export default function App() {
       {modo === 'veedurias' && <VeeduriasView abrirId={veeduriaAbierta} onAbierta={() => setVeeduriaAbierta(null)} />}
       {modo === 'mapa' && <MapaView />}
       {modo === 'estudio' && <EstudioMercadoView />}
+      {modo === 'ficha' && <FichaTerritorialView />}
     </div>
   );
 }

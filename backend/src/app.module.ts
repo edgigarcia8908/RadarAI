@@ -12,6 +12,8 @@ import { CuipoModule } from './cuipo/cuipo.module';
 import { SiriModule } from './siri/siri.module';
 import { SigepModule } from './sigep/sigep.module';
 import { TerritorioModule } from './territorio/territorio.module';
+import { DivipolaModule } from './divipola/divipola.module';
+import { FichaTerritorialModule } from './ficha-territorial/ficha-territorial.module';
 
 @Module({
   imports: [
@@ -28,6 +30,8 @@ import { TerritorioModule } from './territorio/territorio.module';
     SiriModule,
     SigepModule,
     TerritorioModule,
+    DivipolaModule,
+    FichaTerritorialModule,
   ],
 })
 export class AppModule {}
