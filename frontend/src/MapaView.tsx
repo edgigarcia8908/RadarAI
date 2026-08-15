@@ -4,9 +4,20 @@ import 'leaflet/dist/leaflet.css';
 import { obtenerMapaRiesgo, MunicipioRiesgo } from './api';
 import { COLOMBIA_LOCATIONS } from './colombiaCoords';
 
+/**
+ * SECOP guarda el departamento de Bogotá como "Distrito Capital de
+ * Bogotá" (verificado a mano), pero el dataset de coordenadas lo tiene
+ * bajo la clave "Bogotá, D.c." — sin este alias, el punto de Bogotá en el
+ * mapa nunca aparecería (coordsDe devolvería null en silencio).
+ */
+const ALIAS_DEPARTAMENTO: Record<string, string> = {
+  'distrito capital de bogotá': 'Bogotá, D.c.',
+};
+
 /** Busca lat/lng del municipio en el dataset geográfico — por nombre, sin distinguir mayúsculas/tildes exactas. */
 function coordsDe(departamento: string, ciudad: string): { lat: number; lng: number } | null {
-  const lista = COLOMBIA_LOCATIONS[departamento];
+  const clave = ALIAS_DEPARTAMENTO[departamento.toLowerCase()] || departamento;
+  const lista = COLOMBIA_LOCATIONS[clave];
   if (!lista) return null;
   const match = lista.find((c) => c.name.localeCompare(ciudad, 'es', { sensitivity: 'base' }) === 0);
   return match ? { lat: match.lat, lng: match.lng } : null;

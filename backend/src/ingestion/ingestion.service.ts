@@ -5,6 +5,7 @@ import { Proceso } from './proceso.schema';
 import { Contrato } from './contrato.schema';
 import { SocrataClient, soqlString, toDate, toNumber } from './socrata.client';
 import { normalizar } from '../common/normalizar';
+import { departamentoRealSecop } from '../common/departamento-secop';
 
 /** Datasets reales de datos.gov.co — ver README de RadarAI para el análisis completo. */
 const DATASET_PROCESOS = 'p6dx-8zbt'; // SECOP II - Procesos de Contratación
@@ -49,8 +50,10 @@ export class IngestionService {
     campoCiudad: string,
     campoFecha: string,
   ): string[] {
+    // Bogotá no es parte de Cundinamarca en SECOP — ver departamento-secop.ts.
+    const departamento = departamentoRealSecop(filtro.departamento, filtro.ciudad);
     const where: string[] = [];
-    if (filtro.departamento) where.push(`upper(${campoDepartamento}) = upper('${soqlString(filtro.departamento)}')`);
+    if (departamento) where.push(`upper(${campoDepartamento}) = upper('${soqlString(departamento)}')`);
     if (filtro.ciudad) where.push(`upper(${campoCiudad}) = upper('${soqlString(filtro.ciudad)}')`);
     if (filtro.fechaDesde) where.push(`${campoFecha} >= '${soqlString(filtro.fechaDesde)}T00:00:00'`);
     if (filtro.fechaHasta) where.push(`${campoFecha} <= '${soqlString(filtro.fechaHasta)}T23:59:59'`);

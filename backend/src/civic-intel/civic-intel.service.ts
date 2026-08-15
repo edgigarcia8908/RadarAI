@@ -5,6 +5,8 @@ import { Proceso } from '../ingestion/proceso.schema';
 import { Contrato } from '../ingestion/contrato.schema';
 import { completar } from '../lib/llm';
 import { normalizar } from '../common/normalizar';
+import { departamentoRealSecop } from '../common/departamento-secop';
+import { palabrasConSinonimos } from '../common/sinonimos';
 
 export interface ConsultaInput {
   departamento?: string;
@@ -37,8 +39,10 @@ export class CivicIntelService {
 
   /** Compara siempre contra los campos *Normalizado guardados en la ingesta — ignora tildes/mayúsculas/puntuación. */
   private filtroTerritorio(departamento?: string, ciudad?: string, campoDepto = 'departamentoEntidadNormalizado', campoCiudad = 'ciudadEntidadNormalizado') {
+    // Bogotá no es parte de Cundinamarca en SECOP — ver departamento-secop.ts.
+    const departamentoReal = departamentoRealSecop(departamento, ciudad);
     const filtro: Record<string, unknown> = {};
-    if (departamento) filtro[campoDepto] = normalizar(departamento);
+    if (departamentoReal) filtro[campoDepto] = normalizar(departamentoReal);
     if (ciudad) filtro[campoCiudad] = normalizar(ciudad);
     return filtro;
   }
@@ -95,9 +99,9 @@ export class CivicIntelService {
   }
 
   async consultar(input: ConsultaInput) {
-    // Palabras normalizadas (sin tildes/mayúsculas) del tema, para matchear contra `textoNormalizado`
-    // sin que importe cómo cada entidad escribió el objeto contractual en SECOP.
-    const palabrasTema = normalizar(input.tema).split(' ').filter((p) => p.length > 2);
+    // Palabras normalizadas (sin tildes/mayúsculas) del tema + sinónimos conocidos
+    // (SECOP dice "PAE", no "alimentación") — ver common/sinonimos.ts.
+    const palabrasTema = palabrasConSinonimos(input.tema);
     const temaRegex = palabrasTema.length ? new RegExp(palabrasTema.join('|'), 'i') : null;
 
     const filtroProcesos: Record<string, unknown> = this.filtroTerritorio(input.departamento, input.ciudad);
