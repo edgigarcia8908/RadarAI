@@ -80,7 +80,7 @@ export default function EmpresaView() {
           }}
         />
         <label>
-          Departamento donde querés operar{' '}
+          Departamento donde quieres operar{' '}
           <select value={departamento} onChange={(e) => setDepartamento(e.target.value)}>
             {DEPARTAMENTOS.map((d) => (
               <option key={d.departamento} value={d.departamento}>
@@ -114,7 +114,7 @@ export default function EmpresaView() {
         <div style={{ marginTop: 24, borderTop: '1px solid #ddd', paddingTop: 16 }}>
           <h2>🔎 {oportunidades.length} oportunidades encontradas</h2>
           {oportunidades.length === 0 && (
-            <p>Ninguna compatible en {departamento} para ese rango de fechas — probá ampliar el rango o describir tu producto con otras palabras.</p>
+            <p>Ninguna compatible en {departamento} para ese rango de fechas — prueba ampliar el rango o describir tu producto con otras palabras.</p>
           )}
           {oportunidades.map((o) => (
             <div

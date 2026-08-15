@@ -170,7 +170,7 @@ siempre cuántos se revisaron sobre el total real — la ficha es un
 resumen, no pretende ser exhaustiva; el detalle completo con disclaimer
 sigue disponible por contrato en Vigilar mi territorio.
 
-## Repo 100% autocontenido — cero servicios que no podés desplegar vos
+## Repo 100% autocontenido — cero servicios que no puedes desplegar tú
 
 Este repo se comparte públicamente (hackathon), así que **nada** de lo que
 hace RadarAI depende de un servicio privado que solo el autor puede
@@ -277,13 +277,13 @@ cp backend/.env.example backend/.env   # completar MONGO_URI (Mongo propio de Ra
 npm run dev                             # backend :4500 + frontend :5490
 ```
 
-En el navegador (`http://localhost:5490`): elegí territorio + tema, dale
+En el navegador (`http://localhost:5490`): elige territorio + tema, dale
 "Sincronizar datos de SECOP" (trae datos reales, puede tardar unos segundos),
 después "Preguntar".
 
 ## Cómo funciona la ingesta hoy — preguntas frecuentes
 
-**¿Se actualiza cuando un proceso cambia de estado en SECOP?** Solo si volvés
+**¿Se actualiza cuando un proceso cambia de estado en SECOP?** Solo si vuelves
 a sincronizar ese mismo territorio/rango de fechas — cada sync hace `upsert`
 por `idProceso`/`idContrato` (pisa el registro con lo último que devuelve
 Socrata). **No hay nada automático todavía**: sin cron, un proceso puede

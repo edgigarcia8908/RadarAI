@@ -57,7 +57,7 @@ export class EstudiosMercadoService {
       return {
         totalContratos: 0,
         mensaje:
-          'No hay contratos terminados/cerrados que coincidan con esa búsqueda en lo ya sincronizado — probá sincronizar más territorio/rango de fechas primero, o describir el objeto con otras palabras.',
+          'No hay contratos terminados/cerrados que coincidan con esa búsqueda en lo ya sincronizado — prueba sincronizar más territorio/rango de fechas primero, o describir el objeto con otras palabras.',
       };
     }
 

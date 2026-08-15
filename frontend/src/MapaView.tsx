@@ -52,13 +52,13 @@ export default function MapaView() {
         Concentración de proveedores por municipio, sobre lo que ya sincronizaste con SECOP — no es todo el país, solo lo
         que RadarAI ya trajo. Más rojo = más concentrado en pocos proveedores. El tamaño del punto es el número de
         contratos (con poca data, un municipio con 2 contratos y 1 proveedor da 100% sin que signifique gran cosa —
-        mirá el tamaño del punto, no solo el color).
+        mira el tamaño del punto, no solo el color).
       </p>
 
       {cargando && <p>Cargando…</p>}
       {error && <p style={{ color: 'crimson' }}>{error}</p>}
       {!cargando && puntos.length === 0 && (
-        <p style={{ color: '#888' }}>Todavía no hay datos sincronizados en ningún territorio — andá a "Vigilar mi territorio" y sincronizá alguno primero.</p>
+        <p style={{ color: '#888' }}>Todavía no hay datos sincronizados en ningún territorio — ve a "Vigilar mi territorio" y sincroniza alguno primero.</p>
       )}
 
       {puntos.length > 0 && (

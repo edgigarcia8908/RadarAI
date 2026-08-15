@@ -65,7 +65,7 @@ export default function EstudioMercadoView() {
     <div>
       <h1>🏛️ Estudio de mercado</h1>
       <p style={{ color: '#555' }}>
-        Para entidades públicas: antes de sacar un proceso, mirá qué pagó el resto del Estado por algo parecido, con qué
+        Para entidades públicas: antes de sacar un proceso, mira qué pagó el resto del Estado por algo parecido, con qué
         proveedores y en cuánto tiempo — sobre contratos ya <strong>terminados/cerrados</strong> (no en ejecución, para
         no comparar contra un precio que todavía puede cambiar).
       </p>

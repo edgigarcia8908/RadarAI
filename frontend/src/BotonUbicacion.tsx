@@ -28,7 +28,7 @@ export default function BotonUbicacion({ onSugerir }: { onSugerir: (departamento
       },
       () => {
         setCargando(false);
-        setError('No se pudo obtener tu ubicación — dale permiso al navegador, o elegí el municipio a mano.');
+        setError('No se pudo obtener tu ubicación — dale permiso al navegador, o elige el municipio a mano.');
       },
       { timeout: 8000 },
     );

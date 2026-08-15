@@ -303,7 +303,7 @@ export class CivicIntelService {
     try {
       const respuesta = await completar({
         system:
-          'Sos el asistente cívico de RADAR. Respondés en español, en 3-4 frases, tono claro para un ciudadano sin conocimientos técnicos de contratación pública. Basate SOLO en los datos que te dan, no inventes cifras.',
+          'Eres el asistente cívico de RADAR. Respondes en español, en 3-4 frases, tono claro para un ciudadano sin conocimientos técnicos de contratación pública. Básate SOLO en los datos que te dan, no inventes cifras.',
         prompt: `Pregunta del ciudadano: "${input.pregunta}"\n\nDatos agregados: ${JSON.stringify(resumen)}\n\nHallazgos detectados: ${JSON.stringify(hallazgos.map((h) => ({ titulo: h.titulo, detalle: h.detalle })))}`,
         maxTokens: 300,
       });

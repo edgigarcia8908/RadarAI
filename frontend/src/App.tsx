@@ -36,7 +36,7 @@ export default function App() {
         <div style={{ textAlign: 'center', marginTop: 60 }}>
           <h1>🛰️ RADAR</h1>
           <p style={{ color: '#555', marginBottom: 32 }}>Inteligencia pública y de mercado sobre contratación estatal.</p>
-          <p style={{ marginBottom: 16 }}>¿Qué querés hacer?</p>
+          <p style={{ marginBottom: 16 }}>¿Qué quieres hacer?</p>
           <div style={{ display: 'flex', gap: 16, justifyContent: 'center', flexWrap: 'wrap' }}>
             <button onClick={() => setModo('ciudadano')} style={{ padding: '16px 24px', fontSize: 16 }}>
               🏛️ Vigilar mi territorio

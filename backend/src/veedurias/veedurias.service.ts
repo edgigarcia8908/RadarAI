@@ -153,7 +153,7 @@ export class VeeduriasService {
   async preguntarSobreDocumentos(id: string, pregunta: string) {
     const v = await this.obtener(id);
     if (v.chunksTexto.length === 0) {
-      return { answer: 'Todavía no hay documentos con texto legible en esta veeduría — subí un PDF de texto primero.', citations: [] };
+      return { answer: 'Todavía no hay documentos con texto legible en esta veeduría — sube un PDF de texto primero.', citations: [] };
     }
 
     const palabras = normalizar(pregunta).split(' ').filter((p) => p.length > 2);
@@ -171,7 +171,7 @@ export class VeeduriasService {
 
     const respuestaIa = await completar({
       system:
-        'Sos el asistente de una veeduría ciudadana. Respondés en español, en 3-5 frases, basándote ÚNICAMENTE en los fragmentos de documento que te dan. Si no alcanza para responder, decilo explícitamente en vez de inventar.',
+        'Eres el asistente de una veeduría ciudadana. Respondes en español, en 3-5 frases, basándote ÚNICAMENTE en los fragmentos de documento que te dan. Si no alcanza para responder, dilo explícitamente en vez de inventar.',
       prompt: `Pregunta: "${pregunta}"\n\nFragmentos de documentos:\n${relevantes.map((r, i) => `[${i + 1}] (${r.chunk.archivo}) ${r.chunk.texto}`).join('\n\n')}`,
     }).catch((err) => {
       this.logger.warn(`No se pudo redactar con IA: ${(err as Error).message}`);

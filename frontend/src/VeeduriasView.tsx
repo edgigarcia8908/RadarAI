@@ -206,10 +206,10 @@ function DetalleVeeduria({ id, onVolver }: { id: string; onVolver: () => void })
         </div>
       )}
       <p style={{ fontSize: 13, background: '#eef2ff', border: '1px solid #c7d2fe', borderRadius: 6, padding: 10 }}>
-        Al hacer clic en "Revisar →" se abre SECOP en una pestaña nueva. SECOP pide confirmar que "no sos un robot" —
-        eso lo tenés que pasar vos. Una vez adentro, buscá el documento que te interese (pliegos, estudios previos, contrato
-        firmado) y descargalo. Volvé acá y subilo abajo en "Documentos": por el bloqueo de SECOP no podemos traerlo
-        automáticamente, pero desde que lo subís, RadarAI sí lo analiza solo.
+        Al hacer clic en "Revisar →" se abre SECOP en una pestaña nueva. SECOP pide confirmar que "no eres un robot" —
+        eso lo tienes que pasar tú. Una vez adentro, busca el documento que te interese (pliegos, estudios previos, contrato
+        firmado) y descárgalo. Vuelve aquí y súbelo abajo en "Documentos": por el bloqueo de SECOP no podemos traerlo
+        automáticamente, pero desde que lo subes, RadarAI sí lo analiza solo.
       </p>
 
       <h3>Documentos ({v.documentos.length})</h3>

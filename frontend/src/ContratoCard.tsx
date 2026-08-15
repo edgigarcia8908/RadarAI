@@ -19,7 +19,7 @@ function AlertaSiri({ sanciones }: { sanciones: SancionSiri[] }) {
       ⚠️ Nombre coincide con un registro de SIRI (sanciones disciplinarias): {sanciones[0].sanciones || sanciones[0].tipoInhabilidad}
       {sanciones[0].autoridad ? ` — ${sanciones[0].autoridad}` : ''}
       {sanciones[0].fechaEfectosJuridicos ? ` (${sanciones[0].fechaEfectosJuridicos})` : ''}. Es coincidencia de NOMBRE, no de
-      identidad verificada — SECOP no trae cédula del firmante, confirmá antes de asumir que es la misma persona.
+      identidad verificada — SECOP no trae cédula del firmante, confirma antes de asumir que es la misma persona.
     </div>
   );
 }
@@ -36,7 +36,7 @@ function InfoSigep({ puestos }: { puestos: PuestoSensible[] }) {
     <div style={{ marginTop: 4, fontSize: 12, background: '#eff6ff', border: '1px solid #93c5fd', borderRadius: 6, padding: '4px 8px', color: '#1e40af' }}>
       ℹ️ Nombre coincide con un cargo de confianza en SIGEP: {puestos[0].cargo} — {puestos[0].entidad}
       {puestos[0].asignacionBasica ? ` (asignación básica: $${puestos[0].asignacionBasica})` : ''}. Coincidencia de NOMBRE, no de
-      identidad verificada — confirmá antes de asumir que es la misma persona.
+      identidad verificada — confirma antes de asumir que es la misma persona.
     </div>
   );
 }
