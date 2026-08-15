@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { RolesGuard, ROLE_HIERARCHY } from '@ceo-core/auth-client';
+import { RolesGuard, ROLE_HIERARCHY } from '../lib/auth-client';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { ceoAuthClientProvider, CEO_AUTH_CLIENT } from './ceo-auth-client.provider';
 import { APP_ROLE_HIERARCHY } from './app-roles';

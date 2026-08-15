@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { consultar, sincronizar, ConsultaResultado } from './api';
+import { consultar, crearVeeduria, sincronizar, ConsultaResultado, Hallazgo } from './api';
 import colombia from './colombia.json';
 
 interface DeptoColombia {
@@ -17,7 +17,7 @@ function hoy(): string {
   return new Date().toISOString().slice(0, 10);
 }
 
-export default function CiudadanoView() {
+export default function CiudadanoView({ onRevisar }: { onRevisar: (veeduriaId: string) => void }) {
   const [departamento, setDepartamento] = useState('Cundinamarca');
   const [ciudad, setCiudad] = useState('Tocancipá');
   const ciudadesDisponibles = useMemo(
@@ -33,6 +33,27 @@ export default function CiudadanoView() {
   const [error, setError] = useState<string | null>(null);
   const [resultado, setResultado] = useState<ConsultaResultado | null>(null);
   const [syncInfo, setSyncInfo] = useState<string | null>(null);
+  const [creandoVeeduria, setCreandoVeeduria] = useState<number | null>(null);
+
+  async function handleRevisar(hallazgo: Hallazgo, indice: number) {
+    setCreandoVeeduria(indice);
+    setError(null);
+    try {
+      const v = await crearVeeduria({
+        titulo: `${hallazgo.titulo} — ${[ciudad, departamento].filter(Boolean).join(', ')}`,
+        descripcion: hallazgo.detalle,
+        departamento,
+        ciudad,
+        tema,
+        contratosVinculados: hallazgo.evidencia.map((e) => e.id),
+      });
+      onRevisar(v._id);
+    } catch (e: any) {
+      setError(e.message);
+    } finally {
+      setCreandoVeeduria(null);
+    }
+  }
 
   async function handleSync() {
     setCargandoSync(true);
@@ -140,6 +161,9 @@ export default function CiudadanoView() {
                       ))}
                     </ul>
                   </details>
+                  <button onClick={() => handleRevisar(h, i)} disabled={creandoVeeduria === i} style={{ marginTop: 8 }}>
+                    {creandoVeeduria === i ? 'Creando veeduría…' : 'Revisar →'}
+                  </button>
                 </div>
               ))}
             </>

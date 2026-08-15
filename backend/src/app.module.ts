@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { CoreDatabaseModule } from '@ceo-core/database';
+import { CoreDatabaseModule } from './lib/database';
 import { AuthModule } from './auth/auth.module';
 import { IngestionModule } from './ingestion/ingestion.module';
 import { IntelligenceModule } from './intelligence/intelligence.module';

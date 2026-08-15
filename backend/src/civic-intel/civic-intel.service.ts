@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Proceso } from '../ingestion/proceso.schema';
 import { Contrato } from '../ingestion/contrato.schema';
-import { CeoIntelligenceClient } from '@ceo-core/intelligence-client';
+import { CeoIntelligenceClient } from '../lib/intelligence-client';
 import { CEO_INTELLIGENCE_CLIENT } from '../intelligence/ceo-intelligence-client.provider';
 import { normalizar } from '../common/normalizar';
 

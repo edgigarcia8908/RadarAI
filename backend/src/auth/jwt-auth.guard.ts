@@ -1,5 +1,5 @@
 import { CanActivate, ExecutionContext, Inject, Injectable, UnauthorizedException } from '@nestjs/common';
-import { CeoAuthClient } from '@ceo-core/auth-client';
+import { CeoAuthClient } from '../lib/auth-client';
 import { CEO_AUTH_CLIENT } from './ceo-auth-client.provider';
 
 /** Valida el access token localmente contra el JWKS de ceo-auth-service (sin llamar al servicio en cada request). */

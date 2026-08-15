@@ -1,5 +1,5 @@
 import { Provider } from '@nestjs/common';
-import { CeoAuthClient } from '@ceo-core/auth-client';
+import { CeoAuthClient } from '../lib/auth-client';
 
 /** Mismo patrón que ceo-ecosistema/uniminuto/banco-proyectos-asocentro: instancia compartida vía DI. */
 export const CEO_AUTH_CLIENT = 'CEO_AUTH_CLIENT';

@@ -1,4 +1,4 @@
-import { buildRoleHierarchy } from '@ceo-core/auth-client';
+import { buildRoleHierarchy } from '../lib/auth-client';
 
 /**
  * Los tres mercados del documento de producto son roles, no apps distintas:

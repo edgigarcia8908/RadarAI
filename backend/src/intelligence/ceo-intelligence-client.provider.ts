@@ -1,5 +1,5 @@
 import { Provider } from '@nestjs/common';
-import { CeoIntelligenceClient } from '@ceo-core/intelligence-client';
+import { CeoIntelligenceClient } from '../lib/intelligence-client';
 import { APP_ID } from '../auth/ceo-auth-client.provider';
 
 export const CEO_INTELLIGENCE_CLIENT = 'CEO_INTELLIGENCE_CLIENT';

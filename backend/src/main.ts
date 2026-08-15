@@ -1,10 +1,8 @@
 import './env';
 import 'reflect-metadata';
-// IMPORTANTE: se conecta con `connectMongoose` de @ceo-core/database dentro
-// de app.module.ts, NO con `MongooseModule.forRoot(uri)` a secas — el simple
-// hecho de importar `@ceo-core/database` ya aplica el fix de DNS de Windows
-// para `mongodb+srv://` (ver ceo-core-modules/packages/ceo-database, y
-// PLAN-servicios-independientes.md del ecosistema).
+// El fix de DNS de Windows para `mongodb+srv://` vive en ./lib/database.ts
+// (se aplica como efecto de import, ver ese archivo) y ese módulo se importa
+// desde app.module.ts.
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';

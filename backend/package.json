@@ -8,10 +8,6 @@
     "build": "tsc -p tsconfig.json --noCheck"
   },
   "dependencies": {
-    "@ceo-core/auth-client": "file:../../ceo-core-modules/packages/ceo-auth-client/ceo-core-auth-client-1.0.0.tgz",
-    "@ceo-core/database": "file:../../ceo-core-modules/packages/ceo-database/ceo-core-database-1.0.0.tgz",
-    "@ceo-core/intelligence-client": "file:../../ceo-core-modules/packages/ceo-intelligence-client/ceo-core-intelligence-client-1.0.0.tgz",
-    "@ceo-core/storage-client": "file:../../ceo-core-modules/packages/ceo-storage-client/ceo-core-storage-client-1.0.0.tgz",
     "@nestjs/common": "11.0.21",
     "@nestjs/core": "11.0.21",
     "@nestjs/mongoose": "11.0.4",
@@ -19,6 +15,7 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.15.1",
     "dotenv": "^17.4.2",
+    "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.10.0",
     "multer": "^1.4.5-lts.1",
     "radarai": "file:..",
@@ -27,6 +24,7 @@
   },
   "devDependencies": {
     "@types/express": "^5.0.6",
+    "@types/jsonwebtoken": "^9.0.7",
     "@types/multer": "^1.4.13",
     "@types/node": "^22.10.0",
     "tsx": "^4.23.1",

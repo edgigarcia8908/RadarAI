@@ -1,8 +1,8 @@
 import { Inject, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { CeoStorageClient } from '@ceo-core/storage-client';
-import { CeoIntelligenceClient } from '@ceo-core/intelligence-client';
+import { CeoStorageClient } from '../lib/storage-client';
+import { CeoIntelligenceClient } from '../lib/intelligence-client';
 import { Veeduria, Comentario, Hallazgo } from './veeduria.schema';
 import { Proceso } from '../ingestion/proceso.schema';
 import { Contrato } from '../ingestion/contrato.schema';
