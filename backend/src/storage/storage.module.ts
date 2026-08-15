@@ -1,8 +1,10 @@
 import { Module } from '@nestjs/common';
-import { ceoStorageClientProvider, CEO_STORAGE_CLIENT } from './ceo-storage-client.provider';
+import { LocalStorageService } from './local-storage.service';
+import { StorageController } from './storage.controller';
 
 @Module({
-  providers: [ceoStorageClientProvider],
-  exports: [CEO_STORAGE_CLIENT],
+  controllers: [StorageController],
+  providers: [LocalStorageService],
+  exports: [LocalStorageService],
 })
 export class StorageModule {}

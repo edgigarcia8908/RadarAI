@@ -27,10 +27,17 @@ export interface DocumentoVeeduria {
   url: string;
   subidoPor: string;
   fecha: Date;
-  /** true si se pudo parsear+indexar en ceo-intelligence-service (RAG). false = solo queda el archivo, sin búsqueda por contenido. */
+  /** true si se pudo extraer texto del PDF y trocearlo para búsqueda (ver ChunkTexto). false = solo queda el archivo, sin búsqueda por contenido. */
   indexado: boolean;
-  /** Motivo si `indexado` es false (ej. "ceo-intelligence-service no disponible", "el PDF es escaneado, sin texto"). */
+  /** Motivo si `indexado` es false (ej. "PDF escaneado sin texto extraíble"). */
   motivoNoIndexado?: string;
+}
+
+export interface ChunkTexto {
+  archivo: string;
+  texto: string;
+  /** Version normalizada (sin tildes/mayúsculas) del texto — para buscar por palabras clave, ver `preguntarSobreDocumentos`. */
+  textoNormalizado: string;
 }
 
 /** Checklist por defecto — mismo que sugiere el documento de producto de RADAR. */
@@ -61,6 +68,8 @@ export class Veeduria extends Document {
   @Prop({ type: [Object], default: () => CHECKLIST_DEFAULT.map((c) => ({ ...c })) }) checklist: ChecklistItem[];
   /** Documentos subidos manualmente por un colaborador (ej. conseguidos por derecho de petición) — ver README, sección "documentos del proceso". */
   @Prop({ type: [Object], default: [] }) documentos: DocumentoVeeduria[];
+  /** Texto de los documentos, ya troceado — búsqueda local por palabras clave, sin base vectorial. */
+  @Prop({ type: [Object], default: [] }) chunksTexto: ChunkTexto[];
 
   /** Emails/nombres de quienes colaboran — Fase 1: sin cuentas reales vinculadas (ver README, auth no aplicado todavía). */
   @Prop({ type: [String], default: [] }) colaboradores: string[];

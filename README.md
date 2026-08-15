@@ -6,42 +6,43 @@ SECOP II, siguiendo el mismo estándar de arquitectura que el resto de
 Mongo, consumiendo los servicios centrales del ecosistema por HTTP en vez de
 duplicar código.
 
-## Repo autocontenido — sin dependencias privadas externas
+## Repo 100% autocontenido — cero servicios que no podés desplegar vos
 
-Este repo se comparte públicamente (hackathon), así que no depende de
-ningún paquete privado. Los 4 clientes delgados que hablan con los servicios
-centrales (`backend/src/lib/`) están vendorizados directo acá — son solo
-wrappers de fetch/JWT sin lógica de negocio (login vía JWT+JWKS,
-upload/download de archivos, llamadas a un LLM/RAG), nunca tuvieron
-secretos ni código propietario. Los servicios reales
-(`auth.ceoclick.pro`, `storage.ceoclick.pro`, etc.) siguen siendo privados y
-externos — este repo solo les habla por HTTP, igual que antes; lo único que
-cambió es que el código del *cliente* vive acá en vez de en un paquete
-aparte. `npm install` ya no necesita nada fuera de este repo ni de npm
-público.
+Este repo se comparte públicamente (hackathon), así que **nada** de lo que
+hace RadarAI depende de un servicio privado que solo el autor puede
+levantar. Todo corre en el mismo proceso, con `git clone` + `npm install`:
 
-## Servicios del ecosistema que usa
+- **Storage** (`src/storage/`) — antes pegaba a `ceo-storage-service`
+  (servicio privado del resto del ecosistema, con una llave de producción
+  que ni siquiera el autor tenía guardada localmente — se detectó un 401
+  real probándolo). Ahora es disco local dentro del propio proyecto
+  (`backend/uploads/`, gitignored) — `LocalStorageService` guarda/sirve
+  archivos, sin cuentas ni credenciales de terceros.
+- **Lectura de documentos e IA** (`src/lib/pdf.ts`, `src/lib/llm.ts`) —
+  antes pegaba a `ceo-intelligence-service` + Qdrant (tampoco desplegado,
+  ni verificable en esta máquina). Ahora:
+  - El texto del PDF se extrae en el mismo proceso con `pdf-parse` (npm
+    público, sin servicio externo).
+  - La búsqueda "semántica" sobre esos documentos es por palabras clave
+    (mismo criterio que ya usa `oportunidades.service.ts` para matching de
+    empresas) — sin base vectorial, sin Qdrant.
+  - La redacción con IA es **opcional**: si configurás tu propia
+    `ANTHROPIC_API_KEY` u `OPENAI_API_KEY` (APIs públicas estándar,
+    cualquiera puede sacar la suya), se llama directo a esa API. Sin
+    ninguna de las dos, todo sigue funcionando — con plantillas/fragmentos
+    en vez de redacción de IA.
+- **Auth** (`src/auth/`) — el único servicio externo real que queda es
+  `ceo-auth-service` (`auth.ceoclick.pro`, ya desplegado y público), y
+  **ningún endpoint lo exige todavía** — el guard está listo pero no
+  aplicado a ninguna ruta, así que no bloquea nada si no lo tocás.
+- Los 2 clientes delgados que sí hablan por HTTP con algo externo
+  (`src/lib/auth-client.ts`, `src/lib/database.ts` para el fix de DNS de
+  Windows) están vendorizados directo en este repo — sin depender de un
+  paquete privado.
 
-- **`ceo-auth-service`** (`https://auth.ceoclick.pro/api`, ya desplegado) —
-  login/roles. El guard está listo (`src/auth/`) pero **ningún endpoint lo
-  exige todavía** — Fase 1 igual que `ceo-ecosistema`, para que la demo no
-  dependa de tener sesión.
-- **`ceo-storage-service`** — el servicio está desplegado en
-  `storage.ceoclick.pro`, pero **su `STORAGE_SERVICE_KEY` de producción no
-  vive en ningún archivo local** (verificado a mano: la llave de
-  `ceo-storage-service/.env`, que usan varias apps del ecosistema en su
-  entorno de desarrollo, da 401 "Llave de servicio inválida" contra la URL
-  de producción). Por eso `backend/.env` apunta a
-  `http://localhost:4300/api` por default — correr
-  `cd C:\apps\ceo-storage-service && npm run dev` en paralelo. En
-  producción, pegar ahí la llave real del VPS. Ya conectado en código
-  (`src/storage/`) — subida de documentos a veedurías, ver más abajo.
-- **`ceo-intelligence-service`** — **NO está desplegado todavía**. RadarAI lo
-  usa para redactar la respuesta en lenguaje natural (`/ai/complete`); si no
-  está corriendo o no hay `INTELLIGENCE_SERVICE_KEY`, cae automáticamente a
-  una respuesta con plantilla (ver `civic-intel.service.ts` →
-  `redactarRespuesta`) — la demo funciona igual, solo con texto más plano.
-  Para tenerlo con IA real: `cd C:\apps\ceo-intelligence-service && npm run dev`.
+`npm install` ya no necesita nada fuera de este repo ni de npm público, y
+correrlo completo (`npm run dev`) no requiere levantar ningún otro proceso
+en paralelo.
 
 ## Fuente de datos: SECOP II real, sin scraping
 
@@ -178,24 +179,26 @@ tenga o no la intención de usarlo así.
 Lo que sí se construyó (`POST /veedurias/:id/documentos`): el colaborador
 consigue el PDF él mismo — pasa el captcha en su propio navegador, lo
 descarga, o lo consigue por derecho de petición — y lo sube a la veeduría.
-De ahí en adelante todo es automático:
-1. Sube a `ceo-storage-service` (URL firmada real) vía el cliente delgado
-   vendorizado en `backend/src/lib/storage-client.ts` (ver sección
-   "Repo autocontenido" más abajo).
-2. Si es PDF de texto, se parsea (`ceo-intelligence-service`) y se indexa
-   en una colección de Qdrant propia de esa veeduría (`veeduria_<id>`) vía
-   `ragIngest()`, en `backend/src/lib/intelligence-client.ts`.
-3. `POST /veedurias/:id/preguntar` — RAG real con citas sobre los
-   documentos ya indexados de esa veeduría.
+De ahí en adelante todo es automático y **100% local** (ver sección de
+arriba):
+1. Se guarda en `backend/uploads/` (`LocalStorageService`), servido de
+   vuelta por `GET /api/storage/:id`.
+2. Si es PDF de texto, se extrae con `pdf-parse` y se trocea
+   (`chunkTexto`) en `v.chunksTexto` — sin base vectorial.
+3. `POST /veedurias/:id/preguntar` — busca los chunks con más palabras en
+   común con la pregunta (mismo criterio de `normalizar()` que el resto del
+   proyecto) y, si hay `ANTHROPIC_API_KEY`/`OPENAI_API_KEY` configurada, le
+   pide a ese LLM que redacte la respuesta basada solo en esos chunks; si
+   no, devuelve los fragmentos tal cual.
 
-Si el parseo/indexado falla (servicio caído, PDF escaneado sin texto), el
-archivo se guarda igual con `indexado:false` y un motivo — nunca rompe la
-subida. Probado con `ceo-storage-service` corriendo en local: subida real,
-URL firmada funcional, fallback correcto sin `ceo-intelligence-service`
-corriendo. El indexado real (que sí necesita Qdrant) no se pudo verificar en
-esta sesión por no haber Qdrant/Docker disponible en esta máquina — el
-código está escrito y debería andar, pero eso específicamente queda como
-"no verificado", no como asumido.
+Si el parseo falla (PDF corrupto o escaneado sin texto), el archivo se
+guarda igual con `indexado:false` y un motivo — nunca rompe la subida.
+**Probado de punta a punta en esta sesión**, con `ceo-storage-service`
+detenido a propósito para confirmar que ya no hace falta: subida real a
+disco local (`GET /api/storage/:id` sirve el archivo, 200 OK), extracción
+de texto real de un PDF real (22 chunks), y `/preguntar` devolviendo
+fragmentos relevantes con citas — todo sin ningún servicio externo
+corriendo.
 
 ## Competencia histórica por categoría UNSPSC (ya no es aproximada)
 
@@ -222,11 +225,15 @@ haya más volumen ingerido (cron de ingesta, punto 1).
    que le da más volumen a la competencia por categoría UNSPSC.
 2. **Auth real conectado** — el guard existe, no está aplicado a ningún
    endpoint todavía (mismo estado que tenía `ceo-ecosistema` en su Fase 1).
-3. **Chunker semántico para RAG de documentos subidos** — cuando se conecte
-   `ceo-storage-service` + subida de PDFs a veedurías, el `/rag/ingest` de
-   `ceo-intelligence-service` trocea por caracteres, no por oración — puede
-   cortar mal, es una limitación conocida y documentada ahí mismo.
-4. **Configurar Virtualmin** — `deploy.sh` (raíz del repo) ya existe y sube
+3. **Búsqueda semántica real (embeddings) en vez de por palabras clave** —
+   tanto en documentos de veedurías como en matching de empresas, hoy es
+   overlap de palabras (`normalizar()`), no vectores. Mejora natural si se
+   agrega una API key de embeddings — ninguna base vectorial nueva hace
+   falta para eso, se puede resolver en memoria con pocos cientos de chunks.
+4. **Chunker semántico** — `chunkTexto()` trocea por caracteres, no por
+   oración/párrafo — puede cortar una oración a la mitad. Sirve para
+   indexar hoy sin agregar una dependencia nueva.
+5. **Configurar Virtualmin** — `deploy.sh` (raíz del repo) ya existe y sube
    backend+frontend con PM2, pero el proxy `/api -> :4500` del dominio
    `radar.ceoclick.pro` hay que crearlo a mano en Virtualmin (el script lo
    recuerda al final, no lo puede hacer solo).

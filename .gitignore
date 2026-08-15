@@ -4,3 +4,8 @@ dist
 !.env.example
 *.local
 tsconfig.tsbuildinfo
+
+# Archivos que suben los colaboradores de una veeduría — datos de
+# producción/pruebas locales, no código. En el VPS conviene moverlo fuera
+# del clon del repo (ver deploy.sh) para que sobreviva a un "git pull".
+backend/uploads/

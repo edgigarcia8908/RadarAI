@@ -16,13 +16,10 @@ echo "3. Variables de entorno del backend..."
 if [ ! -f backend/.env ]; then
     echo "   ⚠️ ADVERTENCIA: no existe backend/.env — créalo antes de que el backend arranque (ver backend/.env.example)."
 fi
-if ! grep -q "^STORAGE_SERVICE_KEY=" backend/.env 2>/dev/null || [ -z "$(grep '^STORAGE_SERVICE_KEY=' backend/.env | cut -d= -f2-)" ]; then
-    echo "   ⚠️ ADVERTENCIA: falta STORAGE_SERVICE_KEY en backend/.env."
+if ! grep -q "^ANTHROPIC_API_KEY=..*\|^OPENAI_API_KEY=..*" backend/.env 2>/dev/null; then
+    echo "   ℹ️  AVISO: sin ANTHROPIC_API_KEY/OPENAI_API_KEY — funciona igual, con plantillas en vez de redacción de IA."
 fi
-if ! grep -q "^CEO_INTELLIGENCE_SERVICE_URL=" backend/.env 2>/dev/null || grep -q "^CEO_INTELLIGENCE_SERVICE_URL=http://localhost" backend/.env 2>/dev/null; then
-    echo "   ⚠️ AVISO: CEO_INTELLIGENCE_SERVICE_URL sigue apuntando a localhost — mientras ese servicio"
-    echo "   no esté desplegado, las respuestas usan la plantilla sin IA (funciona igual, sin redacción de IA)."
-fi
+mkdir -p backend/uploads
 
 echo "4. Compilando backend..."
 (cd backend && npm run build) || true

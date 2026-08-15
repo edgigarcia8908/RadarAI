@@ -1,10 +1,9 @@
-import { Inject, Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Proceso } from '../ingestion/proceso.schema';
 import { Contrato } from '../ingestion/contrato.schema';
-import { CeoIntelligenceClient } from '../lib/intelligence-client';
-import { CEO_INTELLIGENCE_CLIENT } from '../intelligence/ceo-intelligence-client.provider';
+import { completar } from '../lib/llm';
 import { normalizar } from '../common/normalizar';
 
 export interface ConsultaInput {
@@ -34,7 +33,6 @@ export class CivicIntelService {
   constructor(
     @InjectModel(Proceso.name) private readonly procesoModel: Model<Proceso>,
     @InjectModel(Contrato.name) private readonly contratoModel: Model<Contrato>,
-    @Inject(CEO_INTELLIGENCE_CLIENT) private readonly intelligence: CeoIntelligenceClient,
   ) {}
 
   /** Compara siempre contra los campos *Normalizado guardados en la ingesta — ignora tildes/mayúsculas/puntuación. */
@@ -203,25 +201,22 @@ export class CivicIntelService {
     });
   }
 
-  /** Si ceo-intelligence-service está disponible (URL+key configuradas), redacta con IA; si no, usa una plantilla simple. */
+  /** Si hay ANTHROPIC_API_KEY/OPENAI_API_KEY configurada, redacta con IA (llamada directa, ver lib/llm.ts); si no, usa una plantilla simple. */
   private async redactarRespuesta(input: ConsultaInput, resumen: Record<string, unknown>, hallazgos: Hallazgo[]): Promise<string> {
     const plantilla = () =>
       `En ${resumen.territorio}, sobre "${input.tema}", encontramos ${resumen.totalContratos} contratos por un total de $${Number(resumen.valorTotalContratado).toLocaleString('es-CO')} con ${resumen.proveedoresUnicos} proveedores distintos.` +
       (hallazgos.length ? ` Encontramos ${hallazgos.length} aspecto(s) que pueden ser relevantes para una veeduría.` : ' No se detectaron patrones inusuales con los datos disponibles.');
 
-    if (!process.env.INTELLIGENCE_SERVICE_KEY) return plantilla();
-
     try {
-      const result = await this.intelligence.aiComplete({
-        provider: 'anthropic',
+      const respuesta = await completar({
         system:
           'Sos el asistente cívico de RADAR. Respondés en español, en 3-4 frases, tono claro para un ciudadano sin conocimientos técnicos de contratación pública. Basate SOLO en los datos que te dan, no inventes cifras.',
         prompt: `Pregunta del ciudadano: "${input.pregunta}"\n\nDatos agregados: ${JSON.stringify(resumen)}\n\nHallazgos detectados: ${JSON.stringify(hallazgos.map((h) => ({ titulo: h.titulo, detalle: h.detalle })))}`,
         maxTokens: 300,
       });
-      return result.content;
+      return respuesta ?? plantilla();
     } catch (err) {
-      this.logger.warn(`No se pudo redactar con IA (¿ceo-intelligence-service caído/no desplegado?): ${(err as Error).message}`);
+      this.logger.warn(`No se pudo redactar con IA: ${(err as Error).message}`);
       return plantilla();
     }
   }
