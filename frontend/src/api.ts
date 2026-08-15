@@ -328,6 +328,28 @@ export function verificarSigep(nombres: string[]): Promise<Record<string, Puesto
   }).then(manejar);
 }
 
+export interface ProyectoRegalias {
+  nombre: string;
+  entidadEjecutora: string;
+  valorTotal: number;
+  estado: string;
+  sector: string;
+  ejecucionFinanciera: number | null;
+  ejecucionFisica: number | null;
+  brechaEjecucion: number | null;
+}
+
+export interface ContextoTerritorial {
+  ciudad: string;
+  desempenoMunicipal: { anio: string | null; puntaje: number | null };
+  proyectosRegalias: ProyectoRegalias[];
+  alerta: string | null;
+}
+
+export function obtenerContextoTerritorial(ciudad: string): Promise<ContextoTerritorial> {
+  return fetch(`/api/territorio/contexto?ciudad=${encodeURIComponent(ciudad)}`).then(manejar);
+}
+
 export function generarEstudioMercado(input: {
   objeto: string;
   departamento?: string;

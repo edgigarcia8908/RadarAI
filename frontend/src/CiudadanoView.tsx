@@ -1,9 +1,10 @@
 import { useMemo, useState } from 'react';
-import { consultar, crearVeeduria, obtenerPresupuestoCuipo, sincronizar, verificarSiri, verificarSigep, ConsultaResultado, EstadoPresupuestal, Hallazgo, SancionSiri, PuestoSensible } from './api';
+import { consultar, crearVeeduria, obtenerPresupuestoCuipo, obtenerContextoTerritorial, sincronizar, verificarSiri, verificarSigep, ConsultaResultado, EstadoPresupuestal, ContextoTerritorial, Hallazgo, SancionSiri, PuestoSensible } from './api';
 import colombia from './colombia.json';
 import BotonUbicacion from './BotonUbicacion';
 import ContratoCard from './ContratoCard';
 import PresupuestoCard from './PresupuestoCard';
+import ContextoTerritorialCard from './ContextoTerritorialCard';
 
 interface DeptoColombia {
   departamento: string;
@@ -36,6 +37,7 @@ export default function CiudadanoView({ onRevisar }: { onRevisar: (veeduriaId: s
   const [error, setError] = useState<string | null>(null);
   const [resultado, setResultado] = useState<ConsultaResultado | null>(null);
   const [presupuesto, setPresupuesto] = useState<EstadoPresupuestal | null>(null);
+  const [contexto, setContexto] = useState<ContextoTerritorial | null>(null);
   const [sanciones, setSanciones] = useState<Record<string, SancionSiri[]>>({});
   const [puestosSensibles, setPuestosSensibles] = useState<Record<string, PuestoSensible[]>>({});
   const [syncInfo, setSyncInfo] = useState<string | null>(null);
@@ -79,6 +81,7 @@ export default function CiudadanoView({ onRevisar }: { onRevisar: (veeduriaId: s
     setError(null);
     setResultado(null);
     setPresupuesto(null);
+    setContexto(null);
     setSanciones({});
     setPuestosSensibles({});
     try {
@@ -101,6 +104,11 @@ export default function CiudadanoView({ onRevisar }: { onRevisar: (veeduriaId: s
       setPresupuesto(p);
     } catch {
       // silencioso: CUIPO es un "extra", no bloquea el flujo ciudadano principal
+    }
+    try {
+      setContexto(await obtenerContextoTerritorial(ciudad));
+    } catch {
+      // silencioso: contexto territorial (MDM + regalías) también es un "extra"
     }
   }
 
@@ -175,6 +183,13 @@ export default function CiudadanoView({ onRevisar }: { onRevisar: (veeduriaId: s
             <>
               <h3 style={{ marginTop: 24 }}>Presupuesto vs. contratación</h3>
               <PresupuestoCard p={presupuesto} />
+            </>
+          )}
+
+          {contexto && (
+            <>
+              <h3 style={{ marginTop: 24 }}>Contexto territorial</h3>
+              <ContextoTerritorialCard ctx={contexto} />
             </>
           )}
 

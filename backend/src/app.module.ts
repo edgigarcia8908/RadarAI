@@ -11,6 +11,7 @@ import { EstudiosMercadoModule } from './estudios-mercado/estudios-mercado.modul
 import { CuipoModule } from './cuipo/cuipo.module';
 import { SiriModule } from './siri/siri.module';
 import { SigepModule } from './sigep/sigep.module';
+import { TerritorioModule } from './territorio/territorio.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { SigepModule } from './sigep/sigep.module';
     CuipoModule,
     SiriModule,
     SigepModule,
+    TerritorioModule,
   ],
 })
 export class AppModule {}

@@ -39,8 +39,8 @@ de un usuario que compartió esta tabla:
 | **SIRI** (sanciones disciplinarias) | `iaeu-rcn6` | ✅ Integrado — cruza representante legal/ordenador del gasto contra sancionados (coincidencia de nombre, ver sección abajo) |
 | **SIGEP II — puestos sensibles a corrupción** | `5u9e-g5w9` | ✅ Integrado — cruza ordenador del gasto/supervisor contra cargos de confianza (informativo, no acusatorio) |
 | SIGEP II — servidores en general + declaración de bienes | `h8rs-jxum`, `8tz7-h3eu` | Investigado, pendiente — declaración de bienes se dejó fuera por ahora: el riesgo de atribuirle datos financieros de OTRA persona a alguien por coincidencia de nombre es mayor que con cargo/salario público |
-| SGR/SUIFP (regalías) | `mzgh-shtp` + `qkv4-ek54` | Investigado, pendiente |
-| TerriData (indicadores territoriales) | `64cq-xb2k` | Investigado, pendiente — daría contexto socioeconómico al mapa de riesgo |
+| **SGR** (proyectos de regalías) | `mzgh-shtp` | ✅ Integrado — % ejecución financiera vs. física por proyecto |
+| **MDM** (Medición del Desempeño Municipal, reemplazo vigente de TerriData) | `nkjx-rsq7` | ✅ Integrado — TerriData (`64cq-xb2k`) ya no existe (404), este es el índice DNP vigente |
 | Cuentas Claras (financiación de campañas) | Solo encontramos `jgra-rz2t` (2019, local) — nada nacional/reciente vía API | Baja prioridad, datos viejos |
 | PACO / Contraloría (hallazgos fiscales) | Solo descarga CSV/ZIP directa (sin API), hallazgos fragmentados por contraloría departamental | Requeriría scraper propio, no se hizo |
 
@@ -110,6 +110,33 @@ Se dejó fuera, a propósito, la **declaración de bienes y rentas**
 patrimoniales más sensibles — el riesgo de mostrarle el patrimonio de una
 persona equivocada a un ciudadano por una coincidencia de nombre pesa más
 que el valor agregado, así que no se integró en esta pasada.
+
+## Contexto territorial: SGR (regalías) + MDM (`src/territorio/`)
+
+`GET /api/territorio/contexto?ciudad=` combina dos fuentes DNP que no
+dependen de SECOP:
+
+- **SGR** (`mzgh-shtp`): proyectos financiados con el Sistema General de
+  Regalías en el municipio, con **% de ejecución financiera vs. física**
+  por proyecto — algo que SECOP no tiene. Si un proyecto está pagado casi
+  al 100% pero construido a mitad, se marca como brecha (>30 puntos) y
+  dispara alerta — señal clásica de sobrecosto u obra inconclusa.
+  Verificado con datos reales: Chalán (Sucre) tiene 24 proyectos activos,
+  uno con 71% pagado y solo 48% construido.
+- **MDM** (`nkjx-rsq7`, indicador `MDM`): índice DNP 0-100 de qué tan bien
+  gestiona el municipio en general — contexto para juzgar si lo que se ve
+  en SECOP/CUIPO es consistente con la capacidad de gestión del
+  territorio. Es el reemplazo vigente de **TerriData**: el dataset
+  original investigado (`64cq-xb2k`) ya no existe (404 al consultarlo).
+
+Nota de matching: el dataset SGR guarda nombres de municipio SIN tildes
+("CHALAN"), mientras que SECOP/el resto de la app usa nombres con tildes
+("Chalán") — se descubrió al probar y quitar tildes antes de armar el
+filtro SoQL (mismo tipo de problema que Bogotá/Cundinamarca, cada fuente
+tiene su propia convención de texto).
+
+Se muestra junto al presupuesto CUIPO en `CiudadanoView` como panel
+"Contexto territorial" (`ContextoTerritorialCard.tsx`).
 
 ## Repo 100% autocontenido — cero servicios que no podés desplegar vos
 
