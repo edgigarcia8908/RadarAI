@@ -265,6 +265,49 @@ export function obtenerPresupuestoCuipo(input: { departamento?: string; ciudad: 
   return fetch(`/api/cuipo/presupuesto?${params.toString()}`).then(manejar);
 }
 
+export interface SancionSiri {
+  nombreCompleto: string;
+  cargo: string;
+  sanciones: string;
+  tipoInhabilidad: string;
+  autoridad: string;
+  fechaEfectosJuridicos: string;
+  entidadSancionado: string;
+  numeroProceso: string;
+}
+
+export function verificarSiri(nombres: string[]): Promise<Record<string, SancionSiri[]>> {
+  if (nombres.length === 0) return Promise.resolve({});
+  return fetch('/api/siri/verificar', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ nombres }),
+  }).then(manejar);
+}
+
+export interface PerfilFuncionario {
+  nombre: string;
+  totalContratos: number;
+  valorTotal?: number;
+  municipios: { departamento: string; ciudad: string; contratos: number }[];
+  proveedoresFrecuentes: { nombre: string; contratos: number; valorTotal: number; municipios: string[] }[];
+  contratos: {
+    idContrato: string;
+    nombreEntidad: string;
+    ciudad: string;
+    departamento: string;
+    proveedorAdjudicado: string;
+    valorDelContrato: number;
+    fechaDeFirma: string | null;
+    urlProceso?: string;
+  }[];
+  alerta: string | null;
+}
+
+export function obtenerPerfilFuncionario(nombre: string): Promise<PerfilFuncionario> {
+  return fetch(`/api/civic-intel/funcionario?nombre=${encodeURIComponent(nombre)}`).then(manejar);
+}
+
 export function generarEstudioMercado(input: {
   objeto: string;
   departamento?: string;

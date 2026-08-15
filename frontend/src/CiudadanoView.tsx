@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { consultar, crearVeeduria, obtenerPresupuestoCuipo, sincronizar, ConsultaResultado, EstadoPresupuestal, Hallazgo } from './api';
+import { consultar, crearVeeduria, obtenerPresupuestoCuipo, sincronizar, verificarSiri, ConsultaResultado, EstadoPresupuestal, Hallazgo, SancionSiri } from './api';
 import colombia from './colombia.json';
 import BotonUbicacion from './BotonUbicacion';
 import ContratoCard from './ContratoCard';
@@ -36,6 +36,7 @@ export default function CiudadanoView({ onRevisar }: { onRevisar: (veeduriaId: s
   const [error, setError] = useState<string | null>(null);
   const [resultado, setResultado] = useState<ConsultaResultado | null>(null);
   const [presupuesto, setPresupuesto] = useState<EstadoPresupuestal | null>(null);
+  const [sanciones, setSanciones] = useState<Record<string, SancionSiri[]>>({});
   const [syncInfo, setSyncInfo] = useState<string | null>(null);
   const [creandoVeeduria, setCreandoVeeduria] = useState<number | null>(null);
 
@@ -77,9 +78,13 @@ export default function CiudadanoView({ onRevisar }: { onRevisar: (veeduriaId: s
     setError(null);
     setResultado(null);
     setPresupuesto(null);
+    setSanciones({});
     try {
       const r = await consultar({ departamento, ciudad, tema, pregunta, fechaDesde, fechaHasta });
       setResultado(r);
+      // Cruce SIRI: nombres únicos de firmantes/ordenadores del gasto de los contratos ya cargados.
+      const nombres = [...new Set(r.evidenciaContratos.flatMap((c) => [c.nombreRepresentanteLegal, c.nombreOrdenadorDelGasto]).filter((n): n is string => !!n))];
+      verificarSiri(nombres).then(setSanciones).catch(() => {});
     } catch (e: any) {
       setError(e.message);
     } finally {
@@ -202,7 +207,7 @@ export default function CiudadanoView({ onRevisar }: { onRevisar: (veeduriaId: s
             <>
               <h3 style={{ marginTop: 24 }}>Contratos ({resultado.evidenciaContratos.length})</h3>
               {resultado.evidenciaContratos.map((c) => (
-                <ContratoCard key={c.idContrato} c={c} />
+                <ContratoCard key={c.idContrato} c={c} sanciones={sanciones} />
               ))}
             </>
           )}

@@ -36,7 +36,7 @@ de un usuario que compartió esta tabla:
 | Fuente | Dataset usado | Estado |
 | --- | --- | --- |
 | **CUIPO** (presupuesto territorial) | `d9mu-h6ar` (programación de gastos) + `4f7r-epif` (ejecución de gastos) | ✅ Integrado |
-| SIRI (sanciones disciplinarias) | `iaeu-rcn6` | Investigado, pendiente de integrar — cruzaría representante legal/ordenador del gasto de cada contrato contra sancionados |
+| **SIRI** (sanciones disciplinarias) | `iaeu-rcn6` | ✅ Integrado — cruza representante legal/ordenador del gasto contra sancionados (coincidencia de nombre, ver sección abajo) |
 | SIGEP II (servidores + puestos sensibles a corrupción + declaración de bienes) | `h8rs-jxum`, `5u9e-g5w9`, `8tz7-h3eu` | Investigado, pendiente |
 | SGR/SUIFP (regalías) | `mzgh-shtp` + `qkv4-ek54` | Investigado, pendiente |
 | TerriData (indicadores territoriales) | `64cq-xb2k` | Investigado, pendiente — daría contexto socioeconómico al mapa de riesgo |
@@ -59,6 +59,37 @@ Se muestra en `CiudadanoView` como panel "Presupuesto vs. contratación"
 junto a los resultados de cada consulta — si CUIPO no tiene reportes para
 esa entidad (nombre no coincide, o no reporta), no rompe el flujo, solo
 muestra un mensaje.
+
+## SIRI (sanciones disciplinarias) + perfil cruzado de funcionario
+
+Dos features nuevas sobre la misma idea: cruzar la IDENTIDAD de quien firma
+un contrato contra otras fuentes, no solo el territorio.
+
+**SIRI** (`src/siri/`, dataset `iaeu-rcn6`, el mismo que alimenta PACO):
+`POST /api/siri/verificar { nombres: string[] }` busca cada nombre en el
+registro de sanciones disciplinarias y devuelve coincidencias. El cruce es
+por NOMBRE — SECOP no trae cédula del firmante/ordenador del gasto, así
+que **nunca se afirma identidad**, solo "coincidencia de nombre a
+verificar" (se exige que 3+ palabras del nombre buscado, de 4+ caracteres,
+aparezcan en el registro SIRI, para evitar falsos positivos por un solo
+apellido común). Se llama automáticamente al cargar resultados en
+`CiudadanoView` y `VeeduriasView`, mostrando una alerta roja en
+`ContratoCard` cuando hay coincidencia. Verificado con datos reales del
+dataset (nombre de prueba con sanción real de 2005).
+
+**Perfil de funcionario** (`CivicIntelService.perfilFuncionario`, `GET
+/api/civic-intel/funcionario?nombre=`): a pedido de retroalimentación —
+"¿un empleado que ha pasado por varios municipios siempre contrata a los
+mismos proveedores?". Busca TODO lo sincronizado (no solo el territorio
+consultado) donde la persona aparece como supervisor u ordenador del
+gasto, agrupa por municipio y por proveedor, y si el mismo proveedor
+aparece en 2+ municipios distintos bajo el mismo funcionario, dispara una
+alerta explícita — la huella de una red que sigue al funcionario, no al
+municipio. Botón "🔍 Ver historial" bajo demanda en `ContratoCard`
+(PerfilFuncionario.tsx), no automático porque implica una consulta
+cruzada más pesada. Con un solo municipio sincronizado, hoy solo confirma
+el conteo de contratos por persona; el cruce entre municipios se vuelve
+útil en cuanto se sincroniza más de un territorio.
 
 ## Repo 100% autocontenido — cero servicios que no podés desplegar vos
 

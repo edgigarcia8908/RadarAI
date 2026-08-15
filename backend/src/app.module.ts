@@ -9,6 +9,7 @@ import { VeeduriasModule } from './veedurias/veedurias.module';
 import { StorageModule } from './storage/storage.module';
 import { EstudiosMercadoModule } from './estudios-mercado/estudios-mercado.module';
 import { CuipoModule } from './cuipo/cuipo.module';
+import { SiriModule } from './siri/siri.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { CuipoModule } from './cuipo/cuipo.module';
     StorageModule,
     EstudiosMercadoModule,
     CuipoModule,
+    SiriModule,
   ],
 })
 export class AppModule {}

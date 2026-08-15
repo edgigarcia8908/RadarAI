@@ -7,6 +7,7 @@ export interface ContratoInfo {
   nombreRepresentanteLegal?: string;
   nombreOrdenadorDelGasto?: string;
   nombreOrdenadorDePago?: string;
+  nombreSupervisor?: string;
   estadoContrato: string;
   fechaDeFirma: string | null;
   fechaDeInicio: string | null;

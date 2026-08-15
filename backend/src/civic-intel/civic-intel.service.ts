@@ -205,6 +205,94 @@ export class CivicIntelService {
     });
   }
 
+  /**
+   * Perfil de un funcionario (supervisor u ordenador del gasto) A TRAVÉS DE
+   * TODO EL TERRITORIO ya sincronizado — no solo el municipio consultado.
+   * Responde algo que ninguna consulta por territorio puede sola: si esta
+   * persona pasó por varios municipios/entidades, ¿siempre termina
+   * contratando a los mismos proveedores? Eso es la huella de una red que
+   * "sigue" al funcionario, no al municipio.
+   *
+   * Coincidencia por NOMBRE (SECOP no trae cédula del supervisor) — mismo
+   * disclaimer que SIRI: nombres comunes pueden mezclar dos personas
+   * distintas, por eso se exige coincidencia normalizada completa, no
+   * parcial.
+   */
+  async perfilFuncionario(nombre: string) {
+    const nombreNorm = normalizar(nombre);
+    if (nombreNorm.length < 4) return { nombre, totalContratos: 0, municipios: [], proveedoresFrecuentes: [], contratos: [], alerta: null };
+
+    // Prefiltro barato con regex por el último token (apellido, normalmente
+    // más distintivo) para no traer todo Mongo — la igualdad real se valida
+    // después, normalizada, en memoria.
+    const tokens = nombreNorm.split(' ').filter((t) => t.length >= 3);
+    const tokenBusqueda = tokens[tokens.length - 1] ?? nombreNorm;
+    const regex = new RegExp(tokenBusqueda, 'i');
+
+    const candidatos = await this.contratoModel
+      .find({ $or: [{ nombreSupervisor: regex }, { nombreOrdenadorDelGasto: regex }] })
+      .lean<Contrato[]>();
+
+    const contratos = candidatos.filter(
+      (c) => normalizar(c.nombreSupervisor) === nombreNorm || normalizar(c.nombreOrdenadorDelGasto) === nombreNorm,
+    );
+
+    if (contratos.length === 0) {
+      return { nombre, totalContratos: 0, municipios: [], proveedoresFrecuentes: [], contratos: [], alerta: null };
+    }
+
+    const municipios = new Map<string, { departamento: string; ciudad: string; contratos: number }>();
+    const porProveedor = new Map<string, { nombre: string; contratos: number; valorTotal: number; municipios: Set<string> }>();
+    let valorTotal = 0;
+    for (const c of contratos) {
+      const keyMunicipio = `${c.departamento}|||${c.ciudad}`;
+      if (!municipios.has(keyMunicipio)) municipios.set(keyMunicipio, { departamento: c.departamento, ciudad: c.ciudad, contratos: 0 });
+      municipios.get(keyMunicipio)!.contratos++;
+
+      const keyProveedor = c.nitProveedor || c.proveedorAdjudicado;
+      if (keyProveedor) {
+        if (!porProveedor.has(keyProveedor)) porProveedor.set(keyProveedor, { nombre: c.proveedorAdjudicado, contratos: 0, valorTotal: 0, municipios: new Set() });
+        const entry = porProveedor.get(keyProveedor)!;
+        entry.contratos++;
+        entry.valorTotal += c.valorDelContrato || 0;
+        entry.municipios.add(c.ciudad);
+      }
+      valorTotal += c.valorDelContrato || 0;
+    }
+
+    const proveedoresFrecuentes = [...porProveedor.values()]
+      .map((p) => ({ nombre: p.nombre, contratos: p.contratos, valorTotal: p.valorTotal, municipios: [...p.municipios] }))
+      .sort((a, b) => b.contratos - a.contratos)
+      .slice(0, 10);
+
+    const municipiosList = [...municipios.values()];
+    // La señal fuerte: un proveedor que aparece en 2+ municipios DISTINTOS bajo el mismo funcionario.
+    const proveedorMultiMunicipio = proveedoresFrecuentes.find((p) => p.municipios.length >= 2);
+    const alerta =
+      municipiosList.length >= 2 && proveedorMultiMunicipio
+        ? `${nombre} aparece como supervisor/ordenador del gasto en ${municipiosList.length} municipios distintos, y el proveedor "${proveedorMultiMunicipio.nombre}" lo acompaña en ${proveedorMultiMunicipio.municipios.length} de ellos (${proveedorMultiMunicipio.municipios.join(', ')}) — posible red que sigue al funcionario, no al municipio.`
+        : null;
+
+    return {
+      nombre,
+      totalContratos: contratos.length,
+      valorTotal,
+      municipios: municipiosList,
+      proveedoresFrecuentes,
+      contratos: contratos.slice(0, 30).map((c) => ({
+        idContrato: c.idContrato,
+        nombreEntidad: c.nombreEntidad,
+        ciudad: c.ciudad,
+        departamento: c.departamento,
+        proveedorAdjudicado: c.proveedorAdjudicado,
+        valorDelContrato: c.valorDelContrato,
+        fechaDeFirma: c.fechaDeFirma,
+        urlProceso: c.urlProceso,
+      })),
+      alerta,
+    };
+  }
+
   /** Si hay ANTHROPIC_API_KEY/OPENAI_API_KEY configurada, redacta con IA (llamada directa, ver lib/llm.ts); si no, usa una plantilla simple. */
   private async redactarRespuesta(input: ConsultaInput, resumen: Record<string, unknown>, hallazgos: Hallazgo[]): Promise<string> {
     const plantilla = () =>

@@ -8,7 +8,9 @@ import {
   obtenerVeeduria,
   preguntarSobreDocumentos,
   subirDocumento,
+  verificarSiri,
   EvidenciaDetalle,
+  SancionSiri,
   Veeduria,
 } from './api';
 import ContratoCard from './ContratoCard';
@@ -98,6 +100,7 @@ function NuevaVeeduria({ onCreada, onCancelar }: { onCreada: (id: string) => voi
 function DetalleVeeduria({ id, onVolver }: { id: string; onVolver: () => void }) {
   const [v, setV] = useState<Veeduria | null>(null);
   const [evidencia, setEvidencia] = useState<EvidenciaDetalle | null>(null);
+  const [sanciones, setSanciones] = useState<Record<string, SancionSiri[]>>({});
   const [error, setError] = useState<string | null>(null);
   const [nuevoComentario, setNuevoComentario] = useState('');
   const [autor, setAutor] = useState('');
@@ -108,7 +111,11 @@ function DetalleVeeduria({ id, onVolver }: { id: string; onVolver: () => void })
 
   function recargar() {
     obtenerVeeduria(id).then(setV).catch((e) => setError(e.message));
-    obtenerEvidenciaDetalle(id).then(setEvidencia).catch(() => {});
+    obtenerEvidenciaDetalle(id).then((ev) => {
+      setEvidencia(ev);
+      const nombres = [...new Set(ev.contratos.flatMap((c) => [c.nombreRepresentanteLegal, c.nombreOrdenadorDelGasto]).filter((n): n is string => !!n))];
+      verificarSiri(nombres).then(setSanciones).catch(() => {});
+    }).catch(() => {});
   }
   useEffect(recargar, [id]);
 
@@ -189,7 +196,7 @@ function DetalleVeeduria({ id, onVolver }: { id: string; onVolver: () => void })
       {evidencia && evidencia.contratos.length > 0 && (
         <div style={{ marginBottom: 12 }}>
           {evidencia.contratos.map((c) => (
-            <ContratoCard key={c.idContrato} c={c} />
+            <ContratoCard key={c.idContrato} c={c} sanciones={sanciones} />
           ))}
         </div>
       )}
