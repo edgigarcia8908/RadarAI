@@ -14,6 +14,9 @@ export interface ConsultaInput {
   tema: string;
   /** La pregunta completa del ciudadano, se le pasa tal cual al LLM para redactar la respuesta. */
   pregunta: string;
+  /** 'YYYY-MM-DD' — filtra sobre lo ya sincronizado en Mongo (independiente del rango usado al sincronizar). */
+  fechaDesde?: string;
+  fechaHasta?: string;
 }
 
 interface Hallazgo {
@@ -111,9 +114,17 @@ export class CivicIntelService {
       filtroContratos.textoNormalizado = temaRegex;
     }
 
+    if (input.fechaDesde || input.fechaHasta) {
+      const rango: Record<string, Date> = {};
+      if (input.fechaDesde) rango.$gte = new Date(`${input.fechaDesde}T00:00:00`);
+      if (input.fechaHasta) rango.$lte = new Date(`${input.fechaHasta}T23:59:59`);
+      filtroProcesos.fechaPublicacion = rango;
+      filtroContratos.fechaDeFirma = rango;
+    }
+
     const [procesos, contratos] = await Promise.all([
-      this.procesoModel.find(filtroProcesos).limit(500).lean<Proceso[]>(),
-      this.contratoModel.find(filtroContratos).limit(500).lean<Contrato[]>(),
+      this.procesoModel.find(filtroProcesos).sort({ fechaPublicacion: -1 }).limit(500).lean<Proceso[]>(),
+      this.contratoModel.find(filtroContratos).sort({ fechaDeFirma: -1 }).limit(500).lean<Contrato[]>(),
     ]);
 
     const valorTotal = contratos.reduce((s, c) => s + (c.valorDelContrato || 0), 0);

@@ -4,6 +4,8 @@ import { AuthModule } from './auth/auth.module';
 import { IngestionModule } from './ingestion/ingestion.module';
 import { IntelligenceModule } from './intelligence/intelligence.module';
 import { CivicIntelModule } from './civic-intel/civic-intel.module';
+import { EmpresasModule } from './empresas/empresas.module';
+import { OportunidadesModule } from './oportunidades/oportunidades.module';
 
 @Module({
   imports: [
@@ -12,6 +14,8 @@ import { CivicIntelModule } from './civic-intel/civic-intel.module';
     IngestionModule,
     IntelligenceModule,
     CivicIntelModule,
+    EmpresasModule,
+    OportunidadesModule,
   ],
 })
 export class AppModule {}

@@ -15,6 +15,9 @@ export interface FiltroTerritorio {
   ciudad?: string;
   /** Texto libre: se manda como $q de Socrata (full-text sobre todas las columnas). */
   tema?: string;
+  /** 'YYYY-MM-DD'. Sin esto, Socrata devuelve por defecto lo más reciente por fecha, pero puede incluir contratos de años viejos si hay poco volumen reciente en el territorio — mejor filtrar explícito. */
+  fechaDesde?: string;
+  fechaHasta?: string;
   limit?: number;
 }
 
@@ -40,16 +43,23 @@ export class IngestionService {
    * contractuales en mayúsculas, sin tildes, etc. — ahí `upper()` no
    * alcanza porque el problema no es solo mayúsculas sino tildes).
    */
-  private construirWhere(filtro: FiltroTerritorio, campoDepartamento: string, campoCiudad: string): string[] {
+  private construirWhere(
+    filtro: FiltroTerritorio,
+    campoDepartamento: string,
+    campoCiudad: string,
+    campoFecha: string,
+  ): string[] {
     const where: string[] = [];
     if (filtro.departamento) where.push(`upper(${campoDepartamento}) = upper('${soqlString(filtro.departamento)}')`);
     if (filtro.ciudad) where.push(`upper(${campoCiudad}) = upper('${soqlString(filtro.ciudad)}')`);
+    if (filtro.fechaDesde) where.push(`${campoFecha} >= '${soqlString(filtro.fechaDesde)}T00:00:00'`);
+    if (filtro.fechaHasta) where.push(`${campoFecha} <= '${soqlString(filtro.fechaHasta)}T23:59:59'`);
     return where;
   }
 
   async sincronizarProcesos(filtro: FiltroTerritorio) {
     const rows = await this.procesosClient.fetchRows({
-      where: this.construirWhere(filtro, 'departamento_entidad', 'ciudad_entidad'),
+      where: this.construirWhere(filtro, 'departamento_entidad', 'ciudad_entidad', 'fecha_de_publicacion_del'),
       // NO mandamos `tema` como $q acá a propósito: Socrata `$q` con 2+
       // palabras exige casi frase exacta (probado a mano: "mantenimiento
       // colegios" da 0 resultados aunque "mantenimiento" solo da 172) — muy
@@ -101,7 +111,7 @@ export class IngestionService {
 
   async sincronizarContratos(filtro: FiltroTerritorio) {
     const rows = await this.contratosClient.fetchRows({
-      where: this.construirWhere(filtro, 'departamento', 'ciudad'),
+      where: this.construirWhere(filtro, 'departamento', 'ciudad', 'fecha_de_firma'),
       limit: filtro.limit ?? 500,
       order: 'fecha_de_firma DESC',
     });

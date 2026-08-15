@@ -1,136 +1,38 @@
-import { useMemo, useState } from 'react';
-import { consultar, sincronizar, ConsultaResultado } from './api';
-import colombia from './colombia.json';
+import { useState } from 'react';
+import CiudadanoView from './CiudadanoView';
+import EmpresaView from './EmpresaView';
 
-interface DeptoColombia {
-  departamento: string;
-  ciudades: string[];
-}
-const DEPARTAMENTOS = colombia as DeptoColombia[];
+type Modo = 'home' | 'ciudadano' | 'empresa';
 
 export default function App() {
-  const [departamento, setDepartamento] = useState('Cundinamarca');
-  const [ciudad, setCiudad] = useState('Tocancipá');
-  const ciudadesDisponibles = useMemo(
-    () => DEPARTAMENTOS.find((d) => d.departamento === departamento)?.ciudades ?? [],
-    [departamento],
-  );
-  const [tema, setTema] = useState('mantenimiento de colegios');
-  const [pregunta, setPregunta] = useState('¿Cuánto ha gastado el municipio en mantenimiento de colegios este año?');
-  const [cargandoSync, setCargandoSync] = useState(false);
-  const [cargandoConsulta, setCargandoConsulta] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [resultado, setResultado] = useState<ConsultaResultado | null>(null);
-  const [syncInfo, setSyncInfo] = useState<string | null>(null);
-
-  async function handleSync() {
-    setCargandoSync(true);
-    setError(null);
-    try {
-      const r = await sincronizar({ departamento, ciudad, tema });
-      setSyncInfo(`Traídos de SECOP: ${r.procesos} procesos, ${r.contratos} contratos.`);
-    } catch (e: any) {
-      setError(e.message);
-    } finally {
-      setCargandoSync(false);
-    }
-  }
-
-  async function handleConsultar() {
-    setCargandoConsulta(true);
-    setError(null);
-    setResultado(null);
-    try {
-      const r = await consultar({ departamento, ciudad, tema, pregunta });
-      setResultado(r);
-    } catch (e: any) {
-      setError(e.message);
-    } finally {
-      setCargandoConsulta(false);
-    }
-  }
+  const [modo, setModo] = useState<Modo>('home');
 
   return (
     <div style={{ maxWidth: 720, margin: '40px auto', fontFamily: 'system-ui, sans-serif', padding: '0 16px' }}>
-      <h1>🛰️ RADAR — demo ciudadano</h1>
-      <p style={{ color: '#555' }}>Inteligencia pública sobre contratación estatal, con datos reales de SECOP II (datos.gov.co).</p>
+      {modo !== 'home' && (
+        <button onClick={() => setModo('home')} style={{ marginBottom: 16, background: 'transparent', color: '#1a2b6d', border: '1px solid #1a2b6d' }}>
+          ← Volver
+        </button>
+      )}
 
-      <div style={{ display: 'grid', gap: 8, marginTop: 24 }}>
-        <label>
-          Departamento{' '}
-          <select
-            value={departamento}
-            onChange={(e) => {
-              setDepartamento(e.target.value);
-              setCiudad(DEPARTAMENTOS.find((d) => d.departamento === e.target.value)?.ciudades[0] ?? '');
-            }}
-          >
-            {DEPARTAMENTOS.map((d) => (
-              <option key={d.departamento} value={d.departamento}>
-                {d.departamento}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label>
-          Ciudad/Municipio{' '}
-          <select value={ciudad} onChange={(e) => setCiudad(e.target.value)}>
-            {ciudadesDisponibles.map((c) => (
-              <option key={c} value={c}>
-                {c}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label>Tema <input value={tema} onChange={(e) => setTema(e.target.value)} style={{ width: '100%' }} /></label>
-        <label>Pregunta <textarea value={pregunta} onChange={(e) => setPregunta(e.target.value)} rows={2} style={{ width: '100%' }} /></label>
-      </div>
-
-      <div style={{ display: 'flex', gap: 8, marginTop: 16 }}>
-        <button onClick={handleSync} disabled={cargandoSync}>{cargandoSync ? 'Trayendo de SECOP…' : '1. Sincronizar datos de SECOP'}</button>
-        <button onClick={handleConsultar} disabled={cargandoConsulta}>{cargandoConsulta ? 'Analizando…' : '2. Preguntar'}</button>
-      </div>
-
-      {syncInfo && <p style={{ color: 'green' }}>{syncInfo}</p>}
-      {error && <p style={{ color: 'crimson' }}>{error}</p>}
-
-      {resultado && (
-        <div style={{ marginTop: 24, borderTop: '1px solid #ddd', paddingTop: 16 }}>
-          <h2>🏫 {resultado.resumen.territorio}</h2>
-          <p>
-            ${resultado.resumen.valorTotalContratado.toLocaleString('es-CO')} contratados · {resultado.resumen.totalContratos} contratos ·{' '}
-            {resultado.resumen.proveedoresUnicos} proveedores
-          </p>
-          <p style={{ fontStyle: 'italic' }}>{resultado.respuesta}</p>
-
-          {resultado.hallazgos.length > 0 && (
-            <>
-              <h3>Encontramos {resultado.hallazgos.length} aspecto(s) que pueden ser relevantes para una veeduría</h3>
-              {resultado.hallazgos.map((h, i) => (
-                <div key={i} style={{ background: '#fff8e6', border: '1px solid #f0d68a', borderRadius: 8, padding: 12, marginBottom: 8 }}>
-                  <strong>{h.severidad === 'ALTA' ? '🔴' : '🟠'} {h.titulo}</strong>
-                  <p>{h.detalle}</p>
-                  <details>
-                    <summary>¿Cómo lo sabemos?</summary>
-                    <ul>
-                      {h.evidencia.map((e, j) => (
-                        <li key={j}>
-                          {e.entidad} — {e.id}{' '}
-                          {e.link && (
-                            <a href={e.link} target="_blank" rel="noreferrer">
-                              ver proceso original en SECOP
-                            </a>
-                          )}
-                        </li>
-                      ))}
-                    </ul>
-                  </details>
-                </div>
-              ))}
-            </>
-          )}
+      {modo === 'home' && (
+        <div style={{ textAlign: 'center', marginTop: 60 }}>
+          <h1>🛰️ RADAR</h1>
+          <p style={{ color: '#555', marginBottom: 32 }}>Inteligencia pública y de mercado sobre contratación estatal.</p>
+          <p style={{ marginBottom: 16 }}>¿Qué querés hacer?</p>
+          <div style={{ display: 'flex', gap: 16, justifyContent: 'center' }}>
+            <button onClick={() => setModo('ciudadano')} style={{ padding: '16px 24px', fontSize: 16 }}>
+              🏛️ Vigilar mi territorio
+            </button>
+            <button onClick={() => setModo('empresa')} style={{ padding: '16px 24px', fontSize: 16 }}>
+              💼 Encontrar oportunidades
+            </button>
+          </div>
         </div>
       )}
+
+      {modo === 'ciudadano' && <CiudadanoView />}
+      {modo === 'empresa' && <EmpresaView />}
     </div>
   );
 }

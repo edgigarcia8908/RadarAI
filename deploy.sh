@@ -3,7 +3,7 @@ set -e
 
 echo "=== RadarAI — Deploy ==="
 
-cd /home/radarai/repo
+cd /home/radar/repo
 
 echo "1. Descargando cambios de GitHub..."
 # El "npm install" del paso 3 reescribe package-lock.json en cada deploy
@@ -18,9 +18,9 @@ git pull origin main
 echo "2. Actualizando ceo-core-modules (carpeta hermana)..."
 # backend/ depende de @ceo-core/auth-client, @ceo-core/database y
 # @ceo-core/intelligence-client vía "file:../../ceo-core-modules/packages/..."
-# — asume que ceo-core-modules vive en /home/radarai/ceo-core-modules
+# — asume que ceo-core-modules vive en /home/radar/ceo-core-modules
 # (hermano de esta carpeta repo).
-cd /home/radarai
+cd /home/radar
 if [ -d ceo-core-modules/.git ]; then
     echo "   ceo-core-modules ya existe — actualizando..."
     cd ceo-core-modules
@@ -43,7 +43,7 @@ echo "2.1 Empaquetando @ceo-core/auth-client, @ceo-core/database y @ceo-core/int
 (cd packages/ceo-database && npm run build && rm -f *.tgz && npm pack)
 (cd packages/ceo-intelligence-client && npm run build && rm -f *.tgz && npm pack)
 
-cd /home/radarai/repo/backend
+cd /home/radar/repo/backend
 
 echo "3. Instalando dependencias del backend..."
 # Mismo motivo que uniminuto/ceo-auth-service: los .tgz se re-empaquetan
@@ -72,7 +72,7 @@ echo "5. Compilando backend..."
 npm run build || true
 
 echo "5.1 Configurando logs..."
-mkdir -p /home/radarai/logs
+mkdir -p /home/radar/logs
 
 if pm2 describe radaraibackend > /dev/null 2>&1
 then
@@ -82,21 +82,21 @@ else
     echo "   Creando nueva instancia PM2..."
     pm2 start dist/main.js \
       --name radaraibackend \
-      --cwd /home/radarai/repo/backend \
-      --output /home/radarai/logs/backend-out.log \
-      --error /home/radarai/logs/backend-error.log \
+      --cwd /home/radar/repo/backend \
+      --output /home/radar/logs/backend-out.log \
+      --error /home/radar/logs/backend-error.log \
       --time
 fi
 pm2 save
 
 echo "6. Compilando y publicando el frontend..."
-cd /home/radarai/repo/frontend
+cd /home/radar/repo/frontend
 npm install --no-fund --no-audit
 npm run build
 
-mkdir -p /home/radarai/public_html
-rm -rf /home/radarai/public_html/*
-cp -r dist/* /home/radarai/public_html/
+mkdir -p /home/radar/public_html
+rm -rf /home/radar/public_html/*
+cp -r dist/* /home/radar/public_html/
 
 echo "=== Deploy completado correctamente ==="
 echo ""
@@ -106,7 +106,7 @@ echo "  /api  -> http://127.0.0.1:4500/api"
 echo "El resto del dominio sigue sirviendo public_html como estático, normal."
 echo ""
 echo "Si es la PRIMERA vez que desplegás esta app, antes de correr este script:"
-echo "  mkdir -p /home/radarai && cd /home/radarai"
+echo "  mkdir -p /home/radar && cd /home/radar"
 echo "  git clone https://github.com/edgigarcia8908/RadarAI.git repo"
 echo "  cd repo/backend && cp .env.example .env   # y completar con los valores reales"
-echo "  (ver C:\\apps\\RadarAI\\backend\\.env local para copiar los valores reales)"
+echo "  (ver C:\apps\RadarAI\backend\.env local para copiar los valores reales)"
