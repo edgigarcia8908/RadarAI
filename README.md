@@ -27,6 +27,39 @@ esta sección y ahora es la señal principal para el semáforo visual
 (`liquidado` en `Contrato`, ver `contratoUtils.ts`). `ESTADOS_TERMINADOS`
 sigue como filtro adicional para estudios de mercado.
 
+## Otras fuentes de datos abiertos del Estado (`src/cuipo/`)
+
+Además de SECOP II, el Estado colombiano publica más fuentes reutilizables
+sobre el mismo mecanismo (Socrata, `datos.gov.co`) — investigadas a pedido
+de un usuario que compartió esta tabla:
+
+| Fuente | Dataset usado | Estado |
+| --- | --- | --- |
+| **CUIPO** (presupuesto territorial) | `d9mu-h6ar` (programación de gastos) + `4f7r-epif` (ejecución de gastos) | ✅ Integrado |
+| SIRI (sanciones disciplinarias) | `iaeu-rcn6` | Investigado, pendiente de integrar — cruzaría representante legal/ordenador del gasto de cada contrato contra sancionados |
+| SIGEP II (servidores + puestos sensibles a corrupción + declaración de bienes) | `h8rs-jxum`, `5u9e-g5w9`, `8tz7-h3eu` | Investigado, pendiente |
+| SGR/SUIFP (regalías) | `mzgh-shtp` + `qkv4-ek54` | Investigado, pendiente |
+| TerriData (indicadores territoriales) | `64cq-xb2k` | Investigado, pendiente — daría contexto socioeconómico al mapa de riesgo |
+| Cuentas Claras (financiación de campañas) | Solo encontramos `jgra-rz2t` (2019, local) — nada nacional/reciente vía API | Baja prioridad, datos viejos |
+| PACO / Contraloría (hallazgos fiscales) | Solo descarga CSV/ZIP directa (sin API), hallazgos fragmentados por contraloría departamental | Requeriría scraper propio, no se hizo |
+
+**CUIPO integrado**: `GET /api/cuipo/presupuesto?departamento=&ciudad=&fechaDesde=&fechaHasta=`
+compara el presupuesto apropiado y comprometido de un municipio (CUIPO)
+contra lo ya sincronizado de SECOP para el mismo territorio/rango — señala
+si el municipio comprometió más del 100% de su presupuesto, o si SECOP
+muestra mucho más contratado de lo que CUIPO reporta comprometido. Los
+datasets de CUIPO reportan por `periodo` como **corte acumulado del año
+fiscal** (no incremental) — sumar varios periodos duplicaría plata, así
+que se usa siempre el corte más reciente dentro del rango pedido, nunca una
+suma entre periodos. Verificado con datos reales: Tocancipá, Cundinamarca,
+corte 01/03/2026 — presupuesto apropiado $1.886.692.503.333, comprometido
+$2.055.589.772.662 (109%, alerta automática).
+
+Se muestra en `CiudadanoView` como panel "Presupuesto vs. contratación"
+junto a los resultados de cada consulta — si CUIPO no tiene reportes para
+esa entidad (nombre no coincide, o no reporta), no rompe el flujo, solo
+muestra un mensaje.
+
 ## Repo 100% autocontenido — cero servicios que no podés desplegar vos
 
 Este repo se comparte públicamente (hackathon), así que **nada** de lo que

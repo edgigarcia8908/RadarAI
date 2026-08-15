@@ -241,6 +241,30 @@ export interface EstudioMercado {
   contratosComparables?: ContratoInfo[];
 }
 
+export interface EstadoPresupuestal {
+  entidad: string;
+  periodoConsultado: string | null;
+  presupuestoApropiado: number;
+  comprometido: number;
+  obligado: number;
+  pagado: number;
+  porcentajeComprometido: number | null;
+  porcentajePagado: number | null;
+  valorContratadoSecop: number;
+  diferenciaContratadoVsComprometido: number;
+  alerta: string | null;
+  mensaje?: string;
+}
+
+export function obtenerPresupuestoCuipo(input: { departamento?: string; ciudad: string; fechaDesde?: string; fechaHasta?: string }): Promise<EstadoPresupuestal> {
+  const params = new URLSearchParams();
+  if (input.departamento) params.set('departamento', input.departamento);
+  params.set('ciudad', input.ciudad);
+  if (input.fechaDesde) params.set('fechaDesde', input.fechaDesde);
+  if (input.fechaHasta) params.set('fechaHasta', input.fechaHasta);
+  return fetch(`/api/cuipo/presupuesto?${params.toString()}`).then(manejar);
+}
+
 export function generarEstudioMercado(input: {
   objeto: string;
   departamento?: string;

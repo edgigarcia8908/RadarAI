@@ -8,6 +8,7 @@ import { OportunidadesModule } from './oportunidades/oportunidades.module';
 import { VeeduriasModule } from './veedurias/veedurias.module';
 import { StorageModule } from './storage/storage.module';
 import { EstudiosMercadoModule } from './estudios-mercado/estudios-mercado.module';
+import { CuipoModule } from './cuipo/cuipo.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { EstudiosMercadoModule } from './estudios-mercado/estudios-mercado.modul
     VeeduriasModule,
     StorageModule,
     EstudiosMercadoModule,
+    CuipoModule,
   ],
 })
 export class AppModule {}

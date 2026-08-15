@@ -8,6 +8,8 @@ export interface SocrataQuery {
   where?: string[];
   /** Búsqueda de texto libre across todas las columnas de texto (parámetro $q de Socrata). */
   q?: string;
+  /** `$select` de Socrata — permite agregaciones server-side, ej: "sum(compromisos) as total". */
+  select?: string;
   limit?: number;
   offset?: number;
   order?: string;
@@ -28,9 +30,10 @@ export class SocrataClient {
     const url = new URL(`https://www.datos.gov.co/resource/${this.datasetId}.json`);
     if (query.where?.length) url.searchParams.set('$where', query.where.join(' AND '));
     if (query.q) url.searchParams.set('$q', query.q);
+    if (query.select) url.searchParams.set('$select', query.select);
     url.searchParams.set('$limit', String(query.limit ?? 200));
     url.searchParams.set('$offset', String(query.offset ?? 0));
-    url.searchParams.set('$order', query.order ?? ':id');
+    if (!query.select) url.searchParams.set('$order', query.order ?? ':id');
 
     const headers: Record<string, string> = { Accept: 'application/json' };
     if (process.env.SOCRATA_APP_TOKEN) headers['X-App-Token'] = process.env.SOCRATA_APP_TOKEN;

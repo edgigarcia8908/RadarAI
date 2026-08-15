@@ -1,8 +1,9 @@
 import { useMemo, useState } from 'react';
-import { consultar, crearVeeduria, sincronizar, ConsultaResultado, Hallazgo } from './api';
+import { consultar, crearVeeduria, obtenerPresupuestoCuipo, sincronizar, ConsultaResultado, EstadoPresupuestal, Hallazgo } from './api';
 import colombia from './colombia.json';
 import BotonUbicacion from './BotonUbicacion';
 import ContratoCard from './ContratoCard';
+import PresupuestoCard from './PresupuestoCard';
 
 interface DeptoColombia {
   departamento: string;
@@ -34,6 +35,7 @@ export default function CiudadanoView({ onRevisar }: { onRevisar: (veeduriaId: s
   const [cargandoConsulta, setCargandoConsulta] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [resultado, setResultado] = useState<ConsultaResultado | null>(null);
+  const [presupuesto, setPresupuesto] = useState<EstadoPresupuestal | null>(null);
   const [syncInfo, setSyncInfo] = useState<string | null>(null);
   const [creandoVeeduria, setCreandoVeeduria] = useState<number | null>(null);
 
@@ -74,6 +76,7 @@ export default function CiudadanoView({ onRevisar }: { onRevisar: (veeduriaId: s
     setCargandoConsulta(true);
     setError(null);
     setResultado(null);
+    setPresupuesto(null);
     try {
       const r = await consultar({ departamento, ciudad, tema, pregunta, fechaDesde, fechaHasta });
       setResultado(r);
@@ -81,6 +84,13 @@ export default function CiudadanoView({ onRevisar }: { onRevisar: (veeduriaId: s
       setError(e.message);
     } finally {
       setCargandoConsulta(false);
+    }
+    // El presupuesto CUIPO es una fuente aparte — si falla, no debe tumbar la consulta principal.
+    try {
+      const p = await obtenerPresupuestoCuipo({ departamento, ciudad, fechaDesde, fechaHasta });
+      setPresupuesto(p);
+    } catch {
+      // silencioso: CUIPO es un "extra", no bloquea el flujo ciudadano principal
     }
   }
 
@@ -150,6 +160,13 @@ export default function CiudadanoView({ onRevisar }: { onRevisar: (veeduriaId: s
             {resultado.resumen.proveedoresUnicos} proveedores
           </p>
           <p style={{ fontStyle: 'italic' }}>{resultado.respuesta}</p>
+
+          {presupuesto && (
+            <>
+              <h3 style={{ marginTop: 24 }}>Presupuesto vs. contratación</h3>
+              <PresupuestoCard p={presupuesto} />
+            </>
+          )}
 
           {resultado.hallazgos.length > 0 && (
             <>
