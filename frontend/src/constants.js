@@ -5,6 +5,7 @@ export const VIEWS = {
   OVERSIGHT: 'oversight',
   RISK_MAP: 'risk-map',
   MARKET: 'market',
+  TERRITORY_PROFILE: 'territory-profile',
 };
 
 export const NAV_ITEMS = [
@@ -14,6 +15,7 @@ export const NAV_ITEMS = [
   { id: VIEWS.OVERSIGHT, label: 'Veedurias' },
   { id: VIEWS.RISK_MAP, label: 'Mapa de riesgo' },
   { id: VIEWS.MARKET, label: 'Estudio de mercado' },
+  { id: VIEWS.TERRITORY_PROFILE, label: 'Ficha territorial' },
 ];
 
 export const SEARCH_EXAMPLES = [
@@ -101,6 +103,13 @@ export const MODULES = [
     eyebrow: 'Gestion publica',
     description: 'Compara precios, proveedores frecuentes y contratos cerrados para estimar valores de referencia.',
     metric: '1.246 comparables',
+  },
+  {
+    id: VIEWS.TERRITORY_PROFILE,
+    title: 'Ficha territorial',
+    eyebrow: 'Datos abiertos',
+    description: 'Identidad DIVIPOLA, contratacion, presupuesto CUIPO, regalias SGR, desempeno municipal y alertas de identidad de un municipio, todo en una pantalla.',
+    metric: 'Datos reales, no mock',
   },
 ];
 

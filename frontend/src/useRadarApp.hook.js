@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 
 import { radarService } from './services/radar.service';
 import { DEPARTMENTS, MUNICIPALITIES, PUBLIC_OFFICIALS, SEARCH_EXAMPLES, VIEWS } from './constants';
+import colombia from './colombia.json';
 
 export function useRadarApp() {
   const [activeView, setActiveView] = useState(VIEWS.HOME);
@@ -11,6 +12,39 @@ export function useRadarApp() {
   const [sigepMatches, setSigepMatches] = useState({});
   const [sigepStatus, setSigepStatus] = useState('idle');
   const [sigepError, setSigepError] = useState('');
+
+  // Selector propio para la ficha territorial: usa el listado completo de
+  // departamentos/municipios (colombia.json, todo el pais) en vez del
+  // listado corto de ejemplo (DEPARTMENTS/MUNICIPALITIES) que usa el resto
+  // del mockup, porque necesita coincidir con nombres reales de SECOP/CUIPO.
+  const [fichaDepartamento, setFichaDepartamento] = useState('Cundinamarca');
+  const [fichaMunicipio, setFichaMunicipio] = useState('Tocancipá');
+  const fichaMunicipiosDisponibles = useMemo(
+    () => colombia.find((d) => d.departamento === fichaDepartamento)?.ciudades ?? [],
+    [fichaDepartamento],
+  );
+  const [ficha, setFicha] = useState(null);
+  const [fichaStatus, setFichaStatus] = useState('idle');
+  const [fichaError, setFichaError] = useState('');
+
+  function setFichaDepartamentoYMunicipio(nuevoDepartamento) {
+    setFichaDepartamento(nuevoDepartamento);
+    setFichaMunicipio(colombia.find((d) => d.departamento === nuevoDepartamento)?.ciudades[0] ?? '');
+  }
+
+  async function handleCargarFicha() {
+    setFichaStatus('loading');
+    setFichaError('');
+    setFicha(null);
+    try {
+      const data = await radarService.obtenerFichaTerritorial(fichaDepartamento, fichaMunicipio);
+      setFicha(data);
+      setFichaStatus('success');
+    } catch (error) {
+      setFichaStatus('error');
+      setFichaError(error.message);
+    }
+  }
 
   const searchContext = useMemo(
     () => radarService.buildSearchContext({ query, department, municipality }),
@@ -65,5 +99,16 @@ export function useRadarApp() {
     setDepartment,
     setMunicipality,
     setQuery,
+    // Ficha territorial (datos reales)
+    ficha,
+    fichaStatus,
+    fichaError,
+    fichaDepartamento,
+    fichaMunicipio,
+    fichaMunicipiosDisponibles,
+    departamentosColombia: colombia,
+    setFichaDepartamento: setFichaDepartamentoYMunicipio,
+    setFichaMunicipio,
+    handleCargarFicha,
   };
 }

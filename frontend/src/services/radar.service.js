@@ -25,4 +25,22 @@ export const radarService = {
 
     return data;
   },
+
+  /**
+   * Ficha territorial: consolida identidad DIVIPOLA, contratacion,
+   * presupuesto CUIPO, regalias SGR y desempeno MDM de un municipio en una
+   * sola llamada. Backend: src/ficha-territorial/.
+   */
+  async obtenerFichaTerritorial(departamento, ciudad) {
+    const params = new URLSearchParams();
+    if (departamento) params.set('departamento', departamento);
+    params.set('ciudad', ciudad);
+
+    const response = await fetch(`/api/ficha-territorial?${params.toString()}`);
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      throw new Error(data.message || 'Backend de ficha territorial no disponible. Levanta el backend en el puerto 4500.');
+    }
+    return data;
+  },
 };

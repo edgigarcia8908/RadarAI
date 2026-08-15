@@ -9,6 +9,7 @@ import {
   VIEWS,
 } from './constants';
 import { useRadarApp } from './useRadarApp.hook';
+import FichaTerritorialWorkspace from './FichaTerritorialWorkspace';
 
 function App() {
   const radar = useRadarApp();
@@ -257,6 +258,10 @@ function WorkspaceContent({ view, context, radar }) {
 
   if (view === VIEWS.RISK_MAP) {
     return <RiskMapWorkspace />;
+  }
+
+  if (view === VIEWS.TERRITORY_PROFILE) {
+    return <FichaTerritorialWorkspace radar={radar} />;
   }
 
   return <MarketWorkspace />;
