@@ -314,8 +314,12 @@ export class CivicIntelService {
       for (const nombre of [c.nombreRepresentanteLegal, c.nombreOrdenadorDelGasto, c.nombreSupervisor]) {
         if (!nombre) continue;
         const tokensNombre = new Set(normalizar(nombre).split(' ').filter((t) => t.length >= 4));
+        if (tokensNombre.size === 0) continue;
         const compartidos = [...tokensPregunta].filter((t) => tokensNombre.has(t)).length;
-        if (compartidos >= 3) return true;
+        // Antes exigía siempre >=3 — imposible con nombres de 2 palabras
+        // ("Giovanny García" nunca comparte más de 2 tokens). Ver mismo fix
+        // en chat.service.ts.
+        if (compartidos >= Math.min(3, tokensNombre.size) && compartidos >= 2) return true;
       }
       return false;
     });
