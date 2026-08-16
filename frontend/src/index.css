@@ -3565,6 +3565,59 @@ body {
     padding-bottom: 0;
   }
 
+  /* Modo "conversación activa" en móvil — antes toda la página (héroe +
+     mensajes + selector + composer) era un solo scroll largo, así que
+     mandar una pregunta nueva dejaba la respuesta fuera de vista y se
+     sentía como un formulario, no un chat. Ahora: héroe se colapsa, los
+     mensajes son su propia zona con scroll, y el composer queda fijo abajo
+     — mismo patrón que WhatsApp/cualquier chat nativo. */
+  .home-main-chatting {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+    padding: 14px 14px 10px;
+  }
+
+  .home-main-chatting .home-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;
+  }
+
+  .home-main-chatting .home-content h1,
+  .home-main-chatting .home-subtitle {
+    display: none;
+  }
+
+  .home-main-chatting .home-chat-response {
+    flex: 1 1 auto;
+    min-height: 0;
+    margin: 0 0 10px;
+    overflow-y: auto;
+  }
+
+  .home-main-chatting .home-chat-shell {
+    flex: 0 0 auto;
+  }
+
+  .home-main-chatting .home-chat-context {
+    display: flex;
+    grid-template-columns: none;
+    gap: 6px;
+    overflow-x: auto;
+    padding-bottom: 6px;
+  }
+
+  .home-main-chatting .home-chat-context-title {
+    display: none;
+  }
+
+  .home-main-chatting .home-select {
+    flex: 0 0 auto;
+  }
+
   .home-route {
     min-height: 78px;
   }
