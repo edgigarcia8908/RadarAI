@@ -1,6 +1,40 @@
 import { useEffect, useRef, useState } from 'react';
 
 import { radarService } from './services/radar.service';
+import colombia from './colombia.json';
+
+/**
+ * Busca un municipio real dentro de un texto libre — para que cuando el
+ * chat pregunta "¿de qué municipio hablamos?" y el usuario responde
+ * "Tocancipá" o "vivo en Tocancipá, Cundinamarca", se pueda extraer sin
+ * necesitar un LLM (no hay API key configurada por defecto en este repo).
+ * Coincidencia exacta de nombre de municipio (normalizado), no parcial —
+ * para no confundir "Cota" con cualquier palabra que la contenga.
+ */
+function buscarMunicipioEnTexto(texto) {
+  const normalizado = (texto || '')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .replace(/[^a-z0-9\s]/g, ' ');
+  const palabras = new Set(normalizado.split(/\s+/).filter(Boolean));
+
+  for (const { departamento, ciudades } of colombia) {
+    for (const ciudad of ciudades) {
+      const ciudadNormalizada = ciudad
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[̀-ͯ]/g, '')
+        .replace(/[^a-z0-9\s]/g, ' ')
+        .trim();
+      const tokensCiudad = ciudadNormalizada.split(/\s+/).filter(Boolean);
+      if (tokensCiudad.every((t) => palabras.has(t))) {
+        return { departamento, ciudad };
+      }
+    }
+  }
+  return null;
+}
 
 const SUGERENCIAS = [
   '¿En qué se gasta mi municipio el presupuesto este año?',
@@ -71,6 +105,11 @@ export default function AnnaMariaChat({ radar }) {
   const [mensajes, setMensajes] = useState([]);
   const [input, setInput] = useState('');
   const [escribiendo, setEscribiendo] = useState(false);
+  // Cuando el backend pide territorio (requiereTerritorio), se guarda la
+  // pregunta original acá — el próximo mensaje del usuario se interpreta
+  // como "¿cuál es tu municipio?" en vez de una pregunta nueva, y se
+  // combinan las dos para responder lo que realmente se preguntó.
+  const [preguntaPendiente, setPreguntaPendiente] = useState(null);
   const listaRef = useRef(null);
   const inputRef = useRef(null);
 
@@ -95,10 +134,29 @@ export default function AnnaMariaChat({ radar }) {
     try {
       // Si el ciudadano ya eligió territorio en la app, se lo pasamos a Anna
       // María para que responda con datos reales de esa región en SECOP II.
-      const departamento = radar?.department || radar?.selectedDepartment || undefined;
-      const ciudad = radar?.municipality || undefined;
-      const respuesta = await radarService.consultarChatAnnaMaria({ mensaje, departamento, ciudad });
+      let departamento = radar?.department || radar?.selectedDepartment || undefined;
+      let ciudad = radar?.municipality || undefined;
+      let mensajeParaBackend = mensaje;
+
+      if (preguntaPendiente && !ciudad) {
+        const encontrado = buscarMunicipioEnTexto(mensaje);
+        if (encontrado) {
+          departamento = encontrado.departamento;
+          ciudad = encontrado.ciudad;
+          mensajeParaBackend = preguntaPendiente;
+        } else {
+          setMensajes((prev) => [
+            ...prev,
+            { rol: 'bot', texto: `No reconocí ese municipio — escribe el nombre tal como aparece en SECOP (por ejemplo "Tocancipá" o "Zipaquirá").` },
+          ]);
+          setEscribiendo(false);
+          return;
+        }
+      }
+
+      const { respuesta, requiereTerritorio } = await radarService.consultarChatAnnaMaria({ mensaje: mensajeParaBackend, departamento, ciudad });
       setMensajes((prev) => [...prev, { rol: 'bot', texto: respuesta }]);
+      setPreguntaPendiente(requiereTerritorio ? mensaje : null);
     } catch (error) {
       setMensajes((prev) => [...prev, { rol: 'bot', texto: `No pude responder en este momento. ${error.message}` }]);
     } finally {

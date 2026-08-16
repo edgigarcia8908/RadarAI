@@ -37,18 +37,23 @@ export class ChatService {
     @Inject(CuipoService) private readonly cuipo: CuipoService,
   ) {}
 
-  async consultar(input: ChatConsultaInput): Promise<{ respuesta: string }> {
+  async consultar(input: ChatConsultaInput): Promise<{ respuesta: string; requiereTerritorio?: boolean }> {
     const ciudad = input.ciudad?.trim();
     if (!ciudad) {
       const esSaludo = /^hola|^buenas|^qué tal|^buenos?\s*(días?|tardes?|noches?)|^hi\b|^hello\b/i.test(input.mensaje?.trim() || '');
       return {
+        // requiereTerritorio=true le dice al frontend que la PRÓXIMA respuesta
+        // del usuario probablemente sea el nombre del municipio, no una
+        // pregunta nueva — así el chat puede combinarla con la pregunta
+        // original en vez de tratarla como un mensaje aislado. Provisional
+        // (no depende de LLM): funciona por matching de texto en el
+        // frontend contra colombia.json.
+        requiereTerritorio: true,
         respuesta: esSaludo
           ? `¡Hola! 👋 Soy Anna María, tu asistente cívica en RadarAI. Me alegra que estés aquí.
 
-Para poder darte datos reales y precisos sobre tu municipio, necesito que me digas de dónde eres. En la app, ve a "Entender gasto" o "Ficha territorial", elige tu departamento y municipio, y luego volvemos a charlar — así te cuento con cifras de SECOP II qué está pasando en tu territorio.`
-          : `Me encantaría ayudarte, pero para responderte con datos reales de contratos, presupuesto y proveedores necesito saber tu municipio.
-
-En la app, entra a "Entender gasto" o "Ficha territorial", selecciona tu departamento y ciudad, y luego me vuelves a preguntar. Así te traigo la info directo de SECOP II, sin vueltas.`,
+¿De qué municipio quieres que te hable? Escribe el nombre (por ejemplo "Tocancipá" o "Tocancipá, Cundinamarca") y te cuento con cifras reales de SECOP II.`
+          : `Me encantaría ayudarte, pero para responderte con datos reales necesito saber de qué municipio. ¿Cuál es?`,
       };
     }
 

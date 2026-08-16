@@ -36,7 +36,7 @@ export const radarService = {
     mensaje: string;
     departamento?: string;
     ciudad?: string;
-  }): Promise<string> {
+  }): Promise<{ respuesta: string; requiereTerritorio?: boolean }> {
     const response = await fetch('/api/chat/consultar', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -47,7 +47,7 @@ export const radarService = {
     if (!response.ok) {
       throw new Error(data.message || 'Backend de chat no disponible. Levanta el backend en el puerto 4500.');
     }
-    return data.respuesta;
+    return data;
   },
 
   /**
