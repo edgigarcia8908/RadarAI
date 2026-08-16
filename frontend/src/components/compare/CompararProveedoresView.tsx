@@ -88,7 +88,7 @@ export default function CompararProveedoresView({ onNavigate, onTerritorioChange
     <div className="compare-page">
       <aside className="compare-sidebar">
         <div className="home-brand" aria-label="RadarAI">
-          <span className="home-brand-mark"><span /><span /><span /></span>
+          <img src="/logo.png" alt="RadarAI logo" className="home-brand-logo" />
           <span>RadarAI</span>
         </div>
         <nav className="home-nav" aria-label="Navegación principal">
