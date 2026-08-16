@@ -7,5 +7,6 @@ import { CivicIntelController } from './civic-intel.controller';
   imports: [IngestionModule],
   controllers: [CivicIntelController],
   providers: [CivicIntelService],
+  exports: [CivicIntelService],
 })
 export class CivicIntelModule {}

@@ -63,6 +63,7 @@ export default function CompararProveedoresView({ onNavigate, onTerritorioChange
     setPeriod,
     handleCompare,
     status,
+    paso,
     error,
     estudio,
   } = useCompareProviders();
@@ -158,7 +159,7 @@ export default function CompararProveedoresView({ onNavigate, onTerritorioChange
 
         <button className="compare-button" onClick={handleCompare} type="button" disabled={status === 'loading' || !service.trim()}>
           <HomeIcon name="scales" size={16} />
-          <span>{status === 'loading' ? 'Buscando…' : 'Comparar precios y proveedores'}</span>
+          <span>{paso === 'sincronizando' ? 'Sincronizando SECOP…' : paso === 'comparando' ? 'Comparando…' : 'Comparar precios y proveedores'}</span>
         </button>
         {status === 'error' && <p className="compare-status compare-status-error">{error}</p>}
       </section>

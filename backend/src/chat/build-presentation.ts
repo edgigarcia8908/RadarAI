@@ -222,6 +222,11 @@ export interface DatosPersona {
   valorTotal: number;
   entidades: string[];
   detalle: { entidad: string; valor: number }[];
+  otrosMunicipios?: number;
+  alertaMultiMunicipio?: string | null;
+  alertasSiri?: { cargo: string; sanciones: string; entidad: string }[];
+  alertasSigep?: { cargo: string; entidad: string; nivelJerarquico: string }[];
+  contratos?: { entidad: string; urlProceso?: string | null }[];
 }
 
 export function fallbackPersona(datos: DatosPersona): Presentation {
@@ -234,8 +239,37 @@ export function fallbackPersona(datos: DatosPersona): Presentation {
       { id: 'contratos', label: 'Contratos', value: datos.totalContratos.toLocaleString('es-CO'), icon: 'briefcase', tone: 'positive' },
       { id: 'valor', label: 'Valor total', value: fmt(datos.valorTotal), icon: 'wallet', tone: 'warning' },
       { id: 'entidades', label: 'Entidades', value: datos.entidades.length.toLocaleString('es-CO'), icon: 'building-2', tone: 'neutral' },
+      ...(datos.otrosMunicipios && datos.otrosMunicipios > 1
+        ? [{ id: 'municipios', label: 'Municipios', value: datos.otrosMunicipios.toLocaleString('es-CO'), icon: 'people' as const, tone: 'warning' as const }]
+        : []),
     ],
   });
+
+  // Alertas reales (SIRI/SIGEP en vivo + patrón multi-municipio) — antes
+  // esto solo existía navegando a Veedurías → ContratoCard → "Ver
+  // historial"; el chat nunca lo mostraba. Van primero porque son lo más
+  // importante que puede decir esta respuesta.
+  if (datos.alertaMultiMunicipio) {
+    blocks.push({ id: 'alerta-multimunicipio', type: 'notice', title: 'Patrón entre municipios', content: datos.alertaMultiMunicipio, tone: 'warning' });
+  }
+  if (datos.alertasSiri?.length) {
+    blocks.push({
+      id: 'alerta-siri',
+      type: 'notice',
+      title: 'Coincidencia en SIRI (sanciones disciplinarias)',
+      content: datos.alertasSiri.map((s) => `${s.sanciones || s.cargo}${s.entidad ? ` — ${s.entidad}` : ''}`).join(' | '),
+      tone: 'critical',
+    });
+  }
+  if (datos.alertasSigep?.length) {
+    blocks.push({
+      id: 'alerta-sigep',
+      type: 'notice',
+      title: 'Coincidencia en SIGEP (cargo sensible a corrupción)',
+      content: datos.alertasSigep.map((s) => `${s.cargo} en ${s.entidad} (${s.nivelJerarquico})`).join(' | '),
+      tone: 'warning',
+    });
+  }
 
   if (datos.detalle.length > 0) {
     blocks.push({
@@ -249,11 +283,12 @@ export function fallbackPersona(datos: DatosPersona): Presentation {
     });
   }
 
+  const linkPrimero = datos.contratos?.find((c) => c.urlProceso)?.urlProceso;
   blocks.push({
     id: 'disclaimer',
     type: 'notice',
     title: 'Importante',
-    content: 'Coincidencia por nombre, no por cédula. Confirma la identidad antes de sacar conclusiones.',
+    content: `Coincidencia por nombre, no por cédula. Confirma la identidad antes de sacar conclusiones.${linkPrimero ? ` Ver un proceso original en SECOP: ${linkPrimero}` : ''}`,
     tone: 'warning',
   });
 

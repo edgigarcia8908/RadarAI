@@ -4,6 +4,9 @@ import { Model } from 'mongoose';
 import { Contrato } from '../ingestion/contrato.schema';
 import { IngestionService } from '../ingestion/ingestion.service';
 import { CuipoService } from '../cuipo/cuipo.service';
+import { CivicIntelService } from '../civic-intel/civic-intel.service';
+import { SiriService } from '../siri/siri.service';
+import { SigepService } from '../sigep/sigep.service';
 import { completar } from '../lib/llm';
 import { normalizar } from '../common/normalizar';
 import { departamentoRealSecop } from '../common/departamento-secop';
@@ -88,6 +91,9 @@ export class ChatService {
     @InjectModel(Contrato.name) private readonly contratoModel: Model<Contrato>,
     @Inject(CuipoService) private readonly cuipo: CuipoService,
     @Inject(IngestionService) private readonly ingestion: IngestionService,
+    @Inject(CivicIntelService) private readonly civicIntel: CivicIntelService,
+    @Inject(SiriService) private readonly siri: SiriService,
+    @Inject(SigepService) private readonly sigep: SigepService,
   ) {}
 
   async consultar(input: ChatConsultaInput): Promise<{ respuesta: string; requiereTerritorio?: boolean; presentacion?: Presentation }> {
@@ -331,11 +337,47 @@ export class ChatService {
     const valorTotal = coincidencias.reduce((s, c) => s + valorPlausible(c.valorDelContrato), 0);
     const entidades = [...new Set(coincidencias.map((c) => c.nombreEntidad))];
 
-    // Datos ricos para el LLM — los contratos reales con detalle
+    // Cuál de los 3 campos matcheó, por contrato — reusado para el "rol" y
+    // para elegir el nombre canónico a mandar a perfilFuncionario/SIRI/SIGEP
+    // (SECOP escribe el mismo nombre con variaciones de mayúsculas/espacios
+    // entre contratos — se usa la forma más frecuente tal como aparece).
+    const rolYNombre = (c: Contrato): { rol: string; nombre: string } => {
+      const matchea = (nombre: string | undefined) =>
+        !!nombre && normalizar(nombre).split(' ').filter((t) => t.length >= 4).some((t) => tokensPregunta.has(t));
+      if (matchea(c.nombreOrdenadorDelGasto)) return { rol: 'ordenador del gasto', nombre: c.nombreOrdenadorDelGasto };
+      if (matchea(c.nombreSupervisor)) return { rol: 'supervisor', nombre: c.nombreSupervisor };
+      return { rol: 'representante legal', nombre: c.nombreRepresentanteLegal };
+    };
+    const nombresEncontrados = coincidencias.map((c) => rolYNombre(c).nombre).filter(Boolean);
+    const conteoNombres = new Map<string, number>();
+    for (const n of nombresEncontrados) conteoNombres.set(n, (conteoNombres.get(n) || 0) + 1);
+    const nombreCanonico = [...conteoNombres.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] ?? nombresEncontrados[0] ?? '';
+
+    // Perfil cruzado (¿en qué OTROS municipios aparece esta persona, con qué
+    // proveedores?) + verificación en vivo contra SIRI (sanciones) y SIGEP
+    // (cargos sensibles) — antes esto solo era alcanzable navegando a
+    // Veedurías → "Ver historial" en ContratoCard; el chat nunca lo hacía.
+    const [perfilCruzado, alertasSiriMap, alertasSigepMap] = await Promise.all([
+      nombreCanonico ? this.civicIntel.perfilFuncionario(nombreCanonico).catch(() => null) : Promise.resolve(null),
+      nombreCanonico ? this.siri.buscarVarios([nombreCanonico]).catch(() => ({})) : Promise.resolve({}),
+      nombreCanonico ? this.sigep.buscarVarios([nombreCanonico]).catch(() => ({})) : Promise.resolve({}),
+    ]);
+    const alertasSiri = alertasSiriMap[nombreCanonico] ?? [];
+    const alertasSigep = alertasSigepMap[nombreCanonico] ?? [];
+    const otrosMunicipios = (perfilCruzado?.municipios ?? []).length;
+
+    // Datos ricos para el LLM — los contratos reales con detalle, ya con
+    // link a SECOP (urlProceso) para que quien pregunte pueda verificar la
+    // fuente primaria, y las alertas SIRI/SIGEP/multi-municipio en vivo.
     const datosPersona = {
+      nombreCanonico,
       totalContratos: coincidencias.length,
       valorTotal,
       entidades,
+      otrosMunicipios,
+      alertaMultiMunicipio: perfilCruzado?.alerta ?? null,
+      alertasSiri: alertasSiri.map((s) => ({ cargo: s.cargo, sanciones: s.sanciones, entidad: s.entidadSancionado })),
+      alertasSigep: alertasSigep.map((s) => ({ cargo: s.cargo, entidad: s.entidad, nivelJerarquico: s.nivelJerarquico })),
       detalle: coincidencias.slice(0, 10).map((c) => ({
         entidad: c.nombreEntidad,
         valor: c.valorDelContrato,
@@ -345,25 +387,37 @@ export class ChatService {
         objeto: (c.objetoDelContrato || '').slice(0, 120),
         valor: c.valorDelContrato,
         proveedor: c.proveedorAdjudicado,
-        rol: c.nombreOrdenadorDelGasto && normalizar(c.nombreOrdenadorDelGasto).split(' ').filter(t => t.length >= 4).some(t => tokensPregunta.has(t)) ? 'ordenador del gasto'
-          : c.nombreSupervisor && normalizar(c.nombreSupervisor).split(' ').filter(t => t.length >= 4).some(t => tokensPregunta.has(t)) ? 'supervisor'
-          : 'representante legal',
+        rol: rolYNombre(c).rol,
+        urlProceso: c.urlProceso || null,
       })),
     };
 
-    const textoFallback = `Encontré ${coincidencias.length} contrato(s) donde esa persona aparece como firmante, ordenador del gasto o supervisor, por un total de ${formatearPesos(valorTotal)}, en: ${entidades.join(', ')}.\n\n${coincidencias.slice(0, 5).map((c) => `${c.nombreEntidad.slice(0, 30).padEnd(30)} ${formatearPesos(c.valorDelContrato)}`).join('\n')}\n\n(Coincidencia por nombre, no por cédula — confirma que es la misma persona antes de sacar conclusiones.)`;
+    const lineasAlerta: string[] = [];
+    if (datosPersona.alertaMultiMunicipio) lineasAlerta.push(`⚠️ ${datosPersona.alertaMultiMunicipio}`);
+    if (alertasSiri.length) lineasAlerta.push(`⚠️ Coincidencia de nombre en SIRI (sanciones disciplinarias): ${alertasSiri.map((s) => s.sanciones || s.cargo).filter(Boolean).join('; ')}.`);
+    if (alertasSigep.length) lineasAlerta.push(`ℹ️ Coincidencia de nombre en SIGEP como cargo de confianza: ${alertasSigep.map((s) => `${s.cargo} en ${s.entidad}`).filter(Boolean).join('; ')}.`);
+
+    const linkPrimero = coincidencias.find((c) => c.urlProceso)?.urlProceso;
+    const textoFallback = [
+      `Encontré ${coincidencias.length} contrato(s) donde esa persona aparece como firmante, ordenador del gasto o supervisor, por un total de ${formatearPesos(valorTotal)}, en: ${entidades.join(', ')}.`,
+      '',
+      coincidencias.slice(0, 5).map((c) => `${c.nombreEntidad.slice(0, 30).padEnd(30)} ${formatearPesos(c.valorDelContrato)}`).join('\n'),
+      ...(lineasAlerta.length ? ['', ...lineasAlerta] : []),
+      linkPrimero ? `\nVer un proceso original en SECOP: ${linkPrimero}` : '',
+      '\n(Coincidencia por nombre, no por cédula — confirma que es la misma persona antes de sacar conclusiones.)',
+    ].filter(Boolean).join('\n');
 
     const texto = await this.redactarTexto(
       mensaje,
       datosPersona,
-      'El usuario preguntó por una persona específica. Se buscaron contratos donde esa persona aparece como firmante, ordenador del gasto o supervisor. Analiza los datos: ¿en cuántas entidades aparece? ¿qué roles tiene? ¿hay concentración de valor en pocos contratos? Responde de forma natural, resalta patrones interesantes. IMPORTANTE: aclara siempre que es coincidencia por nombre (SECOP no trae cédula), no una identificación verificada.',
+      'El usuario preguntó por una persona específica. Se buscaron contratos donde esa persona aparece como firmante, ordenador del gasto o supervisor, se cruzó contra otros municipios sincronizados (¿el mismo proveedor la sigue de un municipio a otro?), y se verificó en vivo contra SIRI (sanciones disciplinarias) y SIGEP (cargos sensibles a corrupción). Analiza los datos: ¿en cuántas entidades/municipios aparece? ¿qué roles tiene? ¿hay concentración de valor en pocos contratos? Si hay alertaMultiMunicipio, alertasSiri o alertasSigep, MENCIÓNALAS explícitamente — son la parte más importante. Responde de forma natural. IMPORTANTE: aclara siempre que es coincidencia por nombre (SECOP no trae cédula), no una identificación verificada.',
       textoFallback,
     );
 
     const presentacion = await generarPresentacion(
       mensaje,
       datosPersona,
-      'Búsqueda por persona — contratos donde aparece como firmante/ordenador/supervisor',
+      'Búsqueda por persona — contratos donde aparece como firmante/ordenador/supervisor, cruce multi-municipio, y verificación SIRI/SIGEP en vivo',
     ) ?? fallbackPersona(datosPersona);
     return { texto, presentacion };
   }
