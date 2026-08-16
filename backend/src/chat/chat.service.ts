@@ -21,6 +21,52 @@ function barraAscii(pct: number, ancho = 20): string {
 }
 
 /**
+ * Lista de municipios y ciudades principales de Colombia para detección básica en el mensaje del usuario.
+ * Se usa normalizado (sin tildes, minúsculas) para matching.
+ */
+const MUNICIPIOS_COLOMBIA: string[] = [
+  'bogota', 'medellin', 'cali', 'barranquilla', 'cartagena', 'cucuta', 'bucaramanga', 'pereira', 'santa marta', 'ibague',
+  'pasto', 'manizales', 'neiva', 'villavicencio', 'armenia', 'popayan', 'valledupar', 'monteria', 'sincelejo', 'riohacha',
+  'quibdo', 'mitu', 'puerto carreno', 'leticia', 'inirida', 'san jose del guaviare', 'florencia', 'yopal', 'tunja', 'sogamoso',
+  'duitama', 'chia', 'zipaquira', 'facatativa', 'mosquera', 'funza', 'madrid', 'soacha', 'girardot', 'melgar', 'espinal',
+  'guaduas', 'honda', 'la mesa', 'vianey', 'villapinzon', 'chiquinquira', 'moniquira', 'san gil', 'socorro', 'barbosa',
+  'bucarasica', 'cucutilla', 'el carmen', 'el tablon', 'el zulia', 'gramalote', 'hacari', 'herran', 'labateca', 'los patios',
+  'lourdes', 'mutiscua', 'ocaña', 'pamplona', 'pamplonita', 'puerto santander', 'ragral', 'salazar', 'san calixto', 'san cayetano',
+  'santiago', 'sardinata', 'silos', 'teorama', 'tibú', 'toledo', 'villa del rosario', 'villa cario', 'aguachica', 'agustin codazzi',
+  'astrea', 'becerril', 'bosconia', 'chimichagua', 'chiriguana', 'curumani', 'el paso', 'gamarra', 'gonzalez', 'la gloria',
+  'la paz', 'manaure balcon del cesar', 'pailitas', 'pelaya', 'pueblo bello', 'rio de oro', 'la jagua de ibirico', 'san alberto',
+  'san diego', 'san martin', 'tamalameque', 'valledupar'
+];
+
+function extraerCiudadDelMensaje(mensaje: string): string | null {
+  const texto = normalizar(mensaje?.toLowerCase() || '');
+  // Patrones comunes: "en X", "de X", "mi municipio es X", "municipio de X", "ciudad de X", "X me interesa"
+  const patrones = [
+    /\ben\s+([a-záéíóúñ\s]+)/gi,
+    /\bde\s+([a-záéíóúñ\s]+)/gi,
+    /mi\s+municipio\s+(?:es|es\s+de)\s+([a-záéíóúñ\s]+)/gi,
+    /municipio\s+de\s+([a-záéíóúñ\s]+)/gi,
+    /ciudad\s+de\s+([a-záéíóúñ\s]+)/gi,
+    /lugar\s+(?:es|de)\s+([a-záéíóúñ\s]+)/gi,
+  ];
+
+  for (const patron of patrones) {
+    const matches = [...texto.matchAll(patron)];
+    for (const match of matches) {
+      const candidato = match[1]?.trim();
+      if (!candidato) continue;
+      // Normalizar candidato y buscar en lista conocida
+      const norm = normalizar(candidato);
+      if (MUNICIPIOS_COLOMBIA.includes(norm)) {
+        // Devolver el nombre original con capitalización básica
+        return candidato.split(' ').map(p => p.charAt(0).toUpperCase() + p.slice(1)).join(' ');
+      }
+    }
+  }
+  return null;
+}
+
+/**
  * Backend real de "Anna María" — el commit original (`45a5b1f`) registró
  * este módulo en app.module.ts pero nunca subió los archivos. En vez de
  * esperar, se implementa reusando lo que ya existe: el Contrato ya
@@ -39,7 +85,15 @@ export class ChatService {
   ) {}
 
   async consultar(input: ChatConsultaInput): Promise<{ respuesta: string; requiereTerritorio?: boolean }> {
-    const ciudad = input.ciudad?.trim();
+    // 1. Usar ciudad del contexto de la app (radar state)
+    let ciudad = input.ciudad?.trim();
+
+    // 2. Si no hay ciudad en contexto, intentar extraerla del mensaje del usuario
+    if (!ciudad) {
+      ciudad = extraerCiudadDelMensaje(input.mensaje);
+    }
+
+    // 3. Si sigue sin ciudad, preguntar amablemente
     if (!ciudad) {
       const esSaludo = /^hola|^buenas|^qué tal|^buenos?\s*(días?|tardes?|noches?)|^hi\b|^hello\b/i.test(input.mensaje?.trim() || '');
       return {
@@ -51,10 +105,10 @@ export class ChatService {
         // frontend contra colombia.json.
         requiereTerritorio: true,
         respuesta: esSaludo
-          ? `¡Hola! 👋 Soy Anna María, tu asistente cívica en RadarAI. Me alegra que estés aquí.
+          ? `¡Hola! 👋 Soy Anna María, tu asistente cívica en RadarAI.
 
-¿De qué municipio quieres que te hable? Escribe el nombre (por ejemplo "Tocancipá" o "Tocancipá, Cundinamarca") y te cuento con cifras reales de SECOP II.`
-          : `Me encantaría ayudarte, pero para responderte con datos reales necesito saber de qué municipio. ¿Cuál es?`,
+¿Me podrías indicar tu ubicación o el lugar sobre el cual quieres consultar, por favor?`
+          : `¿Me podrías indicar tu ubicación o el lugar sobre el cual quieres consultar, por favor?`,
       };
     }
 
