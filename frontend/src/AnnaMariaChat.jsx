@@ -66,7 +66,7 @@ function MensajeBot({ texto }) {
  * elemento fijo del proyecto y usa un z-index alto para no chocar con la
  * barra superior sticky (z-index 10).
  */
-export default function AnnaMariaChat({ radar }) {
+export default function AnnaMariaChat({ initialQuestion }) {
   const [abierto, setAbierto] = useState(false);
   const [mensajes, setMensajes] = useState([]);
   const [input, setInput] = useState('');
@@ -79,9 +79,32 @@ export default function AnnaMariaChat({ radar }) {
     if (lista) lista.scrollTop = lista.scrollHeight;
   }, [mensajes, escribiendo]);
 
+  useEffect(() => {
+    if (!initialQuestion?.text?.trim()) return;
+    setAbierto(true);
+    void enviarMensaje(initialQuestion.text);
+  }, [initialQuestion]);
+
   function rellenarSugerencia(sugerencia) {
     setInput(sugerencia);
     if (inputRef.current) inputRef.current.focus();
+  }
+
+  async function enviarMensaje(mensaje) {
+    if (!mensaje) return;
+
+    setMensajes((prev) => [...prev, { rol: 'usuario', texto: mensaje }]);
+    setEscribiendo(true);
+    try {
+      const respuesta = await radarService.consultarChatAnnaMaria({
+        mensaje,
+      });
+      setMensajes((prev) => [...prev, { rol: 'bot', texto: respuesta }]);
+    } catch (error) {
+      setMensajes((prev) => [...prev, { rol: 'bot', texto: `No pude responder en este momento. ${error.message}` }]);
+    } finally {
+      setEscribiendo(false);
+    }
   }
 
   async function enviar(event) {
@@ -90,20 +113,7 @@ export default function AnnaMariaChat({ radar }) {
     if (!mensaje) return;
 
     setInput('');
-    setMensajes((prev) => [...prev, { rol: 'usuario', texto: mensaje }]);
-    setEscribiendo(true);
-    try {
-      // Si el ciudadano ya eligió territorio en la app, se lo pasamos a Anna
-      // María para que responda con datos reales de esa región en SECOP II.
-      const departamento = radar?.department || radar?.selectedDepartment || undefined;
-      const ciudad = radar?.municipality || undefined;
-      const respuesta = await radarService.consultarChatAnnaMaria({ mensaje, departamento, ciudad });
-      setMensajes((prev) => [...prev, { rol: 'bot', texto: respuesta }]);
-    } catch (error) {
-      setMensajes((prev) => [...prev, { rol: 'bot', texto: `No pude responder en este momento. ${error.message}` }]);
-    } finally {
-      setEscribiendo(false);
-    }
+    await enviarMensaje(mensaje);
   }
 
   return (

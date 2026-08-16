@@ -56,9 +56,9 @@ export default function useUnderstandGasto(): UseUnderstandGastoReturn {
       const resultadoConsulta = await consultar({ departamento: form.departamento, ciudad: form.municipio, tema, pregunta, fechaDesde, fechaHasta });
       setResultado(resultadoConsulta);
       setStatus('success');
-    } catch (err: any) {
+    } catch (err: unknown) {
       setStatus('error');
-      setError(err.message || 'No se pudo analizar el municipio.');
+      setError(err instanceof Error ? err.message : 'No se pudo analizar el municipio.');
     }
   }
 

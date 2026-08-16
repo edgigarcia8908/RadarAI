@@ -32,15 +32,17 @@ export const radarService = {
     mensaje,
     departamento,
     ciudad,
+    periodo,
   }: {
     mensaje: string;
     departamento?: string;
     ciudad?: string;
+    periodo?: string;
   }): Promise<string> {
     const response = await fetch('/api/chat/consultar', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ mensaje, departamento, ciudad }),
+      body: JSON.stringify({ mensaje, departamento, ciudad, periodo }),
     });
 
     const data = await response.json().catch(() => ({}));

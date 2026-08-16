@@ -38,18 +38,22 @@ export interface HomeExample {
   label: string;
   icon: HomeIconName;
   tone: 'green' | 'lilac' | 'yellow';
-  target: HomeNavigationTarget;
-}
-
-export interface HomeRoute {
-  id: string;
-  title: string;
-  description: string;
-  icon: HomeIconName;
-  tone: 'green' | 'lilac' | 'yellow';
-  target: HomeNavigationTarget;
 }
 
 export interface HomeViewProps {
   onNavigate: (target: HomeNavigationTarget) => void;
+}
+
+export interface HomeChatMessage {
+  id: string;
+  role: 'user' | 'bot';
+  text: string;
+}
+
+export interface HomeSelectProps {
+  label: string;
+  value: string;
+  options: string[];
+  icon: HomeIconName;
+  onChange: (value: string) => void;
 }
