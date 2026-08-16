@@ -47,7 +47,7 @@ export class RefreshCronService {
 
   constructor(
     @InjectModel(Contrato.name) private readonly contratoModel: Model<Contrato>,
-    private readonly ingestion: IngestionService,
+    @Inject(IngestionService) private readonly ingestion: IngestionService,
   ) {}
 
   @Interval(CUARENTA_Y_OCHO_HORAS_MS)
