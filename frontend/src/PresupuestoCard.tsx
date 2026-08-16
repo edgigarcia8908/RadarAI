@@ -1,4 +1,5 @@
 import { EstadoPresupuestal } from './api';
+import { formatearPesos } from './constants/CURRENCY';
 
 function periodoLegible(p: string | null): string {
   if (!p || p.length !== 8) return '—';
@@ -36,21 +37,21 @@ export default function PresupuestoCard({ p }: { p: EstadoPresupuestal }) {
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 10, marginTop: 10, fontSize: 13 }}>
         <div>
           <div style={{ color: '#888' }}>Presupuesto apropiado</div>
-          <div style={{ fontWeight: 'bold' }}>${p.presupuestoApropiado.toLocaleString('es-CO')}</div>
+          <div style={{ fontWeight: 'bold' }}>{formatearPesos(p.presupuestoApropiado)}</div>
         </div>
         <div>
           <div style={{ color: '#888' }}>Comprometido</div>
-          <div style={{ fontWeight: 'bold' }}>${p.comprometido.toLocaleString('es-CO')}</div>
+          <div style={{ fontWeight: 'bold' }}>{formatearPesos(p.comprometido)}</div>
           {barra(p.comprometido, p.presupuestoApropiado, '#1e40af')}
         </div>
         <div>
           <div style={{ color: '#888' }}>Pagado</div>
-          <div style={{ fontWeight: 'bold' }}>${p.pagado.toLocaleString('es-CO')}</div>
+          <div style={{ fontWeight: 'bold' }}>{formatearPesos(p.pagado)}</div>
           {barra(p.pagado, p.presupuestoApropiado, '#16a34a')}
         </div>
         <div>
           <div style={{ color: '#888' }}>Contratado en SECOP (mismo territorio/rango)</div>
-          <div style={{ fontWeight: 'bold' }}>${p.valorContratadoSecop.toLocaleString('es-CO')}</div>
+          <div style={{ fontWeight: 'bold' }}>{formatearPesos(p.valorContratadoSecop)}</div>
         </div>
       </div>
 

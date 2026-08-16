@@ -8,6 +8,7 @@ import { normalizar } from '../common/normalizar';
 import { departamentoRealSecop } from '../common/departamento-secop';
 import { palabrasConSinonimos } from '../common/sinonimos';
 import { valorPlausible } from '../common/valores';
+import { formatearPesos } from '../common/formatear-pesos';
 
 export interface ConsultaInput {
   departamento?: string;
@@ -307,7 +308,7 @@ export class CivicIntelService {
    * (3+ palabras de 4+ letras) que ya se usa en SIRI/SIGEP para evitar
    * falsos positivos por un solo apellido común.
    */
-  private buscarRespuestaPorPersona(pregunta: string, contratos: Contrato[]): string | null {
+  private async buscarRespuestaPorPersona(pregunta: string, contratos: Contrato[]): Promise<string | null> {
     const tokensPregunta = new Set(normalizar(pregunta).split(' ').filter((t) => t.length >= 4));
     if (tokensPregunta.size < 2) return null;
 
@@ -317,9 +318,6 @@ export class CivicIntelService {
         const tokensNombre = new Set(normalizar(nombre).split(' ').filter((t) => t.length >= 4));
         if (tokensNombre.size === 0) continue;
         const compartidos = [...tokensPregunta].filter((t) => tokensNombre.has(t)).length;
-        // Antes exigía siempre >=3 — imposible con nombres de 2 palabras
-        // ("Giovanny García" nunca comparte más de 2 tokens). Ver mismo fix
-        // en chat.service.ts.
         if (compartidos >= Math.min(3, tokensNombre.size) && compartidos >= 2) return true;
       }
       return false;
@@ -328,15 +326,44 @@ export class CivicIntelService {
 
     const valorTotal = coincidencias.reduce((s, c) => s + valorPlausible(c.valorDelContrato), 0);
     const entidades = [...new Set(coincidencias.map((c) => c.nombreEntidad))];
-    const detalle = coincidencias
-      .slice(0, 5)
-      .map((c) => `- ${c.nombreEntidad}: ${(c.objetoDelContrato || '').slice(0, 80)} ($${c.valorDelContrato.toLocaleString('es-CO')})`)
-      .join('\n');
 
-    return (
-      `Encontré ${coincidencias.length} contrato(s) donde esa persona aparece como firmante, ordenador del gasto o supervisor, por un total de $${valorTotal.toLocaleString('es-CO')}, en: ${entidades.join(', ')}.\n\n${detalle}` +
-      '\n\n(Coincidencia por nombre, no por cédula — SECOP no la trae — confirma que es la misma persona antes de sacar conclusiones.)'
-    );
+    const datosPersona = {
+      totalContratos: coincidencias.length,
+      valorTotal,
+      entidades,
+      contratos: coincidencias.slice(0, 15).map((c) => ({
+        entidad: c.nombreEntidad,
+        objeto: (c.objetoDelContrato || '').slice(0, 120),
+        valor: c.valorDelContrato,
+        proveedor: c.proveedorAdjudicado,
+        rol: c.nombreOrdenadorDelGasto && normalizar(c.nombreOrdenadorDelGasto).split(' ').filter(t => t.length >= 4).some(t => tokensPregunta.has(t)) ? 'ordenador del gasto'
+          : c.nombreSupervisor && normalizar(c.nombreSupervisor).split(' ').filter(t => t.length >= 4).some(t => tokensPregunta.has(t)) ? 'supervisor'
+          : 'representante legal',
+      })),
+    };
+
+    const textoFallback =
+      `Encontré ${coincidencias.length} contrato(s) donde esa persona aparece como firmante, ordenador del gasto o supervisor, por un total de ${formatearPesos(valorTotal)}, en: ${entidades.join(', ')}.\n\n` +
+      coincidencias.slice(0, 5).map((c) => `- ${c.nombreEntidad}: ${(c.objetoDelContrato || '').slice(0, 80)} (${formatearPesos(c.valorDelContrato)})`).join('\n') +
+      '\n\n(Coincidencia por nombre, no por cédula — SECOP no la trae — confirma que es la misma persona antes de sacar conclusiones.)';
+
+    try {
+      const raw = await completar({
+        system: `Eres el asistente cívico de RADAR. Analizas datos REALES de contratación pública.
+
+REGLAS:
+- SOLO menciona datos del JSON proporcionado. NUNCA inventes.
+- Analiza patrones: ¿en cuántas entidades aparece? ¿qué roles tiene? ¿hay concentración de valor?
+- Aclara SIEMPRE que es coincidencia por nombre, no identidad verificada.
+- Tono cercano, 2-4 frases. Abreviar cifras: >= 1B → "$1,89 B", >= 1M → "$187 M".
+- Responde SOLO texto plano, sin JSON ni markdown.`,
+        prompt: `Pregunta: "${pregunta}"\n\nDatos reales de la base de datos: ${JSON.stringify(datosPersona)}`,
+        maxTokens: 300,
+      });
+      return raw?.trim() || textoFallback;
+    } catch {
+      return textoFallback;
+    }
   }
 
   /**
@@ -377,18 +404,54 @@ export class CivicIntelService {
    * no dependen de que haya LLM configurado.
    */
   private async redactarRespuesta(input: ConsultaInput, resumen: Record<string, unknown>, hallazgos: Hallazgo[], contratos: Contrato[]): Promise<string> {
-    const respuestaPorPersona = this.buscarRespuestaPorPersona(input.pregunta, contratos);
+    const respuestaPorPersona = await this.buscarRespuestaPorPersona(input.pregunta, contratos);
     if (respuestaPorPersona) return respuestaPorPersona;
 
     const contratosDelTema = this.filtrarPorTemaDePregunta(input.pregunta, contratos);
     if (contratosDelTema) {
       const valorTema = contratosDelTema.reduce((s, c) => s + valorPlausible(c.valorDelContrato), 0);
       const proveedoresTema = new Set(contratosDelTema.map((c) => c.nitProveedor || c.proveedorAdjudicado)).size;
-      return `Sobre eso específicamente, en ${resumen.territorio} encontré ${contratosDelTema.length} contrato(s) relacionados por un total de $${valorTema.toLocaleString('es-CO')}, con ${proveedoresTema} proveedor(es) — de los ${resumen.totalContratos} contratos totales del territorio.`;
+      const topProveedoresTema = [...contratosDelTema.reduce((m, c) => {
+        const key = c.nitProveedor || c.proveedorAdjudicado;
+        if (!key) return m;
+        if (!m.has(key)) m.set(key, { nombre: c.proveedorAdjudicado, valor: 0, contratos: 0 });
+        const e = m.get(key)!;
+        e.valor += c.valorDelContrato || 0;
+        e.contratos++;
+        return m;
+      }, new Map<string, { nombre: string; valor: number; contratos: number }>()).values()]
+        .sort((a, b) => b.valor - a.valor).slice(0, 5);
+
+      const datosTema = {
+        territorio: resumen.territorio,
+        totalFiltrados: contratosDelTema.length,
+        totalTerritorio: resumen.totalContratos,
+        valorTema,
+        proveedoresTema,
+        topProveedores: topProveedoresTema,
+      };
+      const textoFallback = `Sobre eso específicamente, en ${resumen.territorio} encontré ${contratosDelTema.length} contrato(s) relacionados por un total de ${formatearPesos(valorTema)}, con ${proveedoresTema} proveedor(es) — de los ${resumen.totalContratos} contratos totales del territorio.`;
+
+      try {
+        const raw = await completar({
+          system: `Eres el asistente cívico de RADAR. Analizas datos REALES de contratación pública.
+
+REGLAS:
+- SOLO menciona datos del JSON. NUNCA inventes.
+- El usuario preguntó por un tema específico — estos son los contratos que coinciden.
+- Resalta qué proporción del total representa, si hay concentración de proveedores.
+- Tono cercano, 2-4 frases. Abreviar cifras. Texto plano, sin JSON ni markdown.`,
+          prompt: `Pregunta: "${input.pregunta}"\n\nDatos reales: ${JSON.stringify(datosTema)}`,
+          maxTokens: 300,
+        });
+        return raw?.trim() || textoFallback;
+      } catch {
+        return textoFallback;
+      }
     }
 
     const plantilla = () =>
-      `En ${resumen.territorio}${input.tema ? `, sobre "${input.tema}",` : ''} encontramos ${resumen.totalContratos} contratos por un total de $${Number(resumen.valorTotalContratado).toLocaleString('es-CO')} con ${resumen.proveedoresUnicos} proveedores distintos.` +
+      `En ${resumen.territorio}${input.tema ? `, sobre "${input.tema}",` : ''} encontramos ${resumen.totalContratos} contratos por un total de ${formatearPesos(Number(resumen.valorTotalContratado))} con ${resumen.proveedoresUnicos} proveedores distintos.` +
       (hallazgos.length ? ` Encontramos ${hallazgos.length} aspecto(s) que pueden ser relevantes para una veeduría.` : ' No se detectaron patrones inusuales con los datos disponibles.');
 
     const muestraContratos = contratos.slice(0, 40).map((c) => ({

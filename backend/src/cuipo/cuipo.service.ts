@@ -6,6 +6,7 @@ import { SocrataClient, soqlString, toNumber } from '../ingestion/socrata.client
 import { normalizar } from '../common/normalizar';
 import { departamentoRealSecop } from '../common/departamento-secop';
 import { valorPlausible } from '../common/valores';
+import { formatearPesos } from '../common/formatear-pesos';
 
 /**
  * CUIPO (Categorización Única de Información de Presupuesto y de Operaciones
@@ -134,7 +135,7 @@ export class CuipoService {
 
     let alerta: string | null = null;
     if (comprometido > 0 && valorContratadoSecop > comprometido * 1.5) {
-      alerta = `Lo sincronizado de SECOP para este territorio/periodo ($${valorContratadoSecop.toLocaleString('es-CO')}) supera claramente lo comprometido reportado en CUIPO ($${comprometido.toLocaleString('es-CO')}) — puede deberse a que el filtro de SECOP incluye más entidades que la reportante, o merece revisión.`;
+      alerta = `Lo sincronizado de SECOP para este territorio/periodo (${formatearPesos(valorContratadoSecop)}) supera claramente lo comprometido reportado en CUIPO (${formatearPesos(comprometido)}) — puede deberse a que el filtro de SECOP incluye más entidades que la reportante, o merece revisión.`;
     } else if (porcentajeComprometido !== null && porcentajeComprometido > 100) {
       alerta = `El municipio comprometió ${porcentajeComprometido.toFixed(0)}% de su presupuesto apropiado — más del 100%, revisar si hubo adiciones presupuestales que lo justifiquen.`;
     }

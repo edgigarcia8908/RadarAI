@@ -3,6 +3,7 @@ import { obtenerFichaTerritorial, FichaTerritorial } from './api';
 import colombia from './colombia.json';
 import PresupuestoCard from './PresupuestoCard';
 import ContextoTerritorialCard from './ContextoTerritorialCard';
+import { formatearPesos } from './constants/CURRENCY';
 
 interface DeptoColombia {
   departamento: string;
@@ -105,7 +106,7 @@ export default function FichaTerritorialView() {
 
           <div className="territory-metrics">
             <Metrica etiqueta="Contratos sincronizados" valor={ficha.contratacion.totalContratos.toLocaleString('es-CO')} />
-            <Metrica etiqueta="Valor total contratado" valor={`$${ficha.contratacion.valorTotal.toLocaleString('es-CO')}`} />
+            <Metrica etiqueta="Valor total contratado" valor={formatearPesos(ficha.contratacion.valorTotal)} />
             <Metrica etiqueta="Proveedores únicos" valor={ficha.contratacion.proveedoresUnicos.toLocaleString('es-CO')} />
             <Metrica
               etiqueta="Concentración de proveedores"
