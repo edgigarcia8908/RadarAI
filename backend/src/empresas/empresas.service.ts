@@ -13,6 +13,9 @@ export interface CrearEmpresaInput {
   ciudades?: string[];
   capacidadEconomicaMin?: number;
   capacidadEconomicaMax?: number;
+  certificaciones?: string[];
+  regionesOperativas?: string[];
+  especialidadPrincipal?: string;
 }
 
 @Injectable()
@@ -42,5 +45,22 @@ export class EmpresasService {
     const empresa = await this.model.findByIdAndUpdate(id, patch, { new: true });
     if (!empresa) throw new NotFoundException('Empresa no encontrada');
     return empresa;
+  }
+
+  /** Obtener perfil operativo completo para UI de match */
+  async obtenerPerfilOperativo(id: string) {
+    const empresa = await this.obtener(id);
+    return {
+      nombre: empresa.nombre,
+      nit: empresa.nit,
+      productosServicios: empresa.productosServicios,
+      capacidadEconomicaMin: empresa.capacidadEconomicaMin,
+      capacidadEconomicaMax: empresa.capacidadEconomicaMax,
+      departamentos: empresa.departamentos,
+      ciudades: empresa.ciudades,
+      certificaciones: empresa.certificaciones,
+      regionesOperativas: empresa.regionesOperativas,
+      especialidadPrincipal: empresa.especialidadPrincipal,
+    };
   }
 }

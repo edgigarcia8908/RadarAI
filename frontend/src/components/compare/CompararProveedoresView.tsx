@@ -4,6 +4,7 @@ import { COMPARE_PERIODS } from '../../constants/COMPARE_PROVIDERS';
 import type { HomeNavigationTarget } from '../../types/home.types';
 import type { CompareProvidersViewProps } from '../../types/compare.types';
 import HomeIcon from '../home/HomeIcon';
+import AppSidebar from '../navigation/AppSidebar';
 import useCompareProviders from './useCompareProviders.hook';
 import colombia from '../../colombia.json';
 
@@ -83,85 +84,63 @@ export default function CompararProveedoresView({ onNavigate, onTerritorioChange
   );
 
   return (
-    <div className="compare-page">
-      <aside className="compare-sidebar">
-        <div className="home-brand" aria-label="RadarAI">
-          <span className="home-brand-mark"><span /><span /><span /></span>
-          <span>RadarAI</span>
-        </div>
-        <nav className="home-nav" aria-label="Navegación principal">
-          {HOME_NAV_ITEMS.map((item) => (
-            <button
-              className={`home-nav-item${item.target === 'estudio' ? ' compare-nav-active' : ''}`}
-              key={item.id}
-              onClick={() => onNavigate(item.target as HomeNavigationTarget)}
-              type="button"
-            >
-              <HomeIcon name={item.icon} size={19} />
-              <span>{item.label}</span>
-            </button>
-          ))}
-        </nav>
-        <div className="home-trust-note">
-          <HomeIcon name="shield" size={20} />
-          <span>Datos oficiales.<br />Respuestas<br />simples.</span>
-        </div>
-      </aside>
+    <div className="app-layout">
+      <AppSidebar activeTarget="estudio" onNavigate={onNavigate} />
+      <main className="app-main">
+        <section className="compare-form" aria-labelledby="compare-title">
+          <h1 id="compare-title">Comparar proveedores antes de contratar</h1>
+          <p>Compara precios, experiencia y riesgos para elegir al mejor proveedor.</p>
 
-      <section className="compare-form" aria-labelledby="compare-title">
-        <h1 id="compare-title">Comparar proveedores antes de contratar</h1>
-        <p>Compara precios, experiencia y riesgos para elegir al mejor proveedor.</p>
+          <label className="compare-field">
+            <span>¿Qué necesitas contratar?</span>
+            <span className="compare-input-wrap">
+              <HomeIcon name="briefcase" size={15} />
+              <input value={service} onChange={(event) => setService(event.target.value)} placeholder="Ej. mantenimiento de vías" />
+            </span>
+          </label>
 
-        <label className="compare-field">
-          <span>¿Qué necesitas contratar?</span>
-          <span className="compare-input-wrap">
-            <HomeIcon name="briefcase" size={15} />
-            <input value={service} onChange={(event) => setService(event.target.value)} placeholder="Ej. mantenimiento de vías" />
-          </span>
-        </label>
+          <label className="compare-field">
+            <span>Departamento</span>
+            <span className="compare-input-wrap">
+              <HomeIcon name="map" size={15} />
+              <select
+                value={department}
+                onChange={(event) => {
+                  setDepartment(event.target.value);
+                  setMunicipality('Todos');
+                }}
+              >
+                {DEPARTAMENTOS.map((d) => <option key={d.departamento}>{d.departamento}</option>)}
+              </select>
+            </span>
+          </label>
 
-        <label className="compare-field">
-          <span>Departamento</span>
-          <span className="compare-input-wrap">
-            <HomeIcon name="map" size={15} />
-            <select
-              value={department}
-              onChange={(event) => {
-                setDepartment(event.target.value);
-                setMunicipality('Todos');
-              }}
-            >
-              {DEPARTAMENTOS.map((d) => <option key={d.departamento}>{d.departamento}</option>)}
-            </select>
-          </span>
-        </label>
+          <label className="compare-field">
+            <span>Municipio</span>
+            <span className="compare-input-wrap">
+              <HomeIcon name="home" size={15} />
+              <select value={municipality} onChange={(event) => setMunicipality(event.target.value)}>
+                {municipiosDisponibles.map((option) => <option key={option}>{option}</option>)}
+              </select>
+            </span>
+          </label>
 
-        <label className="compare-field">
-          <span>Municipio</span>
-          <span className="compare-input-wrap">
-            <HomeIcon name="home" size={15} />
-            <select value={municipality} onChange={(event) => setMunicipality(event.target.value)}>
-              {municipiosDisponibles.map((option) => <option key={option}>{option}</option>)}
-            </select>
-          </span>
-        </label>
+          <label className="compare-field">
+            <span>Período para comparar</span>
+            <span className="compare-input-wrap">
+              <HomeIcon name="calendar" size={15} />
+              <select value={period} onChange={(event) => setPeriod(event.target.value)}>
+                {COMPARE_PERIODS.map((option) => <option key={option}>{option}</option>)}
+              </select>
+            </span>
+          </label>
 
-        <label className="compare-field">
-          <span>Período para comparar</span>
-          <span className="compare-input-wrap">
-            <HomeIcon name="calendar" size={15} />
-            <select value={period} onChange={(event) => setPeriod(event.target.value)}>
-              {COMPARE_PERIODS.map((option) => <option key={option}>{option}</option>)}
-            </select>
-          </span>
-        </label>
-
-        <button className="compare-button" onClick={handleCompare} type="button" disabled={status === 'loading' || !service.trim()}>
-          <HomeIcon name="scales" size={16} />
-          <span>{status === 'loading' ? 'Buscando…' : 'Comparar precios y proveedores'}</span>
-        </button>
-        {status === 'error' && <p className="compare-status compare-status-error">{error}</p>}
-      </section>
+          <button className="btn btn-primary" onClick={handleCompare} type="button" disabled={status === 'loading' || !service.trim()}>
+            <HomeIcon name="scales" size={16} />
+            <span>{status === 'loading' ? 'Buscando…' : 'Comparar precios y proveedores'}</span>
+          </button>
+          {status === 'error' && <p className="compare-status compare-status-error">{error}</p>}
+        </section>
 
       <section className="compare-results" aria-labelledby="compare-results-title">
         <h2 id="compare-results-title">Comparación de proveedores</h2>
@@ -225,6 +204,7 @@ export default function CompararProveedoresView({ onNavigate, onTerritorioChange
           </>
         )}
       </section>
+      </main>
     </div>
   );
 }

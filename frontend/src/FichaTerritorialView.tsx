@@ -42,9 +42,9 @@ export default function FichaTerritorialView({ onHome }: { onHome?: () => void }
     }
   }
 
-  return (
-<div className="territory-view">
-      <Breadcrumbs items={[{ label: 'Inicio', onClick: onHome! }, { label: 'Ficha territorial' }]} />
+return (
+    <div className="territory-view">
+      <Breadcrumbs items={[{ label: 'Inicio', onClick: onHome!, isHome: true }, { label: 'Ficha territorial' }]} />
       <div className="territory-header">
         <div>
           <span className="view-eyebrow">Perfil municipal</span>
@@ -83,7 +83,7 @@ export default function FichaTerritorialView({ onHome }: { onHome?: () => void }
         </label>
       </div>
 
-      <button className="territory-query-button" onClick={handleConsultar} disabled={cargando} type="button">
+      <button className="btn btn-primary" onClick={handleConsultar} disabled={cargando} type="button">
         {cargando ? 'Consultando...' : 'Ver ficha'}
       </button>
 

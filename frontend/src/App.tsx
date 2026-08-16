@@ -29,7 +29,7 @@ const irHome = volverAlInicio;
       {modo !== 'home' && (
         <>
           <AnnaMariaChat radar={radarContext} />
-          <button className="app-back-button" onClick={volverAlInicio} type="button">
+          <button className="btn btn-ghost" onClick={volverAlInicio} type="button">
             ← Volver al inicio
           </button>
         </>
@@ -52,11 +52,7 @@ const irHome = volverAlInicio;
         </SecondaryViewShell>
       )}
       {modo === 'mapa' && <MapaRiesgoView onNavigate={navigateFromHome} />}
-      {modo === 'ficha' && (
-        <SecondaryViewShell activeTarget="ficha" onNavigate={navigateFromHome}>
-          <FichaTerritorialView onHome={irHome} />
-        </SecondaryViewShell>
-      )}
+      {modo === 'ficha' && <FichaTerritorialView onHome={irHome} />}
       {modo === 'seguimiento' && (
         <SecondaryViewShell activeTarget="seguimiento" onNavigate={navigateFromHome}>
           <SeguimientoContratistasView onHome={irHome} />

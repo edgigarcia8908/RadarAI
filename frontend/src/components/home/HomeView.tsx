@@ -1,10 +1,10 @@
 import React from 'react';
-import { HOME_EXAMPLES, HOME_NAV_ITEMS, HOME_PROMPT_PLACEHOLDER } from '../../constants/HOME';
-import { UNDERSTAND_DEPARTMENTS, UNDERSTAND_PERIODS } from '../../constants/UNDERSTAND_GASTO';
+import { HOME_EXAMPLES, HOME_PROMPT_PLACEHOLDER } from '../../constants/HOME';
 import type { HomeViewProps } from '../../types/home.types';
 import HomeIcon from './HomeIcon';
 import HomeSelect from './HomeSelect';
 import useHome from './useHome.hook';
+import AppSidebar from '../navigation/AppSidebar';
 
 export default function HomeView({ onNavigate }: HomeViewProps) {
   const {
@@ -24,34 +24,9 @@ export default function HomeView({ onNavigate }: HomeViewProps) {
   } = useHome();
 
   return (
-    <div className="home-layout">
-      <aside className="home-sidebar">
-        <div className="home-brand" aria-label="RadarAI">
-          <span className="home-brand-mark"><span /><span /><span /></span>
-          <span>RadarAI</span>
-        </div>
-
-        <nav className="home-nav" aria-label="Navegación principal">
-          {HOME_NAV_ITEMS.map((item) => (
-            <button
-              className={`home-nav-item${item.id === 'home' ? ' home-nav-item-active' : ''}`}
-              key={item.id}
-              onClick={() => onNavigate(item.target)}
-              type="button"
-            >
-              <HomeIcon name={item.icon} size={19} />
-              <span>{item.label}</span>
-            </button>
-          ))}
-        </nav>
-
-        <div className="home-trust-note">
-          <HomeIcon name="shield" size={20} />
-          <span>Datos oficiales.<br />Respuestas<br />simples.</span>
-        </div>
-      </aside>
-
-      <main className="home-main">
+    <div className="app-layout">
+      <AppSidebar activeTarget="home" onNavigate={onNavigate} />
+      <main className="app-main">
         <section className="home-content" aria-labelledby="home-title">
           <h1 id="home-title">RadarAI te ayuda a entender,<br />competir y decidir sobre<br />plata pública.</h1>
           <p className="home-subtitle">Haz una pregunta y conversa con RadarAI.</p>
@@ -73,9 +48,9 @@ export default function HomeView({ onNavigate }: HomeViewProps) {
           <section className="home-chat-shell" aria-label="Chat con RadarAI">
             <div className="home-chat-context">
               <span className="home-chat-context-title">Consultar en</span>
-              <HomeSelect icon="map" label="Departamento" onChange={setDepartamento} options={UNDERSTAND_DEPARTMENTS} value={departamento} />
+              <HomeSelect icon="map" label="Departamento" onChange={setDepartamento} options={['Cundinamarca', 'Bogotá', 'Antioquia', 'Valle del Cauca']} value={departamento} />
               <HomeSelect icon="home" label="Municipio" onChange={setMunicipio} options={municipiosDisponibles} value={municipio} />
-              <HomeSelect icon="calendar" label="Periodo" onChange={setPeriodo} options={UNDERSTAND_PERIODS} value={periodo} />
+              <HomeSelect icon="calendar" label="Periodo" onChange={setPeriodo} options={['2024', '2023', '2022', '2021']} value={periodo} />
             </div>
 
             <form className="home-chat-composer" onSubmit={handlePromptSubmit}>
@@ -89,7 +64,7 @@ export default function HomeView({ onNavigate }: HomeViewProps) {
                     type="text"
                     value={prompt}
                   />
-                  <button aria-label="Enviar pregunta" className="home-submit" disabled={isLoading} type="submit">
+                  <button aria-label="Enviar pregunta" className="btn btn-primary btn-icon-lg" disabled={isLoading} type="submit">
                     <HomeIcon name="arrow-up-right" size={24} />
                   </button>
                 </div>

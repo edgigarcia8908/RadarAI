@@ -36,7 +36,7 @@ function ListaVeedurias({ onAbrir, onNueva, onHome }: { onAbrir: (id: string) =>
           <h1>Veedurías</h1>
           <p>Organiza investigaciones colectivas y sigue las evidencias de la contratación pública.</p>
         </div>
-        <button className="oversight-primary-button" onClick={onNueva} type="button">+ Nueva veeduría</button>
+        <button className="btn btn-primary" onClick={onNueva} type="button">+ Nueva veeduría</button>
       </div>
 
       {error && <p style={{ color: 'crimson' }}>{error}</p>}
@@ -46,7 +46,7 @@ function ListaVeedurias({ onAbrir, onNueva, onHome }: { onAbrir: (id: string) =>
           <span className="oversight-empty-icon">+</span>
           <strong>Aún no hay veedurías creadas</strong>
           <span>Crea una investigación para reunir hallazgos, documentos y comentarios en un solo lugar.</span>
-          <button className="oversight-secondary-button" onClick={onNueva} type="button">Crear la primera veeduría</button>
+          <button className="btn btn-secondary" onClick={onNueva} type="button">Crear la primera veeduría</button>
         </div>
       )}
 
@@ -110,8 +110,8 @@ function NuevaVeeduria({ onCreada, onCancelar, onHome }: { onCreada: (id: string
         <label>Tema <input value={tema} onChange={(e) => setTema(e.target.value)} /></label>
       </div>
 <div className="oversight-form-actions">
-        <button className="oversight-primary-button" onClick={handleCrear} disabled={cargando || !titulo.trim()} type="button">{cargando ? 'Creando...' : 'Crear veeduría'}</button>
-        <button className="oversight-secondary-button" onClick={onCancelar} type="button">Cancelar</button>
+        <button className="btn btn-primary" onClick={handleCrear} disabled={cargando || !titulo.trim()} type="button">{cargando ? 'Creando...' : 'Crear veeduría'}</button>
+        <button className="btn btn-secondary" onClick={onCancelar} type="button">Cancelar</button>
       </div>
       {error && <p className="view-error">{error}</p>}
     </div>
@@ -190,7 +190,7 @@ function DetalleVeeduria({ id, onVolver, onHome }: { id: string; onVolver: () =>
 
   return (
 <div className="oversight-view oversight-detail">
-      <button className="oversight-back-button" onClick={onVolver} type="button">
+      <button className="btn btn-ghost" onClick={onVolver} type="button">
         ← Todas las veedurías
       </button>
       <div className="oversight-detail-header">
@@ -252,7 +252,7 @@ function DetalleVeeduria({ id, onVolver, onHome }: { id: string; onVolver: () =>
             Preguntar sobre los documentos indexados{' '}
             <input value={pregunta} onChange={(e) => setPregunta(e.target.value)} style={{ width: 300 }} />
           </label>
-          <button onClick={handlePreguntar} disabled={preguntando} style={{ marginLeft: 8 }}>
+          <button className="btn btn-primary" onClick={handlePreguntar} disabled={preguntando} style={{ marginLeft: 8 }}>
             {preguntando ? 'Buscando…' : 'Preguntar'}
           </button>
           {respuesta && <p style={{ fontStyle: 'italic', marginTop: 8 }}>{respuesta}</p>}
@@ -268,7 +268,7 @@ function DetalleVeeduria({ id, onVolver, onHome }: { id: string; onVolver: () =>
       <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
         <input placeholder="Tu nombre/email" value={autor} onChange={(e) => setAutor(e.target.value)} style={{ width: 160 }} />
         <input placeholder="Comentario…" value={nuevoComentario} onChange={(e) => setNuevoComentario(e.target.value)} style={{ flex: 1 }} />
-        <button onClick={handleComentar}>Enviar</button>
+        <button className="btn btn-primary" onClick={handleComentar}>Enviar</button>
       </div>
     </div>
   );

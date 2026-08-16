@@ -1,11 +1,10 @@
 import React from 'react';
 import { CircleMarker, MapContainer, TileLayer, Tooltip } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-import { HOME_NAV_ITEMS } from '../../constants/HOME';
 import { MAP_DEFAULT_CENTER, MAP_DEFAULT_ZOOM, MAP_RISK_FILTERS, MAP_RISK_LEGEND } from '../../constants/MAPA_RIESGO';
-import type { HomeNavigationTarget } from '../../types/home.types';
 import type { MapRiskViewProps } from '../../types/map.types';
 import HomeIcon from '../home/HomeIcon';
+import AppSidebar from '../navigation/AppSidebar';
 import useMapaRiesgo, { colorForRisk, radiusForContracts } from './useMapaRiesgo.hook';
 
 export default function MapaRiesgoView({ onNavigate }: MapRiskViewProps) {
@@ -24,30 +23,9 @@ export default function MapaRiesgoView({ onNavigate }: MapRiskViewProps) {
   } = useMapaRiesgo();
 
   return (
-    <div className="map-page">
-      <aside className="map-sidebar">
-        <div className="home-brand" aria-label="RadarAI">
-          <span className="home-brand-mark"><span /><span /><span /></span>
-          <span>RadarAI</span>
-        </div>
-        <nav className="home-nav" aria-label="Navegación principal">
-          {HOME_NAV_ITEMS.map((item) => (
-            <button
-              className={`home-nav-item${item.target === 'mapa' ? ' map-nav-active' : ''}`}
-              key={item.id}
-              onClick={() => onNavigate(item.target as HomeNavigationTarget)}
-              type="button"
-            >
-              <HomeIcon name={item.icon} size={19} />
-              <span>{item.label}</span>
-            </button>
-          ))}
-        </nav>
-        <div className="home-trust-note">
-          <HomeIcon name="shield" size={20} />
-          <span>Datos oficiales.<br />Respuestas<br />simples.</span>
-        </div>
-      </aside>
+    <div className="app-layout">
+      <AppSidebar activeTarget="mapa" onNavigate={onNavigate} />
+      <main className="app-main">
 
       <section className="map-control-panel" aria-labelledby="map-title">
         <span className="map-eyebrow"><HomeIcon name="map" size={15} /> Inteligencia territorial</span>
@@ -142,6 +120,7 @@ export default function MapaRiesgoView({ onNavigate }: MapRiskViewProps) {
         </div>
         <p className="map-footnote">La concentración se calcula sobre los contratos sincronizados. Un municipio con pocos contratos puede mostrar un porcentaje alto con una base pequeña.</p>
       </section>
+      </main>
     </div>
   );
 }

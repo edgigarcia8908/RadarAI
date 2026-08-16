@@ -19,6 +19,11 @@ export class Empresa extends Document {
   @Prop({ type: Number, default: 0 }) capacidadEconomicaMin: number;
   @Prop({ type: Number, default: 0 }) capacidadEconomicaMax: number;
 
+  /** Perfil operativo extendido (opcional, se llena en flujo de match) */
+  @Prop({ type: [String], default: [] }) certificaciones: string[];
+  @Prop({ type: [String], default: [] }) regionesOperativas: string[];
+  @Prop({ type: String, default: '' }) especialidadPrincipal: string;
+
   @Prop({ type: String, default: null }) propietarioUserId: string | null;
   @Prop({ type: Boolean, default: true }) activo: boolean;
 }

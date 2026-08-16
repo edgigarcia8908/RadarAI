@@ -20,6 +20,11 @@ export class EmpresasController {
     return this.service.obtener(id);
   }
 
+  @Get(':id/perfil-operativo')
+  obtenerPerfilOperativo(@Param('id') id: string) {
+    return this.service.obtenerPerfilOperativo(id);
+  }
+
   @Patch(':id')
   actualizar(@Param('id') id: string, @Body() body: Partial<CrearEmpresaInput>) {
     return this.service.actualizar(id, body);

@@ -1,6 +1,6 @@
 ---
 
-name: Lumina Oversight
+name: RadarAI
 
 colors:
 
@@ -242,9 +242,27 @@ spacing:
 
 ## Brand & Style
 
-The design system is engineered for a public transparency portal, prioritizing clarity, institutional trust, and high information density. The brand personality is objective, meticulous, and modern. 
+The design system is engineered for a public transparency portal, prioritizing clarity, institutional trust, and high information density. The brand personality is objective, meticulous, and modern.
+
+**RadarAI brand essence — "signal over noise":** the brand acts as a citizen radar over public contracting data. It scans the noise of thousands of records and raises a clear signal where citizens should look: territorial risk, veeduría opportunities, market concentration. The radar metaphor drives the visual identity — an orbiting sweep that detects a single lime echo against institutional olive. 
 
 The aesthetic follows a **High-Contrast / Modern** approach. It leverages a crisp, white foundation to ensure legibility, using a vibrant lime-green accent to draw attention to interactive elements and critical data points. This creates a distinctive "Neo-Institutional" feel that departs from traditional, stodgy government portals in favor of a fast, accessible, and data-driven experience. Surfaces are flat and structural, relying on precise typography and color blocking rather than decorative effects.
+
+## Logotype, Imagotype & Favicon
+
+The mark is built on the **radar sweep + signal echo** concept. Design agents must generate three deliverables from this spec:
+
+- **Isotipo (icon):** a flat radar device — two concentric arcs (or a complete ring plus a partial sweep arc) with a lime echo dot (`#D4FF70`) at the sweep's leading edge, drawn over olive (`#4D6700`) or on transparent with the arcs in olive. Geometric, no perspective, no gradients: flat color blocking only, consistent with the Neo-Institutional look.
+- **Imagotipo (lockup):** isotopic mark to the left of the **RadarAI** wordmark in Hanken Grotesk Bold (700), charcoal `#1A1A1A`; the echo dot may be reused as the accent over the "AI" (same lime, never recolored).
+- **Favicon:** the echo dot inside a simplified ring only — no sweep arc, no text. Must stay legible at 16px. Deliver 16×16, 32×32, and 180×180 (apple-touch) PNGs plus an SVG source.
+
+Rules the agents must honor:
+
+- Use only palette colors: olive `#4D6700`, lime `#D4FF70`, charcoal `#1A1A1A`, white `#FFFFFF`. Never introduce new hues.
+- Monochrome variants (solid charcoal or solid white) are allowed for disabled states and footer marks.
+- Minimum clear space is the height of the echo dot around the mark; minimum reproduction height is 24px for the imagotipo and 12px for the isotipo.
+- Do not use the mark on noisy backgrounds; prefer white, `#F9F9F9`, or olive surfaces.
+- The mark must NOT mimic or reference official Colombian state seals (Presidencia, SECOP, DIVIPOLA, Agencia Nacional de Contratación Pública) or imply official or endorsed identity — the brand is a citizen tool sharing data names, never an official body.
 
 ## Colors
 
