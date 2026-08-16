@@ -75,6 +75,7 @@ export default function OportunidadesView({ onNavigate, onTerritorioChange }: Op
     paso,
     searchError,
     searched,
+    palabrasClaveUsadas,
   } = useOpportunities();
 
   const municipiosDisponibles = useMemo(
@@ -185,10 +186,18 @@ export default function OportunidadesView({ onNavigate, onTerritorioChange }: Op
         {searchError && <p className="opportunities-error">{searchError}</p>}
 
         {isSearching && (
-          <ul className="opportunities-progress">
-            <li>{paso === 'preparando' ? '⏳' : '✅'} Preparando perfil y sincronizando SECOP</li>
-            <li className={paso === 'calculando' ? '' : 'opportunities-progress-pending'}>{paso === 'calculando' ? '⏳' : paso === null ? '✅' : '○'} Calculando compatibilidad</li>
-          </ul>
+          <>
+            <ul className="opportunities-progress">
+              <li>{paso === 'preparando' ? '⏳' : '✅'} Preparando perfil de tu empresa</li>
+              <li className={paso === 'sincronizando' ? '' : 'opportunities-progress-pending'}>
+                {paso === 'sincronizando' ? '⏳' : paso === 'calculando' ? '✅' : '○'} Sincronizando procesos de SECOP
+              </li>
+              <li className={paso === 'calculando' ? '' : 'opportunities-progress-pending'}>{paso === 'calculando' ? '⏳' : '○'} Calculando compatibilidad</li>
+            </ul>
+            {paso === 'sincronizando' && municipality === 'Todos' && (
+              <p className="opportunities-note">Sincronizando todo {department} (varios municipios) — puede tardar 30-40 segundos la primera vez. Elegir un municipio específico es más rápido.</p>
+            )}
+          </>
         )}
       </section>
 
@@ -197,7 +206,18 @@ export default function OportunidadesView({ onNavigate, onTerritorioChange }: Op
 
         {!searched && !isSearching && <p className="opportunities-note">Completa el formulario y busca para ver oportunidades reales de SECOP.</p>}
         {searched && items.length === 0 && (
-          <p className="opportunities-note">Ninguna oportunidad compatible todavía en {department} — prueba ampliar el territorio o describir tu producto con otras palabras.</p>
+          <div className="opportunities-empty">
+            <p className="opportunities-note">
+              Ninguna oportunidad compatible todavía en {department} — ningún proceso abierto que revisamos menciona lo que describiste.
+            </p>
+            {palabrasClaveUsadas.length > 0 ? (
+              <p className="opportunities-note">
+                Buscamos con estas palabras: <strong>{palabrasClaveUsadas.join(', ')}</strong>. Si no son las correctas, describe tu producto/servicio con otros términos (idealmente los mismos que usaría una entidad pública) e intenta de nuevo.
+              </p>
+            ) : (
+              <p className="opportunities-note">No logramos extraer palabras clave útiles de lo que escribiste — probá con una frase más descriptiva (ej. "mantenimiento de vías" en vez de una sola palabra).</p>
+            )}
+          </div>
         )}
 
         {items.map((item) => (

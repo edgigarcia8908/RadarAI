@@ -15,6 +15,7 @@ export interface UseOpportunitiesReturn {
   paso: 'preparando' | 'sincronizando' | 'calculando' | null;
   searchError: string | null;
   searched: boolean;
+  palabrasClaveUsadas: string[];
   setCompanyName: (value: string) => void;
   setOffer: (value: string) => void;
   setDepartment: (value: string) => void;
@@ -36,6 +37,7 @@ export default function useOpportunities(): UseOpportunitiesReturn {
   const [paso, setPaso] = useState<'preparando' | 'sincronizando' | 'calculando' | null>(null);
   const [searchError, setSearchError] = useState<string | null>(null);
   const [searched, setSearched] = useState(false);
+  const [palabrasClaveUsadas, setPalabrasClaveUsadas] = useState<string[]>([]);
 
   function toggleLocation() {
     setLocationEnabled((current) => !current);
@@ -70,6 +72,7 @@ export default function useOpportunities(): UseOpportunitiesReturn {
       ]);
 
       setPaso('calculando');
+      setPalabrasClaveUsadas(company.palabrasClave);
       const opportunities = await oportunidadesParaEmpresa(company._id);
       setItems(
         opportunities.map((item) => ({
@@ -109,6 +112,7 @@ export default function useOpportunities(): UseOpportunitiesReturn {
     paso,
     searchError,
     searched,
+    palabrasClaveUsadas,
     setCompanyName,
     setOffer,
     setDepartment,

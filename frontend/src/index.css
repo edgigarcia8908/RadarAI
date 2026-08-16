@@ -1601,6 +1601,12 @@ body {
   line-height: 1.15;
 }
 
+.opportunities-empty {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
 .opportunities-results {
   display: flex;
   flex: 1 1 auto;

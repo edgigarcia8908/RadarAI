@@ -1,4 +1,5 @@
 import { normalizar } from './normalizar';
+import { palabrasConSinonimos } from './sinonimos';
 
 /**
  * Stopwords en español — lo mínimo para que "vendemos computadores y
@@ -19,7 +20,17 @@ const STOPWORDS = new Set([
  * semántica real. El reemplazo natural (embeddings vía
  * `ceo-intelligence-service`) queda documentado en el README, mismo patrón.
  */
+/**
+ * Además de las palabras literales, suma sinónimos del mismo diccionario que
+ * usa el chat (`sinonimos.ts`) para los rubros más comunes de contratación
+ * municipal — sin esto, "vendo alimentación escolar" nunca matcheaba
+ * procesos que SECOP describe como "PAE" o "refrigerio escolar" (jerga
+ * técnica, no la palabra que usaría un empresario común). Si el texto no
+ * toca ningún rubro conocido, `palabrasConSinonimos` no aporta nada extra
+ * (por diseño, ver su propio comentario) — no hay downside.
+ */
 export function extraerPalabrasClave(texto: string): string[] {
   const palabras = normalizar(texto).split(' ').filter((p) => p.length > 3 && !STOPWORDS.has(p));
-  return [...new Set(palabras)];
+  const conSinonimos = palabrasConSinonimos(texto).filter((p) => p.length > 3 && !STOPWORDS.has(p));
+  return [...new Set([...palabras, ...conSinonimos])];
 }
