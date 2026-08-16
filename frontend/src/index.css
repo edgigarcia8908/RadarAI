@@ -3535,7 +3535,8 @@ body {
     display: none;
   }
 
-  .home-trust-note {
+  .home-trust-note,
+  .data-sources-badge {
     display: none;
   }
 
