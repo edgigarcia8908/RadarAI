@@ -1,0 +1,27 @@
+- generic [ref=f28e3]:
+  - button "← Volver" [ref=f28e111] [cursor=pointer]
+  - generic [ref=f28e112]:
+    - complementary [ref=f28e113]:
+      - generic "RadarAI" [ref=f28e114]
+      - navigation "Navegación principal" [ref=f28e120]:
+        - button "Inicio" [ref=f28e121] [cursor=pointer]
+        - button "Entender gasto" [ref=f28e127] [cursor=pointer]
+        - button "Encontrar oportunidades" [ref=f28e132] [cursor=pointer]
+        - button "Comparar proveedores" [ref=f28e137] [cursor=pointer]
+        - button "Veedurías" [ref=f28e141] [cursor=pointer]
+        - button "Mapa de riesgo" [ref=f28e146] [cursor=pointer]
+        - button "Ficha territorial" [ref=f28e151] [cursor=pointer]
+      - generic [ref=f28e155]: Datos oficiales.Respuestassimples.
+    - main [ref=f28e160]:
+      - generic [ref=f28e161]:
+        - generic [ref=f28e162]:
+          - generic [ref=f28e163]:
+            - generic [ref=f28e164]: Participación ciudadana
+            - heading "Veedurías" [level=1] [ref=f28e165]
+            - paragraph [ref=f28e166]: Organiza investigaciones colectivas y sigue las evidencias de la contratación pública.
+          - button "+ Nueva veeduría" [ref=f28e167] [cursor=pointer]
+        - generic [ref=f28e168]:
+          - generic [ref=f28e169]: +
+          - strong [ref=f28e170]: Aún no hay veedurías creadas
+          - generic [ref=f28e171]: Crea una investigación para reunir hallazgos, documentos y comentarios en un solo lugar.
+          - button "Crear la primera veeduría" [ref=f28e172] [cursor=pointer]

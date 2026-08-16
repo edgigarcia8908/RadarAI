@@ -3,6 +3,8 @@ import { CoreDatabaseModule } from './lib/database';
 import { AuthModule } from './auth/auth.module';
 import { IngestionModule } from './ingestion/ingestion.module';
 import { CivicIntelModule } from './civic-intel/civic-intel.module';
+import { SituacionModule } from './situacion/situacion.module';
+import { ChatModule } from './chat/chat.module';
 import { EmpresasModule } from './empresas/empresas.module';
 import { OportunidadesModule } from './oportunidades/oportunidades.module';
 import { VeeduriasModule } from './veedurias/veedurias.module';
@@ -23,6 +25,8 @@ import { AlertasModule } from './alertas/alertas.module';
     AuthModule,
     IngestionModule,
     CivicIntelModule,
+    SituacionModule,
+    ChatModule,
     EmpresasModule,
     OportunidadesModule,
     VeeduriasModule,

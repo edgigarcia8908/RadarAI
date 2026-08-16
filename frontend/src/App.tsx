@@ -1,82 +1,54 @@
-import React, { useState } from 'react';
-import CiudadanoView from './CiudadanoView';
-import EmpresaView from './EmpresaView';
-import VeeduriasView from './VeeduriasView';
+import React from 'react';
 import FichaTerritorialView from './FichaTerritorialView';
-import HomeView from './components/home/HomeView';
-import EntenderGastoView from './components/understand/EntenderGastoView';
-import OportunidadesView from './components/opportunities/OportunidadesView';
+import VeeduriasView from './VeeduriasView';
+import AnnaMariaChat from './AnnaMariaChat';
 import CompararProveedoresView from './components/compare/CompararProveedoresView';
+import HomeView from './components/home/HomeView';
 import MapaRiesgoView from './components/map/MapaRiesgoView';
 import SeguimientoContratistasView from './SeguimientoContratistasView';
 import DenunciasView from './components/denuncias/DenunciasView';
 import SecondaryViewShell from './components/navigation/SecondaryViewShell';
-import type { HomeNavigationTarget } from './types/home.types';
-
-type Modo = 'home' | 'ciudadano' | 'empresa' | 'veedurias' | 'mapa' | 'estudio' | 'ficha' | 'seguimiento' | 'denuncias' | 'match';
+import OportunidadesView from './components/opportunities/OportunidadesView';
+import useApp from './useApp.hook';
 
 export default function App() {
-  const [modo, setModo] = useState<Modo>('home');
-  // Cuando CiudadanoView crea una veeduría desde un hallazgo, salta directo a su detalle.
-  const [veeduriaAbierta, setVeeduriaAbierta] = useState<string | null>(null);
+  const {
+    modo,
+    veeduriaAbierta,
+    radarContext,
+    navigateFromHome,
+    volverAlInicio,
+    handleTerritorioChange,
+    handleVeeduriaOpened,
+  } = useApp();
 
-  function irAVeeduria(id: string) {
-    setVeeduriaAbierta(id);
-    setModo('veedurias');
-  }
-
-  function navigateFromHome(target: HomeNavigationTarget) {
-    setModo(target);
-  }
-
-  function irHome() {
-    setModo('home');
-    setVeeduriaAbierta(null);
-  }
+const irHome = volverAlInicio;
 
   return (
-    <div className={modo === 'home' ? 'app-shell app-shell-home' : modo === 'ciudadano' ? 'app-shell app-shell-understand' : (modo === 'empresa' || modo === 'match') ? 'app-shell app-shell-opportunities' : modo === 'estudio' ? 'app-shell app-shell-compare' : modo === 'mapa' ? 'app-shell app-shell-map' : 'app-shell app-shell-legacy'}>
-      {false && modo === 'home' && (
-        <div style={{ textAlign: 'center', marginTop: 60 }}>
-          <h1>🛰️ RADAR</h1>
-          <p style={{ color: '#555', marginBottom: 32 }}>Inteligencia pública y de mercado sobre contratación estatal.</p>
-          <p style={{ marginBottom: 16 }}>¿Qué quieres hacer?</p>
-          <div style={{ display: 'flex', gap: 16, justifyContent: 'center', flexWrap: 'wrap' }}>
-            <button onClick={() => setModo('ciudadano')} style={{ padding: '16px 24px', fontSize: 16 }}>
-              🏛️ Vigilar mi territorio
-            </button>
-            <button onClick={() => setModo('empresa')} style={{ padding: '16px 24px', fontSize: 16 }}>
-              💼 Encontrar oportunidades
-            </button>
-            <button onClick={() => setModo('veedurias')} style={{ padding: '16px 24px', fontSize: 16 }}>
-              🔍 Ver veedurías
-            </button>
-            <button onClick={() => setModo('mapa')} style={{ padding: '16px 24px', fontSize: 16 }}>
-              🗺️ Mapa de riesgo
-            </button>
-            <button onClick={() => setModo('estudio')} style={{ padding: '16px 24px', fontSize: 16 }}>
-              🏛️ Estudio de mercado
-            </button>
-            <button onClick={() => setModo('ficha')} style={{ padding: '16px 24px', fontSize: 16 }}>
-              📍 Ficha territorial
-            </button>
-          </div>
-        </div>
+    <div className={`app-shell app-shell-${modo}`}>
+      {modo !== 'home' && (
+        <>
+          <AnnaMariaChat radar={radarContext} />
+          <button className="app-back-button" onClick={volverAlInicio} type="button">
+            ← Volver al inicio
+          </button>
+        </>
       )}
 
       {modo === 'home' && <HomeView onNavigate={navigateFromHome} />}
 
-      {modo === 'ciudadano' && <EntenderGastoView onNavigate={navigateFromHome} />}
-      {modo === 'empresa' && <OportunidadesView onNavigate={navigateFromHome} />}
-      {modo === 'match' && <OportunidadesView onNavigate={navigateFromHome} crumbLabel="Match empresarial" />}
-      {modo === 'estudio' && <CompararProveedoresView onNavigate={navigateFromHome} />}
+{modo === 'empresa' && (
+        <OportunidadesView onNavigate={navigateFromHome} onTerritorioChange={handleTerritorioChange} />
+      )}
+      {modo === 'match' && (
+        <OportunidadesView onNavigate={navigateFromHome} crumbLabel="Match empresarial" onTerritorioChange={handleTerritorioChange} />
+      )}
+      {modo === 'estudio' && (
+        <CompararProveedoresView onNavigate={navigateFromHome} onTerritorioChange={handleTerritorioChange} />
+      )}
       {modo === 'veedurias' && (
         <SecondaryViewShell activeTarget="veedurias" onNavigate={navigateFromHome}>
-          <VeeduriasView
-            abrirId={veeduriaAbierta}
-            onAbierta={() => setVeeduriaAbierta(null)}
-            onHome={irHome}
-          />
+          <VeeduriasView abrirId={veeduriaAbierta} onAbierta={handleVeeduriaOpened} onHome={volverAlInicio} />
         </SecondaryViewShell>
       )}
       {modo === 'mapa' && <MapaRiesgoView onNavigate={navigateFromHome} />}

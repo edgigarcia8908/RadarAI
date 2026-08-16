@@ -1,0 +1,38 @@
+- generic [ref=f28e3]:
+  - button "← Volver" [ref=f28e111] [cursor=pointer]
+  - generic [ref=f28e237]:
+    - complementary [ref=f28e238]:
+      - generic "RadarAI" [ref=f28e239]
+      - navigation "Navegación principal" [ref=f28e245]:
+        - button "Inicio" [ref=f28e246] [cursor=pointer]
+        - button "Entender gasto" [ref=f28e248] [cursor=pointer]
+        - button "Encontrar oportunidades" [ref=f28e250] [cursor=pointer]
+        - button "Comparar proveedores" [ref=f28e252] [cursor=pointer]
+        - button "Veedurías" [ref=f28e254] [cursor=pointer]
+        - button "Mapa de riesgo" [ref=f28e256] [cursor=pointer]
+        - button "Ficha territorial" [ref=f28e258] [cursor=pointer]
+    - main [ref=f28e260]:
+      - generic [ref=f28e273]:
+        - generic [ref=f28e275]:
+          - generic [ref=f28e276]: Nueva investigación
+          - heading "Crear una veeduría" [level=1] [ref=f28e277]
+          - paragraph [ref=f28e278]: Define el territorio y el tema que quieres vigilar junto con tu comunidad.
+        - generic [ref=f28e279]:
+          - generic [ref=f28e280]:
+            - text: Título
+            - textbox "Título" [ref=f28e281]
+          - generic [ref=f28e282]:
+            - text: Descripción
+            - textbox "Descripción" [ref=f28e283]
+          - generic [ref=f28e284]:
+            - text: Departamento
+            - textbox "Departamento" [ref=f28e285]
+          - generic [ref=f28e286]:
+            - text: Ciudad
+            - textbox "Ciudad" [ref=f28e287]
+          - generic [ref=f28e288]:
+            - text: Tema
+            - textbox "Tema" [ref=f28e289]
+        - generic [ref=f28e290]:
+          - button "Crear veeduría" [disabled] [ref=f28e291]
+          - button "Cancelar" [ref=f28e292] [cursor=pointer]

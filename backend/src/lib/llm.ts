@@ -1,15 +1,17 @@
 /**
- * Llamada directa a un LLM público (Anthropic o OpenAI) — sin pasar por
- * ningún servicio intermediario propio. Completamente opcional: si no hay
- * `ANTHROPIC_API_KEY` ni `OPENAI_API_KEY` en el `.env`, `completar()`
- * devuelve `null` y quien llama cae a una respuesta con plantilla (ver
- * `civic-intel.service.ts` y `veedurias.service.ts`) — el resto de RadarAI
- * funciona igual sin esto, solo con redacción más plana.
+ * Llamada directa a un LLM público — sin pasar por ningún servicio
+ * intermediario propio. Completamente opcional: si no hay ninguna API key
+ * configurada en el `.env`, `completar()` devuelve `null` y quien llama cae
+ * a una respuesta con plantilla (ver `civic-intel.service.ts` y
+ * `veedurias.service.ts`) — el resto de RadarAI funciona igual sin esto,
+ * solo con redacción más plana.
  *
- * Cualquiera que clone este repo puede activarlo con su PROPIA cuenta de
- * Anthropic/OpenAI (son APIs públicas estándar, no algo privado de un
- * tercero) — a diferencia del servicio anterior, esto sí es algo que
- * cualquiera puede desplegar con este mismo repo.
+ * Agnóstico de proveedor a propósito: Anthropic tiene su propio formato de
+ * API, pero OpenAI/Groq/DeepSeek (y la mayoría de proveedores nuevos)
+ * exponen el mismo formato "chat/completions" — un solo cliente genérico
+ * sirve para todos, solo cambia baseUrl/modelo. Cualquiera que clone este
+ * repo puede activarlo con su PROPIA cuenta (son APIs públicas estándar).
+ * Prioridad si hay varias keys: Anthropic > OpenAI > Groq > DeepSeek.
  */
 
 export interface CompletarInput {
@@ -38,17 +40,18 @@ async function completarAnthropic(input: CompletarInput, apiKey: string): Promis
   return data.content?.[0]?.text || '';
 }
 
-async function completarOpenAi(input: CompletarInput, apiKey: string): Promise<string> {
-  const res = await fetch('https://api.openai.com/v1/chat/completions', {
+/** Formato "chat/completions" compartido por OpenAI, Groq, DeepSeek y la mayoría de proveedores compatibles. */
+async function completarChatCompletions(input: CompletarInput, apiKey: string, baseUrl: string, model: string, proveedor: string): Promise<string> {
+  const res = await fetch(`${baseUrl}/chat/completions`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${apiKey}` },
     body: JSON.stringify({
-      model: 'gpt-4o-mini',
+      model,
       max_tokens: input.maxTokens ?? 400,
       messages: [...(input.system ? [{ role: 'system', content: input.system }] : []), { role: 'user', content: input.prompt }],
     }),
   });
-  if (!res.ok) throw new Error(`OpenAI respondió ${res.status}: ${(await res.text()).slice(0, 200)}`);
+  if (!res.ok) throw new Error(`${proveedor} respondió ${res.status}: ${(await res.text()).slice(0, 200)}`);
   const data = await res.json();
   return data.choices?.[0]?.message?.content || '';
 }
@@ -57,7 +60,12 @@ async function completarOpenAi(input: CompletarInput, apiKey: string): Promise<s
 export async function completar(input: CompletarInput): Promise<string | null> {
   const anthropicKey = process.env.ANTHROPIC_API_KEY;
   const openaiKey = process.env.OPENAI_API_KEY;
+  const groqKey = process.env.GROQ_API_KEY;
+  const deepseekKey = process.env.DEEPSEEK_API_KEY;
+
   if (anthropicKey) return completarAnthropic(input, anthropicKey);
-  if (openaiKey) return completarOpenAi(input, openaiKey);
+  if (openaiKey) return completarChatCompletions(input, openaiKey, 'https://api.openai.com/v1', 'gpt-4o-mini', 'OpenAI');
+  if (groqKey) return completarChatCompletions(input, groqKey, 'https://api.groq.com/openai/v1', 'llama-3.3-70b-versatile', 'Groq');
+  if (deepseekKey) return completarChatCompletions(input, deepseekKey, 'https://api.deepseek.com/v1', 'deepseek-chat', 'DeepSeek');
   return null;
 }

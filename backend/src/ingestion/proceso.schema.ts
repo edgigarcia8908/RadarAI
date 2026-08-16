@@ -3,15 +3,17 @@ import { Document } from 'mongoose';
 
 /**
  * Espejo normalizado de un registro del dataset Socrata "SECOP II - Procesos
- * de Contratación" (datos.gov.co, id `p6dx-8zbt`). No tiene URL a documentos
- * adjuntos — ese dataset no la expone, ver README de RadarAI. Lo que sí trae
- * es `codigoCategoriaUnspsc` (qué se compró, a nivel de categoría) y el
+ * de Contratación" (datos.gov.co, id `p6dx-8zbt`). Trae `urlproceso` (como
+ * objeto `{url: "..."}`, igual que en el dataset de Contratos) para enlazar
+ * directo a la página pública del proceso en SECOP. También trae
+ * `codigoCategoriaUnspsc` (qué se compró, a nivel de categoría) y el
  * proveedor adjudicado, suficiente para el AI Engine de Fase 1.
  */
 @Schema({ timestamps: true })
 export class Proceso extends Document {
   @Prop({ type: String, required: true, unique: true, index: true }) idProceso: string;
   @Prop({ type: String, default: '' }) referenciaProceso: string;
+  @Prop({ type: String, default: '' }) urlProceso: string;
 
   @Prop({ type: String, required: true, index: true }) entidad: string;
   @Prop({ type: String, default: '' }) nitEntidad: string;

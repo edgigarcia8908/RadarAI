@@ -7,7 +7,6 @@ export type HomeIconName =
   | 'building-2'
   | 'calendar'
   | 'chevron-right'
-  | 'clipboard'
   | 'home'
   | 'map'
   | 'monitor'
@@ -24,7 +23,7 @@ export type HomeIconName =
   | 'wallet'
   | 'alert';
 
-export type HomeNavigationTarget = 'ciudadano' | 'empresa' | 'estudio' | 'veedurias' | 'mapa' | 'ficha' | 'seguimiento' | 'denuncias' | 'match' | 'home';
+export type HomeNavigationTarget = 'empresa' | 'estudio' | 'veedurias' | 'mapa' | 'ficha' | 'home' | 'seguimiento' | 'denuncias' | 'match';
 
 export interface HomeNavItem {
   id: string;
@@ -38,18 +37,23 @@ export interface HomeExample {
   label: string;
   icon: HomeIconName;
   tone: 'green' | 'lilac' | 'yellow';
-  target: HomeNavigationTarget;
-}
-
-export interface HomeRoute {
-  id: string;
-  title: string;
-  description: string;
-  icon: HomeIconName;
-  tone: 'green' | 'lilac' | 'yellow';
-  target: HomeNavigationTarget;
+  target?: HomeNavigationTarget;
 }
 
 export interface HomeViewProps {
   onNavigate: (target: HomeNavigationTarget) => void;
+}
+
+export interface HomeChatMessage {
+  id: string;
+  role: 'user' | 'bot';
+  text: string;
+}
+
+export interface HomeSelectProps {
+  label: string;
+  value: string;
+  options: string[];
+  icon: HomeIconName;
+  onChange: (value: string) => void;
 }

@@ -83,6 +83,8 @@ export class IngestionService {
         {
           idProceso: row.id_del_proceso,
           referenciaProceso: row.referencia_del_proceso || '',
+          // Socrata devuelve este campo como objeto { url: "..." }, no como string plano (mismo patrón que en Contratos).
+          urlProceso: (typeof row.urlproceso === 'object' ? row.urlproceso?.url : row.urlproceso) || '',
           entidad: row.entidad || '',
           nitEntidad: row.nit_entidad || '',
           departamentoEntidad: row.departamento_entidad || '',
@@ -121,9 +123,24 @@ export class IngestionService {
       order: 'fecha_de_firma DESC',
     });
 
+    // Un contrato ya liquidado no va a cambiar — SECOP no reabre contratos
+    // cerrados. Reescribirlo en cada sync es puro costo (escritura a Mongo +
+    // el objeto `crudo` completo) sin ningún beneficio. Se trae de una vez
+    // el set de IDs ya liquidados en este lote para saltarlos en el loop.
+    const idsDelLote = rows.map((r) => r.id_contrato).filter(Boolean);
+    const yaLiquidados = new Set(
+      (await this.contratoModel.find({ idContrato: { $in: idsDelLote }, liquidado: true }, { idContrato: 1 }).lean())
+        .map((c) => c.idContrato),
+    );
+
     let escritos = 0;
+    let sinCambios = 0;
     for (const row of rows) {
       if (!row.id_contrato) continue;
+      if (yaLiquidados.has(row.id_contrato)) {
+        sinCambios++;
+        continue;
+      }
       const objetoDelContrato = row.objeto_del_contrato || '';
       const descripcionDelProceso = row.descripcion_del_proceso || '';
       await this.contratoModel.findOneAndUpdate(
@@ -170,7 +187,7 @@ export class IngestionService {
       );
       escritos++;
     }
-    this.logger.log(`Sincronizados ${escritos} contratos (de ${rows.length} recibidos de Socrata).`);
+    this.logger.log(`Sincronizados ${escritos} contratos (de ${rows.length} recibidos de Socrata, ${sinCambios} ya liquidados sin cambios).`);
     return escritos;
   }
 
@@ -180,5 +197,58 @@ export class IngestionService {
       this.sincronizarContratos(filtro),
     ]);
     return { procesos, contratos };
+  }
+
+  /**
+   * Búsqueda en vivo contra Socrata por texto libre, en CUALQUIER campo
+   * relevante (persona, entidad, proveedor, objeto del contrato) — NO toca
+   * Mongo, es para el caso donde el chat busca algo que no está en lo ya
+   * sincronizado. Solo se sincronizan los ~500-750 contratos más recientes
+   * por territorio (ver `sincronizarContratos`), pero SECOP puede tener
+   * miles históricos (confirmado a mano: Tocancipá solo tiene 750/5254
+   * sincronizados) — sin esto, "busca a Fulano" o "busca contratos de aseo
+   * viejos" fallaba en silencio aunque sí existiera en SECOP.
+   *
+   * A propósito NO usa `$q` (full-text nativo de Socrata): ya está
+   * documentado en `sincronizarProcesos` que `$q` con 2+ palabras exige
+   * casi frase exacta (probado a mano: "mantenimiento colegios" da 0
+   * resultados aunque "mantenimiento" solo da 172) — inútil para nombres
+   * con palabras de por medio ("Giovanny David García"). En su lugar arma
+   * un LIKE por campo exigiendo TODOS los tokens en el mismo campo (así no
+   * empareja "Giovanny" en un contrato y "García" en otro sin relación).
+   */
+  async buscarPorTextoLibreEnVivo(filtro: FiltroTerritorio, texto: string): Promise<Record<string, any>[]> {
+    const whereTerritorio = this.construirWhere(filtro, 'departamento', 'ciudad', 'fecha_de_firma');
+
+    // Ojo: SIN normalizar() acá a propósito — SoQL `like` no ignora tildes,
+    // solo mayúsculas (con upper()), así que si se le quitan tildes al
+    // token ("garcia") pero el dato en SECOP trae tilde ("García"), el LIKE
+    // no matchea. Se manda el texto tal como lo escribió el usuario.
+    const tokens = texto
+      .trim()
+      .split(/\s+/)
+      .filter((t) => t.length >= 3)
+      .slice(0, 3);
+    if (tokens.length < 2) return [];
+
+    const campos = [
+      'nombre_representante_legal',
+      'nombre_ordenador_del_gasto',
+      'nombre_supervisor',
+      'proveedor_adjudicado',
+      'nombre_entidad',
+      'objeto_del_contrato',
+      'descripcion_del_proceso',
+    ];
+    const whereTexto = campos
+      .map((campo) => tokens.map((t) => `upper(${campo}) like upper('%${soqlString(t)}%')`).join(' AND '))
+      .map((clausula) => `(${clausula})`)
+      .join(' OR ');
+
+    return this.contratosClient.fetchRows({
+      where: [...whereTerritorio, `(${whereTexto})`],
+      limit: 20,
+      order: 'fecha_de_firma DESC',
+    });
   }
 }

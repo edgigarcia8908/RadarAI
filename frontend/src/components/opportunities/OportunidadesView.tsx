@@ -1,17 +1,62 @@
-import React from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { HOME_NAV_ITEMS } from '../../constants/HOME';
-import {
-  OPPORTUNITY_DEPARTMENTS,
-  OPPORTUNITY_MUNICIPALITIES,
-  OPPORTUNITY_PERIODS,
-} from '../../constants/OPPORTUNITIES';
+import { OPPORTUNITY_PERIODS } from '../../constants/OPPORTUNITIES';
 import type { HomeNavigationTarget } from '../../types/home.types';
-import type { OpportunitiesViewProps } from '../../types/opportunities.types';
+import type { OpportunitiesViewProps, OpportunityItem } from '../../types/opportunities.types';
 import HomeIcon from '../home/HomeIcon';
 import Breadcrumbs from '../navigation/Breadcrumbs';
 import useOpportunities from './useOpportunities.hook';
+import colombia from '../../colombia.json';
 
-export default function OportunidadesView({ onNavigate, crumbLabel }: OpportunitiesViewProps) {
+interface DeptoColombia {
+  departamento: string;
+  ciudades: string[];
+}
+const DEPARTAMENTOS = colombia as DeptoColombia[];
+
+function money(v: number | undefined) {
+  return `$${Number(v || 0).toLocaleString('es-CO')}`;
+}
+
+function OpportunityCard({ item, abierto, onToggle }: { item: OpportunityItem; abierto: boolean; onToggle: () => void }) {
+  return (
+    <div className={`opportunity-card opportunity-card-${item.tone}`}>
+      <button className="opportunity-card-toggle" type="button" onClick={onToggle} aria-expanded={abierto}>
+        <span className="opportunity-icon"><HomeIcon name={item.icon} size={22} /></span>
+        <span className="opportunity-data">
+          <strong>{item.title}</strong>
+          <span className="opportunity-entity">{item.entity}</span>
+          <span className="opportunity-details">
+            <span>{item.competition}</span>
+            <span>{item.recommendation}</span>
+          </span>
+        </span>
+        <span className={`opportunity-priority opportunity-priority-${item.tone}`}>{item.priority}</span>
+        <HomeIcon name="chevron-right" size={17} />
+      </button>
+      {abierto && (
+        <div className="opportunity-expanded-details">
+          <strong>Por qué es compatible:</strong>
+          <ul className="opportunity-reasons">
+            {item.porQue.map((razon) => <li key={razon}>{razon}</li>)}
+          </ul>
+          <p className="opportunity-expanded-meta">
+            {item.modalidad || 'Modalidad no especificada'} · Valor base: {money(item.precioBase)}
+          </p>
+          {item.urlProceso ? (
+            <a className="opportunity-link" href={item.urlProceso} target="_blank" rel="noopener noreferrer">
+              Ver proceso en SECOP ↗
+            </a>
+          ) : (
+            <p className="opportunity-link-disabled">SECOP no publicó un link directo para este proceso — busca la referencia {item.id} en secop.gov.co.</p>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default function OportunidadesView({ onNavigate, crumbLabel, onTerritorioChange }: OpportunitiesViewProps) {
   const {
     companyName,
     offer,
@@ -28,8 +73,21 @@ export default function OportunidadesView({ onNavigate, crumbLabel }: Opportunit
     handleSearch,
     items,
     isSearching,
+    paso,
     searchError,
+    searched,
   } = useOpportunities();
+
+  const municipiosDisponibles = useMemo(
+    () => ['Todos', ...(DEPARTAMENTOS.find((d) => d.departamento === department)?.ciudades ?? [])],
+    [department],
+  );
+
+  useEffect(() => {
+    onTerritorioChange?.(department, municipality === 'Todos' ? '' : municipality);
+  }, [department, municipality, onTerritorioChange]);
+
+  const [abiertoId, setAbiertoId] = useState<string | null>(null);
 
   return (
     <div className="opportunities-page">
@@ -85,8 +143,14 @@ export default function OportunidadesView({ onNavigate, crumbLabel }: Opportunit
             <span>Departamento</span>
             <span className="opportunities-input-wrap">
               <HomeIcon name="map" size={15} />
-              <select value={department} onChange={(event) => setDepartment(event.target.value)}>
-                {OPPORTUNITY_DEPARTMENTS.map((option) => <option key={option}>{option}</option>)}
+              <select
+                value={department}
+                onChange={(event) => {
+                  setDepartment(event.target.value);
+                  setMunicipality('Todos');
+                }}
+              >
+                {DEPARTAMENTOS.map((d) => <option key={d.departamento}>{d.departamento}</option>)}
               </select>
             </span>
           </label>
@@ -95,7 +159,7 @@ export default function OportunidadesView({ onNavigate, crumbLabel }: Opportunit
             <span className="opportunities-input-wrap">
               <HomeIcon name="home" size={15} />
               <select value={municipality} onChange={(event) => setMunicipality(event.target.value)}>
-                {OPPORTUNITY_MUNICIPALITIES.map((option) => <option key={option}>{option}</option>)}
+                {municipiosDisponibles.map((option) => <option key={option}>{option}</option>)}
               </select>
             </span>
           </label>
@@ -117,32 +181,33 @@ export default function OportunidadesView({ onNavigate, crumbLabel }: Opportunit
           </span>
         </label>
 
-        <button className="opportunities-search-button" onClick={handleSearch} type="button">
+        <button className="opportunities-search-button" onClick={handleSearch} type="button" disabled={isSearching}>
           <HomeIcon name="search" size={16} />
           <span>{isSearching ? 'Buscando oportunidades...' : 'Buscar oportunidades'}</span>
         </button>
         <p className="opportunities-note">Usamos datos oficiales de SECOP.</p>
         {searchError && <p className="opportunities-error">{searchError}</p>}
+
+        {isSearching && (
+          <ul className="opportunities-progress">
+            <li>{paso === 'preparando' ? '⏳' : '✅'} Preparando perfil y sincronizando SECOP</li>
+            <li className={paso === 'calculando' ? '' : 'opportunities-progress-pending'}>{paso === 'calculando' ? '⏳' : paso === null ? '✅' : '○'} Calculando compatibilidad</li>
+          </ul>
+        )}
       </section>
 
       <section className="opportunities-results" aria-labelledby="opportunities-results-title">
         <h2 id="opportunities-results-title">Oportunidades para tu empresa</h2>
+
+        {!searched && !isSearching && <p className="opportunities-note">Completa el formulario y busca para ver oportunidades reales de SECOP.</p>}
+        {searched && items.length === 0 && (
+          <p className="opportunities-note">Ninguna oportunidad compatible todavía en {department} — prueba ampliar el territorio o describir tu producto con otras palabras.</p>
+        )}
+
         {items.map((item) => (
-          <button className={`opportunity-card opportunity-card-${item.tone}`} key={item.id} type="button">
-            <span className="opportunity-icon"><HomeIcon name={item.icon} size={22} /></span>
-            <span className="opportunity-data">
-              <strong>{item.title}</strong>
-              <span className="opportunity-entity">{item.entity}</span>
-              <span className="opportunity-details">
-                <span>{item.competition}</span>
-                <span>{item.recommendation}</span>
-              </span>
-            </span>
-            <span className={`opportunity-priority opportunity-priority-${item.tone}`}>{item.priority}</span>
-            <HomeIcon name="chevron-right" size={17} />
-          </button>
+          <OpportunityCard key={item.id} item={item} abierto={abiertoId === item.id} onToggle={() => setAbiertoId((actual) => (actual === item.id ? null : item.id))} />
         ))}
-        <button className="opportunities-all-button" type="button">
+<button className="opportunities-all-button" type="button">
           <HomeIcon name="arrow-right" size={16} />
           <span>Ver todas las oportunidades</span>
         </button>
