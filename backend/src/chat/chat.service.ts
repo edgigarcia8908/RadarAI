@@ -25,12 +25,6 @@ export interface ChatConsultaInput {
   ciudad?: string;
 }
 
-/** Barra ASCII "████░░░░ 74%" — el frontend (AnnaMariaChat.jsx) detecta líneas así y las agrupa en un bloque monoespaciado. */
-function barraAscii(pct: number, ancho = 20): string {
-  const llenos = Math.round((Math.max(0, Math.min(100, pct)) / 100) * ancho);
-  return '█'.repeat(llenos) + '░'.repeat(ancho - llenos) + ` ${Math.round(pct)}%`;
-}
-
 /**
  * Lista de municipios y ciudades principales de Colombia para detección básica en el mensaje del usuario.
  * Se usa normalizado (sin tildes, minúsculas) para matching.
@@ -205,13 +199,8 @@ export class ChatService {
     const resultadoEnVivo = await this.respuestaPorBusquedaEnVivo(input.mensaje, input.departamento, ciudad);
     if (resultadoEnVivo) return { respuesta: resultadoEnVivo.texto, presentacion: resultadoEnVivo.presentacion };
 
-    const respuesta = await this.redactar(input.mensaje, datosReales);
-    const presentacion = await generarPresentacion(
-      input.mensaje,
-      datosReales,
-      `Resumen general de contratación de ${datosReales.territorio}`,
-    ) ?? fallbackResumen(datosReales);
-    return { respuesta, presentacion };
+    const resultado = await this.redactar(input.mensaje, datosReales);
+    return { respuesta: resultado.respuesta, presentacion: resultado.presentacion };
   }
 
   private async respuestaPorBusquedaEnVivo(mensaje: string, departamento: string | undefined, ciudad: string): Promise<{ texto: string; presentacion: Presentation } | null> {
@@ -349,32 +338,78 @@ export class ChatService {
     return { texto, presentacion };
   }
 
-  private async redactar(mensaje: string, datos: ReturnType<never> | any): Promise<string> {
-    const plantilla = () => {
+  private async redactar(mensaje: string, datos: ReturnType<never> | any): Promise<{ respuesta: string; presentacion: Presentation }> {
+    const fallback = (): { respuesta: string; presentacion: Presentation } => {
       const lineas = [
         `En ${datos.territorio} encontré ${datos.totalContratos} contratos por $${datos.valorTotalContratado.toLocaleString('es-CO')}, con ${datos.proveedoresUnicos} proveedores distintos.`,
       ];
       if (datos.topProveedores.length) {
         lineas.push('', 'Proveedores con más valor adjudicado:');
         for (const p of datos.topProveedores) {
-          lineas.push(`${p.nombre.slice(0, 28).padEnd(28)} ${barraAscii(p.porcentaje)}`);
+          lineas.push(`- ${p.nombre}: $${p.valor.toLocaleString('es-CO')} (${Math.round(p.porcentaje)}%)`);
         }
       }
       if (datos.presupuesto) lineas.push('', datos.presupuesto);
-      return lineas.join('\n');
+      return { respuesta: lineas.join('\n'), presentacion: fallbackResumen(datos) };
     };
 
     try {
-      const respuesta = await completar({
-        system:
-          'Eres Anna María, la asistente cívica experta de RadarAI. Respondes en español, en 3-6 frases, tono cercano para cualquier ciudadano. Analizas los datos reales que te dan (no inventas cifras) y destacas lo más relevante para la pregunta — patrones, riesgos, concentración de proveedores. Si la pregunta menciona una persona o entidad puntual, búscala en "muestraContratos" (campos representanteLegal/ordenadorDelGasto/supervisor/proveedor/entidad) y responde específicamente sobre ella; si no aparece ahí, dilo explícitamente en vez de responder solo con el resumen general. Si es útil para comparar proveedores, incluye una lista con barras de progreso en texto usando bloques █ y ░ (20 caracteres de ancho) seguidas del porcentaje, una línea por proveedor.',
-        prompt: `Pregunta del ciudadano: "${mensaje}"\n\nDatos reales disponibles: ${JSON.stringify(datos)}`,
-        maxTokens: 500,
+      const raw = await completar({
+        system: `Eres Anna María, la asistente cívica experta de RadarAI. Analizas datos de contratación pública colombiana y los presentas de forma INTUITIVA y visual para cualquier ciudadano.
+
+DEBES responder ÚNICAMENTE con un JSON válido (sin markdown, sin backticks) con esta forma:
+
+{
+  "respuesta": "Tu análisis en 2-4 frases, tono cercano, sin inventar cifras. Resalta lo más importante: patrones, riesgos, concentración.",
+  "presentacion": {
+    "version": "1.0",
+    "template": "summary|ranking|comparison|steps|alert",
+    "eyebrow": "texto corto opcional arriba del título",
+    "title": "HALLAZGO principal — concreto, no genérico",
+    "summary": "1-2 oraciones de contexto para el ciudadano",
+    "blocks": [/* bloques visuales */]
+  }
+}
+
+BLOQUES DISPONIBLES (usa solo los que tengan sentido, máximo 4):
+
+METRICS — cifras destacadas:
+{ "id": "único", "type": "metrics", "items": [{ "id": "único", "label": "qué mide", "value": "cifra formateada con $ colombiano", "icon": "briefcase|wallet|trend|shield|alert|people|building-2|calendar", "tone": "neutral|positive|warning|critical" }] }
+
+RANKING — proveedores o entidades con barra de progreso:
+{ "id": "único", "type": "ranking", "title": "...", "subtitle": "opcional", "items": [{ "id": "único", "name": "nombre", "value": "$valor", "percentage": 0-100, "detail": "nota" }] }
+
+TABLE — datos tabulares:
+{ "id": "único", "type": "table", "title": "...", "columns": [{ "id": "col", "label": "..." }], "rows": [{ "id": "fila", "cells": { "col": "valor" } }] }
+
+NOTICE — alertas o disclaimers importantes:
+{ "id": "único", "type": "notice", "title": "...", "content": "...", "tone": "neutral|positive|warning|critical" }
+
+TEXT — párrafos explicativos:
+{ "id": "único", "type": "text", "title": "...", "paragraphs": ["..."], "bullets": ["..."] }
+
+PRINCIPIO CLAVE: Piensa como diseñador UX. La info debe verse BONITA e INTUITIVA. Un ciudadano que no sabe nada de contratación debe entender al instante qué está pasando. Si hay un proveedor con >50% del valor, eso es una alerta visual roja. Si hay concentración, el título debe decirlo directo. Nunca muestres datos crudos — siempre organízalos visualmente.`,
+        prompt: `Pregunta del ciudadano: "${mensaje}"\n\nDatos reales: ${JSON.stringify(datos)}`,
+        maxTokens: 900,
       });
-      return respuesta ?? plantilla();
+
+      if (!raw) return fallback();
+
+      const jsonStr = raw.replace(/^```json?\s*/i, '').replace(/\s*```$/i, '').trim();
+      const parsed = JSON.parse(jsonStr);
+
+      if (!parsed.presentacion || !parsed.presentacion.title || !Array.isArray(parsed.presentacion.blocks)) {
+        return fallback();
+      }
+
+      parsed.presentacion.version = '1.0';
+      return {
+        respuesta: parsed.respuesta || fallback().respuesta,
+        presentacion: parsed.presentacion,
+      };
     } catch (err) {
       this.logger.warn(`No se pudo redactar con IA: ${(err as Error).message}`);
-      return plantilla();
+      return fallback();
     }
   }
 }
