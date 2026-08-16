@@ -12,6 +12,7 @@ export interface UseHomeReturn {
   periodo: string;
   prompt: string;
   municipiosDisponibles: string[];
+  departamentosDisponibles: string[];
   mensajes: HomeChatMessage[];
   isLoading: boolean;
   setDepartamento: (value: string) => void;
@@ -37,6 +38,10 @@ export default function useHome(): UseHomeReturn {
   const [mensajes, setMensajes] = useState<HomeChatMessage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const municipiosDisponibles = DEPARTAMENTOS.find((item) => item.departamento === departamento)?.ciudades ?? [];
+  // Antes limitado a 3 departamentos hardcodeados (UNDERSTAND_DEPARTMENTS) —
+  // el resto de la app (Encontrar oportunidades, Mapa de riesgo) ya usa el
+  // listado completo de colombia.json, así que este selector también debe.
+  const departamentosDisponibles = DEPARTAMENTOS.map((item) => item.departamento);
 
   function addMessage(
     role: HomeChatMessage['role'],
@@ -91,6 +96,7 @@ export default function useHome(): UseHomeReturn {
     periodo,
     prompt,
     municipiosDisponibles,
+    departamentosDisponibles,
     mensajes,
     isLoading,
     setDepartamento: handleDepartmentChange,

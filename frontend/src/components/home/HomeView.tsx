@@ -1,6 +1,6 @@
 import React from 'react';
 import { HOME_EXAMPLES, HOME_NAV_ITEMS, HOME_PROMPT_PLACEHOLDER } from '../../constants/HOME';
-import { UNDERSTAND_DEPARTMENTS, UNDERSTAND_PERIODS } from '../../constants/UNDERSTAND_GASTO';
+import { UNDERSTAND_PERIODS } from '../../constants/UNDERSTAND_GASTO';
 import type { HomeViewProps } from '../../types/home.types';
 import HomeChatMessage from './HomeChatMessage';
 import HomeIcon from './HomeIcon';
@@ -14,6 +14,7 @@ export default function HomeView({ onNavigate }: HomeViewProps) {
     periodo,
     prompt,
     municipiosDisponibles,
+    departamentosDisponibles,
     mensajes,
     isLoading,
     setDepartamento,
@@ -72,7 +73,7 @@ export default function HomeView({ onNavigate }: HomeViewProps) {
           <section className="home-chat-shell" aria-label="Chat con RadarAI">
             <div className="home-chat-context">
               <span className="home-chat-context-title">Consultar en</span>
-              <HomeSelect icon="map" label="Departamento" onChange={setDepartamento} options={UNDERSTAND_DEPARTMENTS} value={departamento} />
+              <HomeSelect icon="map" label="Departamento" onChange={setDepartamento} options={departamentosDisponibles} value={departamento} />
               <HomeSelect icon="home" label="Municipio" onChange={setMunicipio} options={municipiosDisponibles} value={municipio} />
               <HomeSelect icon="calendar" label="Periodo" onChange={setPeriodo} options={UNDERSTAND_PERIODS} value={periodo} />
             </div>

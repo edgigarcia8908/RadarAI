@@ -38,13 +38,22 @@ export class EstudiosMercadoService {
    */
   async generarEstudio(input: EstudioMercadoInput) {
     const departamentoReal = departamentoRealSecop(input.departamento, input.ciudad);
+    // palabrasConSinonimos() devuelve [] cuando ninguna palabra toca un tema
+    // conocido del diccionario (a propósito, ver sinonimos.ts — evita que el
+    // chat secuestre preguntas genéricas). Acá el efecto de ese [] era otro:
+    // "sin palabras" == "sin filtro de texto" == cualquier contrato
+    // terminado del territorio pasaba como "comparable" (confirmado: "equipo
+    // de sonido" devolvía contratos de personas al azar, nada que ver con
+    // sonido). Por eso acá SIEMPRE se filtra por algo: si no hay sinónimo
+    // reconocido, cae a las palabras literales del objeto (3+ letras).
     const palabras = palabrasConSinonimos(input.objeto);
+    const palabrasFiltro = palabras.length ? palabras : normalizar(input.objeto).split(' ').filter((p) => p.length > 2);
     const filtro: Record<string, unknown> = {
       estadoContrato: { $in: ESTADOS_TERMINADOS.map((e) => new RegExp(`^${e}$`, 'i')) },
     };
     if (departamentoReal) filtro.departamentoNormalizado = normalizar(departamentoReal);
     if (input.ciudad) filtro.ciudadNormalizado = normalizar(input.ciudad);
-    if (palabras.length) filtro.textoNormalizado = new RegExp(palabras.join('|'), 'i');
+    if (palabrasFiltro.length) filtro.textoNormalizado = new RegExp(palabrasFiltro.join('|'), 'i');
     if (input.fechaDesde || input.fechaHasta) {
       const rango: Record<string, Date> = {};
       if (input.fechaDesde) rango.$gte = new Date(`${input.fechaDesde}T00:00:00`);
