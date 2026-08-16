@@ -5,6 +5,7 @@ import { HOME_NAV_ITEMS } from '../../constants/HOME';
 import { MAP_DEFAULT_CENTER, MAP_DEFAULT_ZOOM, MAP_RISK_FILTERS, MAP_RISK_LEGEND } from '../../constants/MAPA_RIESGO';
 import type { HomeNavigationTarget } from '../../types/home.types';
 import type { MapRiskViewProps } from '../../types/map.types';
+import DataSourcesBadge from '../home/DataSourcesBadge';
 import HomeIcon from '../home/HomeIcon';
 import useMapaRiesgo, { colorForRisk, radiusForContracts } from './useMapaRiesgo.hook';
 
@@ -48,6 +49,7 @@ export default function MapaRiesgoView({ onNavigate }: MapRiskViewProps) {
           <HomeIcon name="shield" size={20} />
           <span>Datos oficiales.<br />Respuestas<br />simples.</span>
         </div>
+        <DataSourcesBadge />
       </aside>
 
       <section className="map-control-panel" aria-labelledby="map-title">

@@ -3,6 +3,7 @@ import { HOME_NAV_ITEMS } from '../../constants/HOME';
 import { OPPORTUNITY_PERIODS } from '../../constants/OPPORTUNITIES';
 import type { HomeNavigationTarget } from '../../types/home.types';
 import type { OpportunitiesViewProps, OpportunityItem } from '../../types/opportunities.types';
+import DataSourcesBadge from '../home/DataSourcesBadge';
 import HomeIcon from '../home/HomeIcon';
 import useOpportunities from './useOpportunities.hook';
 import colombia from '../../colombia.json';
@@ -113,6 +114,7 @@ export default function OportunidadesView({ onNavigate, onTerritorioChange }: Op
           <HomeIcon name="shield" size={20} />
           <span>Datos oficiales.<br />Respuestas<br />simples.</span>
         </div>
+        <DataSourcesBadge />
       </aside>
 
       <section className="opportunities-form" aria-labelledby="opportunities-title">

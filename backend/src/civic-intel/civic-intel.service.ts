@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, Inject } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Proceso } from '../ingestion/proceso.schema';
@@ -9,6 +9,8 @@ import { departamentoRealSecop } from '../common/departamento-secop';
 import { palabrasConSinonimos } from '../common/sinonimos';
 import { valorPlausible } from '../common/valores';
 import { formatearPesos } from '../common/formatear-pesos';
+import { SiriService } from '../siri/siri.service';
+import { SigepService } from '../sigep/sigep.service';
 
 export interface ConsultaInput {
   departamento?: string;
@@ -37,6 +39,8 @@ export class CivicIntelService {
   constructor(
     @InjectModel(Proceso.name) private readonly procesoModel: Model<Proceso>,
     @InjectModel(Contrato.name) private readonly contratoModel: Model<Contrato>,
+    @Inject(SiriService) private readonly siri: SiriService,
+    @Inject(SigepService) private readonly sigep: SigepService,
   ) {}
 
   /** Compara siempre contra los campos *Normalizado guardados en la ingesta — ignora tildes/mayúsculas/puntuación. */
@@ -222,7 +226,8 @@ export class CivicIntelService {
    */
   async perfilFuncionario(nombre: string) {
     const nombreNorm = normalizar(nombre);
-    if (nombreNorm.length < 4) return { nombre, totalContratos: 0, municipios: [], proveedoresFrecuentes: [], contratos: [], alerta: null };
+    const vacio = { nombre, totalContratos: 0, municipios: [], proveedoresFrecuentes: [], contratos: [], alerta: null, alertasSiri: [], alertasSigep: [] };
+    if (nombreNorm.length < 4) return vacio;
 
     // Prefiltro barato con regex por el último token (apellido, normalmente
     // más distintivo) para no traer todo Mongo — la igualdad real se valida
@@ -231,16 +236,29 @@ export class CivicIntelService {
     const tokenBusqueda = tokens[tokens.length - 1] ?? nombreNorm;
     const regex = new RegExp(tokenBusqueda, 'i');
 
-    const candidatos = await this.contratoModel
-      .find({ $or: [{ nombreSupervisor: regex }, { nombreOrdenadorDelGasto: regex }] })
-      .lean<Contrato[]>();
+    // Busca en los 3 roles (no solo supervisor/ordenador) — "¿quién firmó
+    // este contrato?" también incluye al representante legal del
+    // proveedor, no solo al funcionario público.
+    const [candidatos, alertasSiriMap, alertasSigepMap] = await Promise.all([
+      this.contratoModel
+        .find({ $or: [{ nombreSupervisor: regex }, { nombreOrdenadorDelGasto: regex }, { nombreRepresentanteLegal: regex }] })
+        .lean<Contrato[]>(),
+      this.siri.buscarVarios([nombre]).catch(() => ({})),
+      this.sigep.buscarVarios([nombre]).catch(() => ({})),
+    ]);
 
     const contratos = candidatos.filter(
-      (c) => normalizar(c.nombreSupervisor) === nombreNorm || normalizar(c.nombreOrdenadorDelGasto) === nombreNorm,
+      (c) =>
+        normalizar(c.nombreSupervisor) === nombreNorm ||
+        normalizar(c.nombreOrdenadorDelGasto) === nombreNorm ||
+        normalizar(c.nombreRepresentanteLegal) === nombreNorm,
     );
 
+    const alertasSiri = alertasSiriMap[nombre] ?? [];
+    const alertasSigep = alertasSigepMap[nombre] ?? [];
+
     if (contratos.length === 0) {
-      return { nombre, totalContratos: 0, municipios: [], proveedoresFrecuentes: [], contratos: [], alerta: null };
+      return { ...vacio, alertasSiri, alertasSigep };
     }
 
     const municipios = new Map<string, { departamento: string; ciudad: string; contratos: number }>();
@@ -291,8 +309,13 @@ export class CivicIntelService {
         valorDelContrato: c.valorDelContrato,
         fechaDeFirma: c.fechaDeFirma,
         urlProceso: c.urlProceso,
+        rol: normalizar(c.nombreOrdenadorDelGasto) === nombreNorm ? 'ordenador del gasto'
+          : normalizar(c.nombreSupervisor) === nombreNorm ? 'supervisor'
+          : 'representante legal',
       })),
       alerta,
+      alertasSiri,
+      alertasSigep,
     };
   }
 

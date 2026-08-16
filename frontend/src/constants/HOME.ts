@@ -5,6 +5,7 @@ export const HOME_NAV_ITEMS: HomeNavItem[] = [
   { id: 'opportunities', label: 'Encontrar oportunidades', icon: 'opportunities', target: 'empresa' },
   { id: 'providers', label: 'Comparar proveedores', icon: 'scales', target: 'estudio' },
   { id: 'oversight', label: 'Veedurías', icon: 'shield', target: 'veedurias' },
+  { id: 'person-profile', label: 'Perfil de persona', icon: 'people', target: 'persona' },
   { id: 'risk-map', label: 'Mapa de riesgo', icon: 'map', target: 'mapa' },
   { id: 'territorial-sheet', label: 'Ficha territorial', icon: 'building-2', target: 'ficha' },
 ];

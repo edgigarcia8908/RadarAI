@@ -2,6 +2,7 @@ import React from 'react';
 import { HOME_EXAMPLES, HOME_NAV_ITEMS, HOME_PROMPT_PLACEHOLDER } from '../../constants/HOME';
 import { UNDERSTAND_PERIODS } from '../../constants/UNDERSTAND_GASTO';
 import type { HomeViewProps } from '../../types/home.types';
+import DataSourcesBadge from './DataSourcesBadge';
 import HomeChatMessage from './HomeChatMessage';
 import HomeIcon from './HomeIcon';
 import HomeSelect from './HomeSelect';
@@ -51,6 +52,7 @@ export default function HomeView({ onNavigate }: HomeViewProps) {
           <HomeIcon name="shield" size={20} />
           <span>Datos oficiales.<br />Respuestas<br />simples.</span>
         </div>
+        <DataSourcesBadge />
       </aside>
 
       <main className="home-main">

@@ -23,7 +23,7 @@ export type HomeIconName =
   | 'wallet'
   | 'alert';
 
-export type HomeNavigationTarget = 'empresa' | 'estudio' | 'veedurias' | 'mapa' | 'ficha' | 'home';
+export type HomeNavigationTarget = 'empresa' | 'estudio' | 'veedurias' | 'mapa' | 'ficha' | 'persona' | 'home';
 
 export interface HomeNavItem {
   id: string;

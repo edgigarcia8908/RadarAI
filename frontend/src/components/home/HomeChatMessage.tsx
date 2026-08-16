@@ -3,6 +3,32 @@ import HomeIcon from './HomeIcon';
 import useHomeResponse from './useHomeResponse.hook';
 import type { HomeChatMessageProps, HomeResponseBlockProps } from '../../types/home.types';
 
+const URL_PATTERN = /(https?:\/\/[^\s)]+)/g;
+
+/**
+ * Convierte URLs sueltas dentro de texto (ej. "...link a SECOP:
+ * https://community.secop.gov.co/...") en links clickeables reales. Antes
+ * el chat mandaba estos links como texto plano — se veían pero no se
+ * podían abrir sin copiar/pegar a mano.
+ */
+function linkify(texto: string): React.ReactNode {
+  const partes = texto.split(URL_PATTERN);
+  if (partes.length === 1) return texto;
+  // split() con un patrón que tiene grupo de captura intercala texto/match:
+  // índices pares = texto normal, índices impares = la URL capturada. Más
+  // fiable que volver a testear cada parte contra un regex global (con
+  // lastIndex con estado, da falsos negativos intermitentes).
+  return partes.map((parte, i) =>
+    i % 2 === 1 ? (
+      <a key={i} href={parte} target="_blank" rel="noopener noreferrer" className="home-response-inline-link">
+        Ver en SECOP ↗
+      </a>
+    ) : (
+      <React.Fragment key={i}>{parte}</React.Fragment>
+    ),
+  );
+}
+
 function HomeResponseBlockView({
   block,
   getProgressWidth,
@@ -90,7 +116,7 @@ function HomeResponseBlockView({
             <tbody>
               {block.rows.map((row) => (
                 <tr key={row.id}>
-                  {block.columns.map((column) => <td key={column.id}>{row.cells[column.id] ?? '—'}</td>)}
+                  {block.columns.map((column) => <td key={column.id}>{linkify(row.cells[column.id] ?? '—')}</td>)}
                 </tr>
               ))}
             </tbody>
@@ -106,7 +132,7 @@ function HomeResponseBlockView({
         <span><HomeIcon name={block.tone === 'critical' ? 'alert' : 'shield'} size={20} /></span>
         <div>
           <h3>{block.title}</h3>
-          <p>{block.content}</p>
+          <p>{linkify(block.content)}</p>
         </div>
       </aside>
     );
@@ -134,10 +160,10 @@ function HomeResponseBlockView({
   return (
     <section className="home-response-details">
       {block.title && <h3>{block.title}</h3>}
-      {block.paragraphs?.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+      {block.paragraphs?.map((paragraph) => <p key={paragraph}>{linkify(paragraph)}</p>)}
       {block.bullets && block.bullets.length > 0 && (
         <ul>
-          {block.bullets.map((bullet) => <li key={bullet}>{bullet}</li>)}
+          {block.bullets.map((bullet) => <li key={bullet}>{linkify(bullet)}</li>)}
         </ul>
       )}
     </section>

@@ -7,6 +7,7 @@ import HomeView from './components/home/HomeView';
 import MapaRiesgoView from './components/map/MapaRiesgoView';
 import SecondaryViewShell from './components/navigation/SecondaryViewShell';
 import OportunidadesView from './components/opportunities/OportunidadesView';
+import PersonaView from './components/person/PersonaView';
 import useApp from './useApp.hook';
 
 export default function App() {
@@ -45,6 +46,7 @@ export default function App() {
         </SecondaryViewShell>
       )}
       {modo === 'mapa' && <MapaRiesgoView onNavigate={navigateFromHome} />}
+      {modo === 'persona' && <PersonaView onNavigate={navigateFromHome} />}
       {modo === 'ficha' && (
         <SecondaryViewShell activeTarget="ficha" onNavigate={navigateFromHome}>
           <FichaTerritorialView />

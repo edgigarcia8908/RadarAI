@@ -1,6 +1,7 @@
 import React, { type ReactNode } from 'react';
 import { HOME_NAV_ITEMS } from '../../constants/HOME';
 import type { HomeNavigationTarget } from '../../types/home.types';
+import DataSourcesBadge from '../home/DataSourcesBadge';
 import HomeIcon from '../home/HomeIcon';
 
 interface SecondaryViewShellProps {
@@ -34,6 +35,7 @@ export default function SecondaryViewShell({ activeTarget, children, onNavigate 
           <HomeIcon name="shield" size={20} />
           <span>Datos oficiales.<br />Respuestas<br />simples.</span>
         </div>
+        <DataSourcesBadge />
       </aside>
       <main className="secondary-content">{children}</main>
     </div>

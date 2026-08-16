@@ -3,6 +3,7 @@ import { HOME_NAV_ITEMS } from '../../constants/HOME';
 import { COMPARE_PERIODS } from '../../constants/COMPARE_PROVIDERS';
 import type { HomeNavigationTarget } from '../../types/home.types';
 import type { CompareProvidersViewProps } from '../../types/compare.types';
+import DataSourcesBadge from '../home/DataSourcesBadge';
 import HomeIcon from '../home/HomeIcon';
 import useCompareProviders from './useCompareProviders.hook';
 import colombia from '../../colombia.json';
@@ -107,6 +108,7 @@ export default function CompararProveedoresView({ onNavigate, onTerritorioChange
           <HomeIcon name="shield" size={20} />
           <span>Datos oficiales.<br />Respuestas<br />simples.</span>
         </div>
+        <DataSourcesBadge />
       </aside>
 
       <section className="compare-form" aria-labelledby="compare-title">

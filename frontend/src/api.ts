@@ -404,3 +404,60 @@ export function generarEstudioMercado(input: {
     body: JSON.stringify(input),
   }).then(manejar);
 }
+
+export interface SancionSiri {
+  nombreCompleto: string;
+  cargo: string;
+  sanciones: string;
+  tipoInhabilidad: string;
+  autoridad: string;
+  fechaEfectosJuridicos: string;
+  entidadSancionado: string;
+  numeroProceso: string;
+}
+
+export interface PuestoSensible {
+  nombreCompleto: string;
+  cargo: string;
+  entidad: string;
+  dependencia: string;
+  nivelJerarquico: string;
+  tipoNombramiento: string;
+  asignacionBasica: string;
+}
+
+export interface ContratoPerfil {
+  idContrato: string;
+  nombreEntidad: string;
+  ciudad: string;
+  departamento: string;
+  objetoDelContrato: string;
+  proveedorAdjudicado: string;
+  valorDelContrato: number;
+  fechaDeFirma: string | null;
+  urlProceso: string;
+  rol: 'ordenador del gasto' | 'supervisor' | 'representante legal';
+}
+
+export interface PerfilPersona {
+  nombre: string;
+  totalContratos: number;
+  valorTotal: number;
+  municipios: { departamento: string; ciudad: string; contratos: number }[];
+  proveedoresFrecuentes: { nombre: string; contratos: number; valorTotal: number; municipios: string[] }[];
+  contratos: ContratoPerfil[];
+  alerta: string | null;
+  alertasSiri: SancionSiri[];
+  alertasSigep: PuestoSensible[];
+}
+
+/**
+ * Perfil de una persona a través de todo lo sincronizado (no solo un
+ * territorio): en qué contratos aparece como ordenador del gasto,
+ * supervisor o representante legal, en cuántos municipios distintos, y
+ * verificación en vivo contra SIRI (sanciones) y SIGEP (cargos sensibles).
+ */
+export function obtenerPerfilPersona(nombre: string): Promise<PerfilPersona> {
+  const params = new URLSearchParams({ nombre });
+  return fetch(`/api/civic-intel/funcionario?${params.toString()}`).then(manejar);
+}
