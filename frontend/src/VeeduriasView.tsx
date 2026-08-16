@@ -28,27 +28,39 @@ function ListaVeedurias({ onAbrir, onNueva }: { onAbrir: (id: string) => void; o
   }, []);
 
   return (
-    <div>
-      <h1>🔍 Veedurías</h1>
-      <p style={{ color: '#555' }}>Investigaciones colectivas sobre contratación pública, organizadas por ciudadanos.</p>
-      <button onClick={onNueva} style={{ marginTop: 12 }}>+ Nueva veeduría</button>
+    <div className="oversight-view">
+      <div className="oversight-header">
+        <div>
+          <span className="view-eyebrow">Participación ciudadana</span>
+          <h1>Veedurías</h1>
+          <p>Organiza investigaciones colectivas y sigue las evidencias de la contratación pública.</p>
+        </div>
+        <button className="oversight-primary-button" onClick={onNueva} type="button">+ Nueva veeduría</button>
+      </div>
 
       {error && <p style={{ color: 'crimson' }}>{error}</p>}
-      {!veedurias && !error && <p>Cargando…</p>}
-      {veedurias && veedurias.length === 0 && <p>Todavía no hay veedurías creadas.</p>}
+      {!veedurias && !error && <p className="view-loading">Cargando...</p>}
+      {veedurias && veedurias.length === 0 && (
+        <div className="oversight-empty-state">
+          <span className="oversight-empty-icon">+</span>
+          <strong>Aún no hay veedurías creadas</strong>
+          <span>Crea una investigación para reunir hallazgos, documentos y comentarios en un solo lugar.</span>
+          <button className="oversight-secondary-button" onClick={onNueva} type="button">Crear la primera veeduría</button>
+        </div>
+      )}
 
-      <div style={{ marginTop: 16 }}>
+      <div className="oversight-list">
         {veedurias?.map((v) => (
           <div
+            className="oversight-card"
             key={v._id}
             onClick={() => onAbrir(v._id)}
-            style={{ border: '1px solid #ddd', borderRadius: 8, padding: 12, marginBottom: 8, cursor: 'pointer' }}
           >
-            <strong>{v.titulo}</strong> — <span style={{ color: v.estado === 'ABIERTA' ? 'green' : '#888' }}>{v.estado}</span>
-            <p style={{ margin: '4px 0', color: '#555', fontSize: 14 }}>
+            <div className="oversight-card-title"><strong>{v.titulo}</strong><span className={`oversight-status oversight-status-${v.estado.toLowerCase()}`}>{v.estado}</span></div>
+            <p className="oversight-card-location">
               {[v.ciudad, v.departamento].filter(Boolean).join(', ')} {v.tema && `· ${v.tema}`}
             </p>
-            <p style={{ fontSize: 13, color: '#888' }}>
+            <p className="oversight-card-meta">
               {v.hallazgos.length} hallazgo(s) · {v.comentarios.length} comentario(s) · {v.checklist.filter((c) => c.hecho).length}/{v.checklist.length} checklist
             </p>
           </div>
@@ -81,20 +93,26 @@ function NuevaVeeduria({ onCreada, onCancelar }: { onCreada: (id: string) => voi
   }
 
   return (
-    <div>
-      <h1>+ Nueva veeduría</h1>
-      <div style={{ display: 'grid', gap: 8, marginTop: 16 }}>
-        <label>Título <input value={titulo} onChange={(e) => setTitulo(e.target.value)} style={{ width: '100%' }} /></label>
-        <label>Descripción <textarea value={descripcion} onChange={(e) => setDescripcion(e.target.value)} rows={2} style={{ width: '100%' }} /></label>
+    <div className="oversight-view oversight-form-view">
+      <div className="oversight-header oversight-header-stacked">
+        <div>
+          <span className="view-eyebrow">Nueva investigación</span>
+          <h1>Crear una veeduría</h1>
+          <p>Define el territorio y el tema que quieres vigilar junto con tu comunidad.</p>
+        </div>
+      </div>
+      <div className="oversight-form-grid">
+        <label>Título <input value={titulo} onChange={(e) => setTitulo(e.target.value)} /></label>
+        <label>Descripción <textarea value={descripcion} onChange={(e) => setDescripcion(e.target.value)} rows={3} /></label>
         <label>Departamento <input value={departamento} onChange={(e) => setDepartamento(e.target.value)} /></label>
         <label>Ciudad <input value={ciudad} onChange={(e) => setCiudad(e.target.value)} /></label>
-        <label>Tema <input value={tema} onChange={(e) => setTema(e.target.value)} style={{ width: '100%' }} /></label>
+        <label>Tema <input value={tema} onChange={(e) => setTema(e.target.value)} /></label>
       </div>
-      <div style={{ display: 'flex', gap: 8, marginTop: 16 }}>
-        <button onClick={handleCrear} disabled={cargando || !titulo.trim()}>{cargando ? 'Creando…' : 'Crear veeduría'}</button>
-        <button onClick={onCancelar} style={{ background: 'transparent', color: '#1a2b6d', border: '1px solid #1a2b6d' }}>Cancelar</button>
+      <div className="oversight-form-actions">
+        <button className="oversight-primary-button" onClick={handleCrear} disabled={cargando || !titulo.trim()} type="button">{cargando ? 'Creando...' : 'Crear veeduría'}</button>
+        <button className="oversight-secondary-button" onClick={onCancelar} type="button">Cancelar</button>
       </div>
-      {error && <p style={{ color: 'crimson' }}>{error}</p>}
+      {error && <p className="view-error">{error}</p>}
     </div>
   );
 }
@@ -170,13 +188,16 @@ function DetalleVeeduria({ id, onVolver }: { id: string; onVolver: () => void })
   if (!v) return <p>Cargando…</p>;
 
   return (
-    <div>
-      <button onClick={onVolver} style={{ marginBottom: 12, background: 'transparent', color: '#1a2b6d', border: '1px solid #1a2b6d' }}>
+    <div className="oversight-view oversight-detail">
+      <button className="oversight-back-button" onClick={onVolver} type="button">
         ← Todas las veedurías
       </button>
-      <h1>{v.titulo}</h1>
-      <p style={{ color: '#555' }}>{v.descripcion}</p>
-      <p style={{ fontSize: 14, color: '#888' }}>
+      <div className="oversight-detail-header">
+        <span className="view-eyebrow">Investigación ciudadana</span>
+        <h1>{v.titulo}</h1>
+        <p>{v.descripcion}</p>
+      </div>
+      <p className="oversight-card-location">
         {[v.ciudad, v.departamento].filter(Boolean).join(', ')} {v.tema && `· ${v.tema}`}
       </p>
 
