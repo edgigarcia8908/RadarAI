@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ScheduleModule } from '@nestjs/schedule';
 import { CoreDatabaseModule } from './lib/database';
 import { AuthModule } from './auth/auth.module';
 import { IngestionModule } from './ingestion/ingestion.module';
@@ -19,6 +20,7 @@ import { FichaTerritorialModule } from './ficha-territorial/ficha-territorial.mo
 
 @Module({
   imports: [
+    ScheduleModule.forRoot(),
     CoreDatabaseModule.forRoot(process.env.MONGO_URI as string),
     AuthModule,
     IngestionModule,
