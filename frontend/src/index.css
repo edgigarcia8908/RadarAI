@@ -884,6 +884,52 @@ body {
   color: #687367;
 }
 
+.understand-status {
+  margin-top: 8px;
+}
+
+.understand-status-muted {
+  color: #666666;
+  font-size: 12px;
+}
+
+.understand-status-error,
+.compare-status-error {
+  color: crimson;
+  font-size: 13px;
+}
+
+.understand-empty-state,
+.compare-empty-state {
+  color: #666666;
+}
+
+.understand-update-banner {
+  margin: 8px 0;
+  padding: 6px 10px;
+  border: 1px solid #cfe8c4;
+  border-radius: 6px;
+  background: #eef7ea;
+  color: #2c8d2b;
+  font-size: 13px;
+}
+
+.understand-results-hint,
+.compare-results-hint {
+  margin: 4px 0 8px;
+  color: #666666;
+  font-size: 13px;
+}
+
+.understand-contract-link {
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.understand-contract-link-disabled {
+  cursor: default;
+}
+
 .understand-cta {
   display: flex;
   align-items: center;
@@ -1229,6 +1275,34 @@ body {
   align-self: center;
 }
 
+.opportunity-expanded-details {
+  display: block;
+  margin-top: 8px;
+  font-size: 13px;
+  text-align: left;
+}
+
+.opportunity-reasons {
+  margin: 4px 0 0;
+  padding-left: 18px;
+}
+
+.opportunity-expanded-meta {
+  margin: 6px 0 0;
+}
+
+.opportunities-progress {
+  margin-top: 8px;
+  padding: 0;
+  color: #444444;
+  font-size: 13px;
+  list-style: none;
+}
+
+.opportunities-progress-pending {
+  opacity: 0.5;
+}
+
 .opportunities-all-button {
   display: flex;
   align-items: center;
@@ -1423,6 +1497,14 @@ body {
   border-color: #9fba95;
   outline: 0;
   box-shadow: 0 4px 12px rgba(59, 93, 53, 0.08);
+}
+
+.provider-card-selected {
+  outline: 2px solid currentColor;
+}
+
+.compare-status {
+  margin-top: 8px;
 }
 
 .provider-card-green {

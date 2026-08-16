@@ -56,7 +56,7 @@ export default function useHome(): UseHomeReturn {
       ciudad: municipio,
       periodo,
     }).then((response) => {
-      addMessage('bot', response);
+      addMessage('bot', response.respuesta);
     }).catch((requestError: unknown) => {
       const message = requestError instanceof Error ? requestError.message : 'No pude responder en este momento.';
       addMessage('bot', message);

@@ -3,6 +3,8 @@
  * Funciones: verificarSigep, consultarChatAnnaMaria, obtenerFichaTerritorial.
  */
 
+import type { ChatRequest, ChatResponse } from '../types/chat.types';
+
 export const radarService = {
   /**
    * Verifica nombres contra SIGEP II.
@@ -33,12 +35,7 @@ export const radarService = {
     departamento,
     ciudad,
     periodo,
-  }: {
-    mensaje: string;
-    departamento?: string;
-    ciudad?: string;
-    periodo?: string;
-  }): Promise<string> {
+  }: ChatRequest): Promise<ChatResponse> {
     const response = await fetch('/api/chat/consultar', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -49,7 +46,7 @@ export const radarService = {
     if (!response.ok) {
       throw new Error(data.message || 'Backend de chat no disponible. Levanta el backend en el puerto 4500.');
     }
-    return data.respuesta;
+    return data;
   },
 
   /**

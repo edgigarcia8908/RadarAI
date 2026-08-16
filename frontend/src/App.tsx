@@ -1,45 +1,51 @@
-import React, { useState } from 'react';
+import React from 'react';
 import FichaTerritorialView from './FichaTerritorialView';
 import VeeduriasView from './VeeduriasView';
+import AnnaMariaChat from './AnnaMariaChat';
+import CompararProveedoresView from './components/compare/CompararProveedoresView';
 import HomeView from './components/home/HomeView';
 import MapaRiesgoView from './components/map/MapaRiesgoView';
 import SecondaryViewShell from './components/navigation/SecondaryViewShell';
-import type { HomeNavigationTarget } from './types/home.types';
-
-type Modo = 'home' | 'veedurias' | 'mapa' | 'ficha';
+import OportunidadesView from './components/opportunities/OportunidadesView';
+import EntenderGastoView from './components/understand/EntenderGastoView';
+import useApp from './useApp.hook';
 
 export default function App() {
-  const [modo, setModo] = useState<Modo>('home');
-  const [veeduriaAbierta, setVeeduriaAbierta] = useState<string | null>(null);
-
-  function navigateFromHome(target: HomeNavigationTarget) {
-    if (target === 'home' || target === 'veedurias' || target === 'mapa' || target === 'ficha') {
-      setModo(target);
-    }
-  }
-
-  function volverAlInicio() {
-    setModo('home');
-    setVeeduriaAbierta(null);
-  }
+  const {
+    modo,
+    veeduriaAbierta,
+    radarContext,
+    navigateFromHome,
+    volverAlInicio,
+    handleTerritorioChange,
+    handleVeeduriaOpened,
+  } = useApp();
 
   return (
     <div className={`app-shell app-shell-${modo}`}>
       {modo !== 'home' && (
-        <button className="app-back-button" onClick={volverAlInicio} type="button">
-          ← Volver al inicio
-        </button>
+        <>
+          <AnnaMariaChat radar={radarContext} />
+          <button className="app-back-button" onClick={volverAlInicio} type="button">
+            ← Volver al inicio
+          </button>
+        </>
       )}
 
-      {modo === 'home' && (
-        <HomeView
-          onNavigate={navigateFromHome}
-        />
-      )}
+      {modo === 'home' && <HomeView onNavigate={navigateFromHome} />}
 
+      {modo === 'ciudadano' && (
+        <EntenderGastoView onNavigate={navigateFromHome} onTerritorioChange={handleTerritorioChange} />
+      )}
+      {modo === 'empresa' && (
+        <OportunidadesView onNavigate={navigateFromHome} onTerritorioChange={handleTerritorioChange} />
+      )}
+      {modo === 'estudio' && (
+        <CompararProveedoresView onNavigate={navigateFromHome} onTerritorioChange={handleTerritorioChange} />
+      )}
       {modo === 'veedurias' && (
         <SecondaryViewShell activeTarget="veedurias" onNavigate={navigateFromHome}>
-          <VeeduriasView abrirId={veeduriaAbierta} onAbierta={() => setVeeduriaAbierta(null)} />
+          <VeeduriasView abrirId={veeduriaAbierta} onAbierta={handleVeeduriaOpened} />
         </SecondaryViewShell>
       )}
       {modo === 'mapa' && <MapaRiesgoView onNavigate={navigateFromHome} />}

@@ -145,7 +145,7 @@ export class CivicIntelService {
       proveedoresUnicos: proveedoresUnicos.size,
     };
 
-    const respuesta = await this.redactarRespuesta(input, resumen, hallazgos);
+    const respuesta = await this.redactarRespuesta(input, resumen, hallazgos, contratos as Contrato[]);
 
     return {
       resumen,
@@ -294,18 +294,114 @@ export class CivicIntelService {
     };
   }
 
-  /** Si hay ANTHROPIC_API_KEY/OPENAI_API_KEY configurada, redacta con IA (llamada directa, ver lib/llm.ts); si no, usa una plantilla simple. */
-  private async redactarRespuesta(input: ConsultaInput, resumen: Record<string, unknown>, hallazgos: Hallazgo[]): Promise<string> {
+  /**
+   * Busca si la pregunta menciona a una persona que aparece como
+   * representante legal/ordenador del gasto/supervisor en los contratos ya
+   * filtrados — y si la encuentra, arma una respuesta puntual sobre ella.
+   * Existe porque el LLM es OPCIONAL (sin API key configurada, que es el
+   * caso por defecto de este repo) y sin esto una pregunta del tipo
+   * "¿cuántos contratos ha tenido Fulano?" caía siempre en el resumen
+   * genérico del territorio, ignorando la pregunta — bug real reportado.
+   * No requiere LLM: es determinístico, mismo umbral de coincidencia
+   * (3+ palabras de 4+ letras) que ya se usa en SIRI/SIGEP para evitar
+   * falsos positivos por un solo apellido común.
+   */
+  private buscarRespuestaPorPersona(pregunta: string, contratos: Contrato[]): string | null {
+    const tokensPregunta = new Set(normalizar(pregunta).split(' ').filter((t) => t.length >= 4));
+    if (tokensPregunta.size < 2) return null;
+
+    const coincidencias = contratos.filter((c) => {
+      for (const nombre of [c.nombreRepresentanteLegal, c.nombreOrdenadorDelGasto, c.nombreSupervisor]) {
+        if (!nombre) continue;
+        const tokensNombre = new Set(normalizar(nombre).split(' ').filter((t) => t.length >= 4));
+        const compartidos = [...tokensPregunta].filter((t) => tokensNombre.has(t)).length;
+        if (compartidos >= 3) return true;
+      }
+      return false;
+    });
+    if (coincidencias.length === 0) return null;
+
+    const valorTotal = coincidencias.reduce((s, c) => s + (c.valorDelContrato || 0), 0);
+    const entidades = [...new Set(coincidencias.map((c) => c.nombreEntidad))];
+    const detalle = coincidencias
+      .slice(0, 5)
+      .map((c) => `- ${c.nombreEntidad}: ${(c.objetoDelContrato || '').slice(0, 80)} ($${c.valorDelContrato.toLocaleString('es-CO')})`)
+      .join('\n');
+
+    return (
+      `Encontré ${coincidencias.length} contrato(s) donde esa persona aparece como firmante, ordenador del gasto o supervisor, por un total de $${valorTotal.toLocaleString('es-CO')}, en: ${entidades.join(', ')}.\n\n${detalle}` +
+      '\n\n(Coincidencia por nombre, no por cédula — SECOP no la trae — confirma que es la misma persona antes de sacar conclusiones.)'
+    );
+  }
+
+  /**
+   * Filtra los contratos por las palabras (+ sinónimos) de la PREGUNTA
+   * completa, no de `tema` — porque `tema` llega vacío desde el frontend
+   * (se dejó así a propósito para no repetir el bug de usar la pregunta
+   * completa como filtro de texto y matchear cero cuando preguntan por una
+   * persona). `palabrasConSinonimos` ya descarta palabras de 2 letras o
+   * menos (conectores como "el", "la", "en"), así que pasarle la pregunta
+   * completa es seguro: las palabras de contenido (p.ej. "vias") se
+   * expanden con sinónimos reales de SECOP, las demás simplemente no
+   * matchean nada y no rompen el OR. Solo se usa el resultado si de verdad
+   * acota algo (ni 0 ni el 100% de los contratos) — si no, se asume que la
+   * pregunta no es sobre un tema puntual y se deja el resumen general.
+   */
+  private filtrarPorTemaDePregunta(pregunta: string, contratos: Contrato[]): Contrato[] | null {
+    const palabras = palabrasConSinonimos(pregunta);
+    if (!palabras.length) return null;
+    const regex = new RegExp(palabras.join('|'), 'i');
+    const filtrados = contratos.filter((c) => regex.test(c.textoNormalizado || ''));
+    if (filtrados.length === 0 || filtrados.length === contratos.length) return null;
+    return filtrados;
+  }
+
+  /**
+   * Si hay ANTHROPIC_API_KEY/OPENAI_API_KEY configurada, redacta con IA
+   * (llamada directa, ver lib/llm.ts); si no, usa una plantilla simple.
+   *
+   * Antes solo se le pasaba el RESUMEN agregado al LLM — si la pregunta
+   * mencionaba una persona o entidad puntual ("¿cuántos contratos ha
+   * tenido Fulano de Tal?"), no había forma de contestar porque esos
+   * datos no estaban en el prompt (el nombre tampoco entra al filtro de
+   * `tema`, que busca en el OBJETO del contrato, no en firmantes). Se
+   * agrega una muestra real de contratos con nombres de firmantes/
+   * ordenador del gasto/supervisor para que el LLM pueda buscar ahí — y,
+   * antes que nada, se intenta una respuesta determinística por nombre
+   * (buscarRespuestaPorPersona) y por tema (filtrarPorTemaDePregunta), que
+   * no dependen de que haya LLM configurado.
+   */
+  private async redactarRespuesta(input: ConsultaInput, resumen: Record<string, unknown>, hallazgos: Hallazgo[], contratos: Contrato[]): Promise<string> {
+    const respuestaPorPersona = this.buscarRespuestaPorPersona(input.pregunta, contratos);
+    if (respuestaPorPersona) return respuestaPorPersona;
+
+    const contratosDelTema = this.filtrarPorTemaDePregunta(input.pregunta, contratos);
+    if (contratosDelTema) {
+      const valorTema = contratosDelTema.reduce((s, c) => s + (c.valorDelContrato || 0), 0);
+      const proveedoresTema = new Set(contratosDelTema.map((c) => c.nitProveedor || c.proveedorAdjudicado)).size;
+      return `Sobre eso específicamente, en ${resumen.territorio} encontré ${contratosDelTema.length} contrato(s) relacionados por un total de $${valorTema.toLocaleString('es-CO')}, con ${proveedoresTema} proveedor(es) — de los ${resumen.totalContratos} contratos totales del territorio.`;
+    }
+
     const plantilla = () =>
-      `En ${resumen.territorio}, sobre "${input.tema}", encontramos ${resumen.totalContratos} contratos por un total de $${Number(resumen.valorTotalContratado).toLocaleString('es-CO')} con ${resumen.proveedoresUnicos} proveedores distintos.` +
+      `En ${resumen.territorio}${input.tema ? `, sobre "${input.tema}",` : ''} encontramos ${resumen.totalContratos} contratos por un total de $${Number(resumen.valorTotalContratado).toLocaleString('es-CO')} con ${resumen.proveedoresUnicos} proveedores distintos.` +
       (hallazgos.length ? ` Encontramos ${hallazgos.length} aspecto(s) que pueden ser relevantes para una veeduría.` : ' No se detectaron patrones inusuales con los datos disponibles.');
+
+    const muestraContratos = contratos.slice(0, 40).map((c) => ({
+      entidad: c.nombreEntidad,
+      objeto: (c.objetoDelContrato || '').slice(0, 100),
+      proveedor: c.proveedorAdjudicado,
+      valor: c.valorDelContrato,
+      representanteLegal: c.nombreRepresentanteLegal,
+      ordenadorDelGasto: c.nombreOrdenadorDelGasto,
+      supervisor: c.nombreSupervisor,
+    }));
 
     try {
       const respuesta = await completar({
         system:
-          'Eres el asistente cívico de RADAR. Respondes en español, en 3-4 frases, tono claro para un ciudadano sin conocimientos técnicos de contratación pública. Básate SOLO en los datos que te dan, no inventes cifras.',
-        prompt: `Pregunta del ciudadano: "${input.pregunta}"\n\nDatos agregados: ${JSON.stringify(resumen)}\n\nHallazgos detectados: ${JSON.stringify(hallazgos.map((h) => ({ titulo: h.titulo, detalle: h.detalle })))}`,
-        maxTokens: 300,
+          'Eres el asistente cívico de RADAR. Respondes en español, en 3-5 frases, tono claro para un ciudadano sin conocimientos técnicos de contratación pública. Básate SOLO en los datos que te dan, no inventes cifras. Si la pregunta menciona una persona o entidad puntual, búscala en la lista de contratos (campos representanteLegal/ordenadorDelGasto/supervisor/proveedor/entidad) y responde específicamente sobre ella; si no aparece en la muestra que tienes, dilo explícitamente en vez de responder con el resumen general.',
+        prompt: `Pregunta del ciudadano: "${input.pregunta}"\n\nDatos agregados: ${JSON.stringify(resumen)}\n\nHallazgos detectados: ${JSON.stringify(hallazgos.map((h) => ({ titulo: h.titulo, detalle: h.detalle })))}\n\nMuestra de contratos (hasta 40, del total sincronizado): ${JSON.stringify(muestraContratos)}`,
+        maxTokens: 350,
       });
       return respuesta ?? plantilla();
     } catch (err) {

@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { HOME_NAV_ITEMS } from '../../constants/HOME';
 import { UNDERSTAND_PERIODS } from '../../constants/UNDERSTAND_GASTO';
 import type { HomeNavigationTarget } from '../../types/home.types';
@@ -13,7 +13,7 @@ interface DeptoColombia {
 }
 const DEPARTAMENTOS = colombia as DeptoColombia[];
 
-export default function EntenderGastoView({ onNavigate }: UnderstandGastoViewProps) {
+export default function EntenderGastoView({ onNavigate, onTerritorioChange }: UnderstandGastoViewProps) {
   const {
     departamento,
     municipio,
@@ -25,15 +25,26 @@ export default function EntenderGastoView({ onNavigate }: UnderstandGastoViewPro
     setPregunta,
     handleAnalyze,
     status,
+    paso,
+    actualizando,
     error,
     resultado,
     syncInfo,
+    veeduriaCreadaId,
+    handleCrearVeeduriaDesdeHallazgo,
   } = useUnderstandGasto();
 
   const municipiosDisponibles = useMemo(
     () => DEPARTAMENTOS.find((d) => d.departamento === departamento)?.ciudades ?? [],
     [departamento],
   );
+
+  // Anna María (el chat flotante) necesita saber qué territorio está viendo
+  // el usuario para responder con datos reales de esa región — antes esto
+  // no se propagaba nunca y el chat quedaba ciego al territorio activo.
+  useEffect(() => {
+    onTerritorioChange?.(departamento, municipio);
+  }, [departamento, municipio, onTerritorioChange]);
 
   return (
     <div className="understand-page">
@@ -111,19 +122,26 @@ export default function EntenderGastoView({ onNavigate }: UnderstandGastoViewPro
 
         <button className="understand-analyze-button" onClick={handleAnalyze} type="button" disabled={status === 'loading'}>
           <HomeIcon name="sparkle" size={16} />
-          <span>{status === 'loading' ? 'Analizando…' : 'Analizar municipio'}</span>
+          <span>{status === 'loading' ? 'Consultando…' : 'Analizar municipio'}</span>
         </button>
-        {syncInfo && <p style={{ fontSize: 12, color: '#666', marginTop: 8 }}>{syncInfo}</p>}
-        {status === 'error' && <p style={{ fontSize: 13, color: 'crimson', marginTop: 8 }}>{error}</p>}
+        {syncInfo && <p className="understand-status understand-status-muted">{syncInfo}</p>}
+        {status === 'error' && <p className="understand-status understand-status-error">{error}</p>}
       </section>
 
       <section className="understand-results" aria-labelledby="understand-results-title">
         <h2 id="understand-results-title">Resultados para {municipio} ({periodo})</h2>
 
         {!resultado && status !== 'loading' && (
-          <p style={{ color: '#666' }}>Elegí un municipio y dale "Analizar municipio" para traer datos reales de SECOP.</p>
+          <p className="understand-empty-state">Elegí un municipio y dale "Analizar municipio" para traer datos reales de SECOP.</p>
         )}
-        {status === 'loading' && <p style={{ color: '#666' }}>Sincronizando y analizando…</p>}
+        {status === 'loading' && (
+          <p className="understand-empty-state">Consultando lo que ya tenemos sincronizado de {municipio}…</p>
+        )}
+        {actualizando && (
+          <p className="understand-update-banner">
+            ⏳ Actualizando con los datos más recientes de SECOP en segundo plano — podés seguir viendo lo de abajo mientras tanto, se refresca solo cuando termine.
+          </p>
+        )}
 
         {resultado && (
           <>
@@ -142,12 +160,43 @@ export default function EntenderGastoView({ onNavigate }: UnderstandGastoViewPro
             {resultado.hallazgos.length > 0 && (
               <>
                 <h3>⚠️ Alertas para revisar</h3>
+                <p className="understand-results-hint">Haz clic en una alerta para abrir una veeduría y empezar a investigarla.</p>
                 {resultado.hallazgos.map((h) => (
-                  <button className="understand-alert" key={h.titulo} type="button" title={h.detalle}>
+                  <button className="understand-alert" key={h.titulo} type="button" title={h.detalle} onClick={() => handleCrearVeeduriaDesdeHallazgo(h)}>
                     <HomeIcon name="alert" size={16} />
                     <span>{h.titulo} — {h.detalle}</span>
                     <HomeIcon name="chevron-right" size={15} />
                   </button>
+                ))}
+              </>
+            )}
+
+            {veeduriaCreadaId && (
+              <div className="understand-cta">
+                <strong>Veeduría creada.</strong>
+                <button type="button" onClick={() => onNavigate('veedurias')}>
+                  <span>Ver veedurías</span>
+                  <HomeIcon name="arrow-up-right" size={16} />
+                </button>
+              </div>
+            )}
+
+            {resultado.evidenciaContratos.length > 0 && (
+              <>
+                <h3>Contratos ({resultado.evidenciaContratos.length})</h3>
+                {resultado.evidenciaContratos.slice(0, 15).map((c) => (
+                  <a
+                    key={c.idContrato}
+                    className={`understand-alert understand-contract-link${c.urlProceso ? '' : ' understand-contract-link-disabled'}`}
+                    href={c.urlProceso || undefined}
+                    target="_blank"
+                    rel="noreferrer"
+                    onClick={(event) => { if (!c.urlProceso) event.preventDefault(); }}
+                  >
+                    <HomeIcon name="briefcase" size={16} />
+                    <span>{c.nombreEntidad} — {c.proveedorAdjudicado} — ${c.valorDelContrato.toLocaleString('es-CO')}</span>
+                    <HomeIcon name="chevron-right" size={15} />
+                  </a>
                 ))}
               </>
             )}

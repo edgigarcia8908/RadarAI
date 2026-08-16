@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { generarEstudioMercado, EstudioMercado } from '../../api';
+import { generarEstudioMercado } from '../../api';
+import type { EstudioMercado } from '../../api';
 
 function periodoARango(periodo: string): { fechaDesde: string; fechaHasta: string } {
   const hoy = new Date();
@@ -51,9 +52,9 @@ export default function useCompareProviders(): UseCompareProvidersReturn {
       });
       setEstudio(e);
       setStatus('success');
-    } catch (err: any) {
+    } catch (err: unknown) {
       setStatus('error');
-      setError(err.message || 'No se pudo generar el estudio de mercado.');
+      setError(err instanceof Error ? err.message : 'No se pudo generar el estudio de mercado.');
     }
   }
 

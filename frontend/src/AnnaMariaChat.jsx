@@ -1,6 +1,40 @@
 import { useEffect, useRef, useState } from 'react';
 
 import { radarService } from './services/radar.service';
+import colombia from './colombia.json';
+
+/**
+ * Busca un municipio real dentro de un texto libre — para que cuando el
+ * chat pregunta "¿de qué municipio hablamos?" y el usuario responde
+ * "Tocancipá" o "vivo en Tocancipá, Cundinamarca", se pueda extraer sin
+ * necesitar un LLM (no hay API key configurada por defecto en este repo).
+ * Coincidencia exacta de nombre de municipio (normalizado), no parcial —
+ * para no confundir "Cota" con cualquier palabra que la contenga.
+ */
+function buscarMunicipioEnTexto(texto) {
+  const normalizado = (texto || '')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .replace(/[^a-z0-9\s]/g, ' ');
+  const palabras = new Set(normalizado.split(/\s+/).filter(Boolean));
+
+  for (const { departamento, ciudades } of colombia) {
+    for (const ciudad of ciudades) {
+      const ciudadNormalizada = ciudad
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[̀-ͯ]/g, '')
+        .replace(/[^a-z0-9\s]/g, ' ')
+        .trim();
+      const tokensCiudad = ciudadNormalizada.split(/\s+/).filter(Boolean);
+      if (tokensCiudad.every((t) => palabras.has(t))) {
+        return { departamento, ciudad };
+      }
+    }
+  }
+  return null;
+}
 
 const SUGERENCIAS = [
   '¿En qué se gasta mi municipio el presupuesto este año?',
@@ -48,11 +82,11 @@ function MensajeBot({ texto }) {
   return (
     <div className="chat-message bot">
       <div className="chat-bubble">
-        {bloques.map((bloque, i) =>
+        {bloques.map((bloque) =>
           bloque.tipo === 'ascii' ? (
-            <pre className="chat-ascii" key={i}>{bloque.lineas.join('\n')}</pre>
+            <pre className="chat-ascii" key={`ascii-${bloque.lineas.join('\n')}`}>{bloque.lineas.join('\n')}</pre>
           ) : (
-            <p className="chat-texto" key={i}>{bloque.lineas.join('\n')}</p>
+            <p className="chat-texto" key={`texto-${bloque.lineas.join('\n')}`}>{bloque.lineas.join('\n')}</p>
           ),
         )}
       </div>
@@ -66,11 +100,16 @@ function MensajeBot({ texto }) {
  * elemento fijo del proyecto y usa un z-index alto para no chocar con la
  * barra superior sticky (z-index 10).
  */
-export default function AnnaMariaChat({ initialQuestion }) {
+export default function AnnaMariaChat({ radar }) {
   const [abierto, setAbierto] = useState(false);
   const [mensajes, setMensajes] = useState([]);
   const [input, setInput] = useState('');
   const [escribiendo, setEscribiendo] = useState(false);
+  // Cuando el backend pide territorio (requiereTerritorio), se guarda la
+  // pregunta original acá — el próximo mensaje del usuario se interpreta
+  // como "¿cuál es tu municipio?" en vez de una pregunta nueva, y se
+  // combinan las dos para responder lo que realmente se preguntó.
+  const [preguntaPendiente, setPreguntaPendiente] = useState(null);
   const listaRef = useRef(null);
   const inputRef = useRef(null);
 
@@ -78,12 +117,6 @@ export default function AnnaMariaChat({ initialQuestion }) {
     const lista = listaRef.current;
     if (lista) lista.scrollTop = lista.scrollHeight;
   }, [mensajes, escribiendo]);
-
-  useEffect(() => {
-    if (!initialQuestion?.text?.trim()) return;
-    setAbierto(true);
-    void enviarMensaje(initialQuestion.text);
-  }, [initialQuestion]);
 
   function rellenarSugerencia(sugerencia) {
     setInput(sugerencia);
@@ -93,15 +126,39 @@ export default function AnnaMariaChat({ initialQuestion }) {
   async function enviarMensaje(mensaje) {
     if (!mensaje) return;
 
-    setMensajes((prev) => [...prev, { rol: 'usuario', texto: mensaje }]);
+    setMensajes((prev) => [...prev, { id: crypto.randomUUID(), rol: 'usuario', texto: mensaje }]);
     setEscribiendo(true);
     try {
-      const respuesta = await radarService.consultarChatAnnaMaria({
-        mensaje,
+      let departamento = radar?.department || radar?.selectedDepartment || undefined;
+      let ciudad = radar?.municipality || undefined;
+      let mensajeParaBackend = mensaje;
+
+      if (preguntaPendiente && !ciudad) {
+        const encontrado = buscarMunicipioEnTexto(mensaje);
+        if (!encontrado) {
+          setMensajes((prev) => [
+            ...prev,
+            { id: crypto.randomUUID(), rol: 'bot', texto: 'No reconocí ese municipio. Escríbelo como aparece en SECOP, por ejemplo “Tocancipá” o “Zipaquirá”.' },
+          ]);
+          setEscribiendo(false);
+          return;
+        }
+
+        departamento = encontrado.departamento;
+        ciudad = encontrado.ciudad;
+        mensajeParaBackend = preguntaPendiente;
+      }
+
+      const { respuesta, requiereTerritorio } = await radarService.consultarChatAnnaMaria({
+        mensaje: mensajeParaBackend,
+        departamento,
+        ciudad,
       });
-      setMensajes((prev) => [...prev, { rol: 'bot', texto: respuesta }]);
+      setMensajes((prev) => [...prev, { id: crypto.randomUUID(), rol: 'bot', texto: respuesta }]);
+      setPreguntaPendiente(requiereTerritorio ? mensaje : null);
     } catch (error) {
-      setMensajes((prev) => [...prev, { rol: 'bot', texto: `No pude responder en este momento. ${error.message}` }]);
+      const detalle = error instanceof Error ? error.message : 'Inténtalo de nuevo.';
+      setMensajes((prev) => [...prev, { id: crypto.randomUUID(), rol: 'bot', texto: `No pude responder en este momento. ${detalle}` }]);
     } finally {
       setEscribiendo(false);
     }
@@ -163,13 +220,13 @@ export default function AnnaMariaChat({ initialQuestion }) {
               </div>
             )}
 
-            {mensajes.map((mensaje, i) =>
+            {mensajes.map((mensaje) =>
               mensaje.rol === 'usuario' ? (
-                <div className="chat-message user" key={i}>
+                <div className="chat-message user" key={mensaje.id}>
                   <span>{mensaje.texto}</span>
                 </div>
               ) : (
-                <MensajeBot texto={mensaje.texto} key={i} />
+                <MensajeBot texto={mensaje.texto} key={mensaje.id} />
               ),
             )}
 
