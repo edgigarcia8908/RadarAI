@@ -40,9 +40,15 @@ export class ChatService {
   async consultar(input: ChatConsultaInput): Promise<{ respuesta: string }> {
     const ciudad = input.ciudad?.trim();
     if (!ciudad) {
+      const esSaludo = /^hola|^buenas|^qué tal|^buenos?\s*(días?|tardes?|noches?)|^hi\b|^hello\b/i.test(input.mensaje?.trim() || '');
       return {
-        respuesta:
-          'Para responderte con datos reales necesito saber de qué municipio hablamos — elige un departamento y municipio en la app (por ejemplo en "Entender gasto" o "Ficha territorial") y pregúntame de nuevo.',
+        respuesta: esSaludo
+          ? `¡Hola! 👋 Soy Anna María, tu asistente cívica en RadarAI. Me alegra que estés aquí.
+
+Para poder darte datos reales y precisos sobre tu municipio, necesito que me digas de dónde eres. En la app, ve a "Entender gasto" o "Ficha territorial", elige tu departamento y municipio, y luego volvemos a charlar — así te cuento con cifras de SECOP II qué está pasando en tu territorio.`
+          : `Me encantaría ayudarte, pero para responderte con datos reales de contratos, presupuesto y proveedores necesito saber tu municipio.
+
+En la app, entra a "Entender gasto" o "Ficha territorial", selecciona tu departamento y ciudad, y luego me vuelves a preguntar. Así te traigo la info directo de SECOP II, sin vueltas.`,
       };
     }
 
