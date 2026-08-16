@@ -82,6 +82,7 @@ export default function useOpportunities(): UseOpportunitiesReturn {
           modalidad: item.proceso.modalidadContratacion,
           fechaPublicacion: item.proceso.fechaPublicacion,
           precioBase: item.proceso.precioBase,
+          urlProceso: item.proceso.urlProceso,
           priority: item.prioridad === 'ALTA' ? 'Alta posibilidad' : 'Media posibilidad',
           icon: item.proceso.nombreProcedimiento.toLowerCase().includes('servidor') ? 'server' : item.proceso.nombreProcedimiento.toLowerCase().includes('red') ? 'network' : 'monitor',
           tone: item.prioridad === 'ALTA' ? 'purple' : 'mustard',

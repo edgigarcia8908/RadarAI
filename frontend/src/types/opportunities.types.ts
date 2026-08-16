@@ -13,6 +13,7 @@ export interface OpportunityItem {
   modalidad: string;
   fechaPublicacion: string | null;
   precioBase: number;
+  urlProceso: string;
   priority: 'Alta posibilidad' | 'Media posibilidad';
   icon: OpportunityIconName;
   tone: 'purple' | 'mustard';

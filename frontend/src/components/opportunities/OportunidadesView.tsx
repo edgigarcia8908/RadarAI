@@ -19,30 +19,39 @@ function money(v: number | undefined) {
 
 function OpportunityCard({ item, abierto, onToggle }: { item: OpportunityItem; abierto: boolean; onToggle: () => void }) {
   return (
-    <button className={`opportunity-card opportunity-card-${item.tone}`} type="button" onClick={onToggle} aria-expanded={abierto}>
-      <span className="opportunity-icon"><HomeIcon name={item.icon} size={22} /></span>
-      <span className="opportunity-data">
-        <strong>{item.title}</strong>
-        <span className="opportunity-entity">{item.entity}</span>
-        <span className="opportunity-details">
-          <span>{item.competition}</span>
-          <span>{item.recommendation}</span>
-        </span>
-        {abierto && (
-          <span className="opportunity-expanded-details">
-            <strong>Por qué es compatible:</strong>
-            <ul className="opportunity-reasons">
-              {item.porQue.map((razon) => <li key={razon}>{razon}</li>)}
-            </ul>
-            <p className="opportunity-expanded-meta">
-              {item.modalidad || 'Modalidad no especificada'} · Valor base: {money(item.precioBase)}
-            </p>
+    <div className={`opportunity-card opportunity-card-${item.tone}`}>
+      <button className="opportunity-card-toggle" type="button" onClick={onToggle} aria-expanded={abierto}>
+        <span className="opportunity-icon"><HomeIcon name={item.icon} size={22} /></span>
+        <span className="opportunity-data">
+          <strong>{item.title}</strong>
+          <span className="opportunity-entity">{item.entity}</span>
+          <span className="opportunity-details">
+            <span>{item.competition}</span>
+            <span>{item.recommendation}</span>
           </span>
-        )}
-      </span>
-      <span className={`opportunity-priority opportunity-priority-${item.tone}`}>{item.priority}</span>
-      <HomeIcon name="chevron-right" size={17} />
-    </button>
+        </span>
+        <span className={`opportunity-priority opportunity-priority-${item.tone}`}>{item.priority}</span>
+        <HomeIcon name="chevron-right" size={17} />
+      </button>
+      {abierto && (
+        <div className="opportunity-expanded-details">
+          <strong>Por qué es compatible:</strong>
+          <ul className="opportunity-reasons">
+            {item.porQue.map((razon) => <li key={razon}>{razon}</li>)}
+          </ul>
+          <p className="opportunity-expanded-meta">
+            {item.modalidad || 'Modalidad no especificada'} · Valor base: {money(item.precioBase)}
+          </p>
+          {item.urlProceso ? (
+            <a className="opportunity-link" href={item.urlProceso} target="_blank" rel="noopener noreferrer">
+              Ver proceso en SECOP ↗
+            </a>
+          ) : (
+            <p className="opportunity-link-disabled">SECOP no publicó un link directo para este proceso — busca la referencia {item.id} en secop.gov.co.</p>
+          )}
+        </div>
+      )}
+    </div>
   );
 }
 

@@ -1183,12 +1183,6 @@ body {
 }
 
 .opportunity-card {
-  display: grid;
-  grid-template-columns: 42px minmax(0, 1fr) auto 17px;
-  align-items: center;
-  min-width: 0;
-  gap: 12px;
-  padding: 13px;
   border: 1px solid #e5d8f2;
   border-radius: 12px;
   background: #fcfaff;
@@ -1196,16 +1190,30 @@ body {
   text-align: left;
 }
 
-.opportunity-card:hover,
-.opportunity-card:focus-visible {
+.opportunity-card:has(.opportunity-card-toggle:hover),
+.opportunity-card:has(.opportunity-card-toggle:focus-visible) {
   border-color: #c7a8dc;
-  outline: 0;
   box-shadow: 0 4px 12px rgba(104, 62, 135, 0.08);
 }
 
 .opportunity-card-mustard {
   border-color: #e8ddbb;
   background: #fffdf7;
+}
+
+.opportunity-card-toggle {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr) auto 17px;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+  gap: 12px;
+  padding: 13px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  outline: 0;
 }
 
 .opportunity-icon {
@@ -1271,13 +1279,16 @@ body {
   background: #fff2d5;
 }
 
-.opportunity-card > svg {
+.opportunity-card-toggle > svg {
   align-self: center;
 }
 
 .opportunity-expanded-details {
   display: block;
-  margin-top: 8px;
+  padding: 0 13px 13px;
+  border-top: 1px solid rgba(28, 40, 27, 0.08);
+  margin-top: 0;
+  padding-top: 10px;
   font-size: 13px;
   text-align: left;
 }
@@ -1289,6 +1300,26 @@ body {
 
 .opportunity-expanded-meta {
   margin: 6px 0 0;
+}
+
+.opportunity-link {
+  display: inline-block;
+  margin-top: 10px;
+  color: #8c5db8;
+  font-weight: 800;
+  font-size: 13px;
+  text-decoration: none;
+}
+
+.opportunity-link:hover,
+.opportunity-link:focus-visible {
+  text-decoration: underline;
+}
+
+.opportunity-link-disabled {
+  margin: 10px 0 0;
+  color: #687367;
+  font-size: 12px;
 }
 
 .opportunities-progress {
@@ -2609,7 +2640,7 @@ body {
     overflow: visible;
   }
 
-  .opportunity-card {
+  .opportunity-card-toggle {
     grid-template-columns: 42px minmax(0, 1fr) 17px;
   }
 
@@ -2618,7 +2649,7 @@ body {
     justify-self: start;
   }
 
-  .opportunity-card > svg {
+  .opportunity-card-toggle > svg {
     grid-column: 3;
     grid-row: 1;
   }

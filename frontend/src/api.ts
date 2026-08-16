@@ -86,6 +86,7 @@ export interface Oportunidad {
     fechaPublicacion: string | null;
     modalidadContratacion: string;
     estadoProcedimiento: string;
+    urlProceso: string;
   };
   compatibilidad: number;
   competencia: 'BAJA' | 'MEDIA' | 'ALTA';

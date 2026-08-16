@@ -83,6 +83,8 @@ export class IngestionService {
         {
           idProceso: row.id_del_proceso,
           referenciaProceso: row.referencia_del_proceso || '',
+          // Socrata devuelve este campo como objeto { url: "..." }, no como string plano (mismo patrón que en Contratos).
+          urlProceso: (typeof row.urlproceso === 'object' ? row.urlproceso?.url : row.urlproceso) || '',
           entidad: row.entidad || '',
           nitEntidad: row.nit_entidad || '',
           departamentoEntidad: row.departamento_entidad || '',
