@@ -2938,6 +2938,58 @@ body {
   color: #b4483f;
 }
 
+.oversight-search {
+  margin-top: 20px;
+  padding: 16px;
+  border: 1px dashed #cddac6;
+  border-radius: 14px;
+  background: #fbfdfa;
+}
+
+.oversight-search h4 {
+  margin: 0 0 4px;
+  color: #1d2a1d;
+  font-size: 13px;
+}
+
+.oversight-search-hint {
+  margin: 0 0 12px;
+  color: #687367;
+  font-size: 12px;
+}
+
+.oversight-search-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.oversight-search-form input {
+  flex: 1;
+  min-width: 180px;
+  padding: 9px 12px;
+  border: 1px solid #d5e0d1;
+  border-radius: 10px;
+  font-size: 13px;
+}
+
+.oversight-search-result {
+  margin-bottom: 14px;
+}
+
+.oversight-search-result .oversight-secondary-button {
+  width: 100%;
+  justify-content: center;
+  margin-top: -6px;
+}
+
+.oversight-vincular-hecho {
+  color: #2c8d2b;
+  border-color: #bfe0bc;
+  background: #eef7ea;
+}
+
 .oversight-back-button {
   margin-bottom: 24px;
 }

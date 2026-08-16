@@ -216,6 +216,20 @@ export function obtenerEvidenciaDetalle(id: string): Promise<EvidenciaDetalle> {
   return fetch(`/api/veedurias/${id}/evidencia-detalle`).then(manejar);
 }
 
+/**
+ * Vincula un proceso/contrato real de SECOP como evidencia de una veeduría
+ * — el endpoint ya existía en el backend (`POST /veedurias/:id/evidencia`)
+ * pero nunca se llamaba desde el frontend: no había forma de buscar y
+ * agregar evidencia, solo se veía lo que ya estuviera vinculado.
+ */
+export function vincularEvidencia(id: string, body: { procesoId?: string; contratoId?: string }): Promise<Veeduria> {
+  return fetch(`/api/veedurias/${id}/evidencia`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  }).then(manejar);
+}
+
 export interface MunicipioRiesgo {
   departamento: string;
   ciudad: string;

@@ -1,20 +1,24 @@
 import { useEffect, useState } from 'react';
 import {
   agregarComentario,
+  consultar,
   crearVeeduria,
   listarVeedurias,
   marcarChecklist,
   obtenerEvidenciaDetalle,
   obtenerVeeduria,
   preguntarSobreDocumentos,
+  sincronizar,
   subirDocumento,
   verificarSiri,
   verificarSigep,
+  vincularEvidencia,
   EvidenciaDetalle,
   SancionSiri,
   PuestoSensible,
   Veeduria,
 } from './api';
+import type { ContratoInfo } from './contratoUtils';
 import ContratoCard from './ContratoCard';
 
 function ListaVeedurias({ onAbrir, onNueva }: { onAbrir: (id: string) => void; onNueva: () => void }) {
@@ -130,6 +134,16 @@ function DetalleVeeduria({ id, onVolver }: { id: string; onVolver: () => void })
   const [respuesta, setRespuesta] = useState<string | null>(null);
   const [preguntando, setPreguntando] = useState(false);
 
+  // Buscador de contratos reales para vincular como evidencia — antes la
+  // única forma de tener evidencia era que ya viniera vinculada desde
+  // afuera; no existía ninguna forma de buscar y agregar un contrato real
+  // desde esta pantalla.
+  const [temaBusqueda, setTemaBusqueda] = useState('');
+  const [resultadosBusqueda, setResultadosBusqueda] = useState<ContratoInfo[] | null>(null);
+  const [buscandoContratos, setBuscandoContratos] = useState(false);
+  const [errorBusqueda, setErrorBusqueda] = useState<string | null>(null);
+  const [vinculandoId, setVinculandoId] = useState<string | null>(null);
+
   function recargar() {
     obtenerVeeduria(id).then(setV).catch((e) => setError(e.message));
     obtenerEvidenciaDetalle(id).then((ev) => {
@@ -184,6 +198,43 @@ function DetalleVeeduria({ id, onVolver }: { id: string; onVolver: () => void })
     }
   }
 
+  async function handleBuscarContratos() {
+    if (!v) return;
+    setBuscandoContratos(true);
+    setErrorBusqueda(null);
+    setResultadosBusqueda(null);
+    try {
+      // Sincroniza primero — sin esto, la búsqueda solo mira lo que ya
+      // estaba en Mongo de antes, que puede ser una fracción vieja de lo
+      // real en SECOP (mismo problema resuelto antes en Comparar
+      // proveedores).
+      await sincronizar({ departamento: v.departamento, ciudad: v.ciudad, tema: temaBusqueda });
+      const r = await consultar({
+        departamento: v.departamento,
+        ciudad: v.ciudad,
+        tema: temaBusqueda,
+        pregunta: temaBusqueda || `Contratos de ${v.ciudad}`,
+      });
+      setResultadosBusqueda(r.evidenciaContratos);
+    } catch (err: any) {
+      setErrorBusqueda(err.message);
+    } finally {
+      setBuscandoContratos(false);
+    }
+  }
+
+  async function handleVincular(contratoId: string) {
+    setVinculandoId(contratoId);
+    try {
+      await vincularEvidencia(id, { contratoId });
+      recargar();
+    } catch (err: any) {
+      setErrorBusqueda(err.message);
+    } finally {
+      setVinculandoId(null);
+    }
+  }
+
   if (error) return <p style={{ color: 'crimson' }}>{error}</p>;
   if (!v) return <p>Cargando…</p>;
 
@@ -226,6 +277,57 @@ function DetalleVeeduria({ id, onVolver }: { id: string; onVolver: () => void })
           ))}
         </div>
       )}
+
+      <div className="oversight-search">
+        <h4>Buscar contratos reales para vincular como evidencia</h4>
+        <p className="oversight-search-hint">
+          Busca en SECOP dentro de {[v.ciudad, v.departamento].filter(Boolean).join(', ')} — sincroniza los datos
+          más recientes antes de mostrar resultados.
+        </p>
+        <div className="oversight-search-form">
+          <input
+            onChange={(e) => setTemaBusqueda(e.target.value)}
+            onKeyDown={(e) => { if (e.key === 'Enter') handleBuscarContratos(); }}
+            placeholder="Tema, ej. mantenimiento de vías"
+            value={temaBusqueda}
+          />
+          <button
+            className="oversight-secondary-button"
+            disabled={buscandoContratos}
+            onClick={handleBuscarContratos}
+            type="button"
+          >
+            {buscandoContratos ? 'Buscando…' : 'Buscar'}
+          </button>
+        </div>
+        {errorBusqueda && <p className="view-error">{errorBusqueda}</p>}
+
+        {resultadosBusqueda && resultadosBusqueda.length === 0 && (
+          <p style={{ color: '#888' }}>Ningún contrato coincide con esa búsqueda en lo ya sincronizado.</p>
+        )}
+
+        {resultadosBusqueda && resultadosBusqueda.length > 0 && (
+          <div>
+            {resultadosBusqueda.map((c) => {
+              const yaVinculado = v.contratosVinculados.includes(c.idContrato);
+              return (
+                <div className="oversight-search-result" key={c.idContrato}>
+                  <ContratoCard c={c} sanciones={sanciones} puestosSensibles={puestosSensibles} />
+                  <button
+                    className={`oversight-secondary-button${yaVinculado ? ' oversight-vincular-hecho' : ''}`}
+                    disabled={yaVinculado || vinculandoId === c.idContrato}
+                    onClick={() => handleVincular(c.idContrato)}
+                    type="button"
+                  >
+                    {yaVinculado ? '✓ Ya vinculado' : vinculandoId === c.idContrato ? 'Vinculando…' : '+ Vincular a esta veeduría'}
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
       <p style={{ fontSize: 13, background: '#eef2ff', border: '1px solid #c7d2fe', borderRadius: 6, padding: 10 }}>
         Al hacer clic en "Revisar →" se abre SECOP en una pestaña nueva. SECOP pide confirmar que "no eres un robot" —
         eso lo tienes que pasar tú. Una vez adentro, busca el documento que te interese (pliegos, estudios previos, contrato
