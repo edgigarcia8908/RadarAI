@@ -6,6 +6,7 @@ import { CuipoService } from '../cuipo/cuipo.service';
 import { completar } from '../lib/llm';
 import { normalizar } from '../common/normalizar';
 import { departamentoRealSecop } from '../common/departamento-secop';
+import { palabrasConSinonimos } from '../common/sinonimos';
 
 export interface ChatConsultaInput {
   mensaje: string;
@@ -118,8 +119,27 @@ export class ChatService {
     // no depende de que haya API key de LLM configurada (no la hay por
     // defecto en este repo).
     const respuestaPorPersona = this.buscarRespuestaPorPersona(input.mensaje, contratos);
-    const respuesta = respuestaPorPersona ?? (await this.redactar(input.mensaje, datosReales));
+    const respuestaPorTema = respuestaPorPersona ? null : this.respuestaPorTema(input.mensaje, contratos, datosReales.territorio, contratos.length);
+    const respuesta = respuestaPorPersona ?? respuestaPorTema ?? (await this.redactar(input.mensaje, datosReales));
     return { respuesta };
+  }
+
+  /**
+   * Mismo filtro que civic-intel.service.ts (palabrasConSinonimos sobre la
+   * pregunta completa) — sin esto, preguntas como "¿cuánto se ha gastado en
+   * mantenimiento de vías?" devolvían el total del municipio entero,
+   * ignorando "vías" por completo (confirmado con datos reales).
+   */
+  private respuestaPorTema(mensaje: string, contratos: Contrato[], territorio: string, totalTerritorio: number): string | null {
+    const palabras = palabrasConSinonimos(mensaje);
+    if (!palabras.length) return null;
+    const regex = new RegExp(palabras.join('|'), 'i');
+    const filtrados = contratos.filter((c) => regex.test(c.textoNormalizado || ''));
+    if (filtrados.length === 0 || filtrados.length === contratos.length) return null;
+
+    const valorTema = filtrados.reduce((s, c) => s + (c.valorDelContrato || 0), 0);
+    const proveedoresTema = new Set(filtrados.map((c) => c.nitProveedor || c.proveedorAdjudicado)).size;
+    return `Sobre eso específicamente, en ${territorio} encontré ${filtrados.length} contrato(s) relacionados por un total de $${valorTema.toLocaleString('es-CO')}, con ${proveedoresTema} proveedor(es) — de los ${totalTerritorio} contratos totales del territorio.`;
   }
 
   private buscarRespuestaPorPersona(mensaje: string, contratos: Contrato[]): string | null {

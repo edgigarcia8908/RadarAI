@@ -335,6 +335,28 @@ export class CivicIntelService {
   }
 
   /**
+   * Filtra los contratos por las palabras (+ sinónimos) de la PREGUNTA
+   * completa, no de `tema` — porque `tema` llega vacío desde el frontend
+   * (se dejó así a propósito para no repetir el bug de usar la pregunta
+   * completa como filtro de texto y matchear cero cuando preguntan por una
+   * persona). `palabrasConSinonimos` ya descarta palabras de 2 letras o
+   * menos (conectores como "el", "la", "en"), así que pasarle la pregunta
+   * completa es seguro: las palabras de contenido (p.ej. "vias") se
+   * expanden con sinónimos reales de SECOP, las demás simplemente no
+   * matchean nada y no rompen el OR. Solo se usa el resultado si de verdad
+   * acota algo (ni 0 ni el 100% de los contratos) — si no, se asume que la
+   * pregunta no es sobre un tema puntual y se deja el resumen general.
+   */
+  private filtrarPorTemaDePregunta(pregunta: string, contratos: Contrato[]): Contrato[] | null {
+    const palabras = palabrasConSinonimos(pregunta);
+    if (!palabras.length) return null;
+    const regex = new RegExp(palabras.join('|'), 'i');
+    const filtrados = contratos.filter((c) => regex.test(c.textoNormalizado || ''));
+    if (filtrados.length === 0 || filtrados.length === contratos.length) return null;
+    return filtrados;
+  }
+
+  /**
    * Si hay ANTHROPIC_API_KEY/OPENAI_API_KEY configurada, redacta con IA
    * (llamada directa, ver lib/llm.ts); si no, usa una plantilla simple.
    *
@@ -346,11 +368,19 @@ export class CivicIntelService {
    * agrega una muestra real de contratos con nombres de firmantes/
    * ordenador del gasto/supervisor para que el LLM pueda buscar ahí — y,
    * antes que nada, se intenta una respuesta determinística por nombre
-   * (buscarRespuestaPorPersona) que no depende de que haya LLM configurado.
+   * (buscarRespuestaPorPersona) y por tema (filtrarPorTemaDePregunta), que
+   * no dependen de que haya LLM configurado.
    */
   private async redactarRespuesta(input: ConsultaInput, resumen: Record<string, unknown>, hallazgos: Hallazgo[], contratos: Contrato[]): Promise<string> {
     const respuestaPorPersona = this.buscarRespuestaPorPersona(input.pregunta, contratos);
     if (respuestaPorPersona) return respuestaPorPersona;
+
+    const contratosDelTema = this.filtrarPorTemaDePregunta(input.pregunta, contratos);
+    if (contratosDelTema) {
+      const valorTema = contratosDelTema.reduce((s, c) => s + (c.valorDelContrato || 0), 0);
+      const proveedoresTema = new Set(contratosDelTema.map((c) => c.nitProveedor || c.proveedorAdjudicado)).size;
+      return `Sobre eso específicamente, en ${resumen.territorio} encontré ${contratosDelTema.length} contrato(s) relacionados por un total de $${valorTema.toLocaleString('es-CO')}, con ${proveedoresTema} proveedor(es) — de los ${resumen.totalContratos} contratos totales del territorio.`;
+    }
 
     const plantilla = () =>
       `En ${resumen.territorio}${input.tema ? `, sobre "${input.tema}",` : ''} encontramos ${resumen.totalContratos} contratos por un total de $${Number(resumen.valorTotalContratado).toLocaleString('es-CO')} con ${resumen.proveedoresUnicos} proveedores distintos.` +
