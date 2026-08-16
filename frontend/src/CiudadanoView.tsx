@@ -236,3 +236,4 @@ export default function CiudadanoView({ onRevisar }: { onRevisar: (veeduriaId: s
     </div>
   );
 }
+import React from 'react';

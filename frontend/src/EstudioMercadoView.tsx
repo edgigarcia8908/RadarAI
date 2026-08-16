@@ -200,3 +200,4 @@ export default function EstudioMercadoView() {
     </div>
   );
 }
+import React from 'react';

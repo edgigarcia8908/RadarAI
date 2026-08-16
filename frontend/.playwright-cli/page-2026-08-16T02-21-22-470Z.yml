@@ -1,0 +1,64 @@
+- generic [ref=f16e97]:
+  - complementary [ref=f16e98]:
+    - generic "RadarAI" [ref=f16e99]
+    - navigation "Navegación principal" [ref=f16e105]:
+      - button "Inicio" [ref=f16e106] [cursor=pointer]
+      - button "Entender gasto" [ref=f16e112] [cursor=pointer]
+      - button "Encontrar oportunidades" [ref=f16e117] [cursor=pointer]
+      - button "Comparar proveedores" [ref=f16e122] [cursor=pointer]
+    - generic [ref=f16e126]: Datos oficiales.Respuestassimples.
+  - region [ref=f16e131]:
+    - heading "Comparar proveedores antes de contratar" [level=1] [ref=f16e132]
+    - paragraph [ref=f16e133]: Compara precios, experiencia y riesgos para elegir al mejor proveedor.
+    - generic [ref=f16e134]:
+      - generic [ref=f16e135]: ¿Qué necesitas contratar?
+      - textbox "¿Qué necesitas contratar?" [ref=f16e140]:
+        - /placeholder: Ej. mantenimiento de vías
+    - generic [ref=f16e141]:
+      - generic [ref=f16e142]: Departamento
+      - combobox "Departamento" [ref=f16e147]:
+        - option "Cundinamarca" [selected]
+        - option "Antioquia"
+        - option "Valle del Cauca"
+    - generic [ref=f16e148]:
+      - generic [ref=f16e149]: Municipio
+      - combobox "Municipio" [ref=f16e155]:
+        - option "Todos" [selected]
+        - option "Chía"
+        - option "Zipaquirá"
+        - option "Tocancipá"
+    - generic [ref=f16e156]:
+      - generic [ref=f16e157]: Período para comparar
+      - combobox "Período para comparar" [ref=f16e162]:
+        - option "Últimos 2 años" [selected]
+        - option "Último año"
+        - option "Últimos 3 años"
+    - button "Comparar precios y proveedores" [ref=f16e163] [cursor=pointer]
+  - region [ref=f16e167]:
+    - heading "Comparación de proveedores" [level=2] [ref=f16e168]
+    - button [ref=f16e169] [cursor=pointer]:
+      - generic [ref=f16e174]:
+        - strong [ref=f16e175]: Construcampos SAS
+        - generic [ref=f16e176]: Experiencia● Alta (15 años)
+      - generic [ref=f16e177]:
+        - strong [ref=f16e178]: Precio de referencia$ 1.245 millones
+        - generic [ref=f16e179]: Riesgo● Bajo
+    - button [ref=f16e180] [cursor=pointer]:
+      - generic [ref=f16e186]:
+        - strong [ref=f16e187]: Vías Andinas Ltda.
+        - generic [ref=f16e188]: Experiencia● Media (8 años)
+      - generic [ref=f16e189]:
+        - strong [ref=f16e190]: Precio de referencia$ 1.318 millones
+        - generic [ref=f16e191]: Riesgo● Medio
+    - button [ref=f16e192] [cursor=pointer]:
+      - generic [ref=f16e196]:
+        - strong [ref=f16e197]: Infraestructura Total SAS
+        - generic [ref=f16e198]: Experiencia● Media (6 años)
+      - generic [ref=f16e199]:
+        - strong [ref=f16e200]: Precio de referencia$ 1.462 millones
+        - generic [ref=f16e201]: Riesgo● Alto
+    - generic [ref=f16e202]:
+      - generic [ref=f16e207]:
+        - strong [ref=f16e208]: Proveedor sugerido
+        - generic [ref=f16e209]: Construcampos SAS ofrece el mejor equilibrio entre precio, experiencia y riesgo para este contrato.
+      - button "Ver detalles" [ref=f16e210] [cursor=pointer]

@@ -1,0 +1,35 @@
+- generic [ref=f4e4]:
+  - complementary [ref=f4e5]:
+    - generic "RadarAI" [ref=f4e6]
+    - navigation "Navegación principal" [ref=f4e12]:
+      - button "Inicio" [ref=f4e13] [cursor=pointer]
+      - button "Entender gasto" [ref=f4e19] [cursor=pointer]
+      - button "Encontrar oportunidades" [ref=f4e24] [cursor=pointer]
+      - button "Comparar proveedores" [ref=f4e29] [cursor=pointer]
+    - generic [ref=f4e33]: Datos oficiales.Respuestassimples.
+  - main [ref=f4e38]:
+    - region [ref=f4e39]:
+      - heading "RadarAI te ayuda a entender, competir y decidir sobre plata pública." [level=1] [ref=f4e40]: RadarAI te ayuda a entender,competir y decidir sobreplata pública.
+      - paragraph [ref=f4e41]: Haz una pregunta o elige una ruta para empezar.
+      - generic [ref=f4e42]:
+        - textbox "¿Qué quieres saber sobre plata pública?" [ref=f4e45]
+        - button "Empezar" [ref=f4e46] [cursor=pointer]
+      - paragraph [ref=f4e49]: Ejemplos para empezar
+      - generic [ref=f4e50]:
+        - button "¿En qué se gastó la alcaldía de Tocancipá este año?" [ref=f4e51] [cursor=pointer]
+        - button "Tengo una empresa de computadores, ¿qué contratos puedo ganar?" [ref=f4e55] [cursor=pointer]
+        - button "Voy a contratar mantenimiento de colegios, ¿qué proveedor conviene?" [ref=f4e60] [cursor=pointer]
+      - paragraph [ref=f4e66]: Elige una ruta rápida
+      - generic [ref=f4e67]:
+        - button "Entender gasto Mira en qué se ha gastado el dinero público." [ref=f4e68] [cursor=pointer]:
+          - generic [ref=f4e73]:
+            - strong [ref=f4e74]: Entender gasto
+            - generic [ref=f4e75]: Mira en qué se ha gastado el dinero público.
+        - button "Encontrar oportunidades Descubre contratos que tu empresa puede ganar." [ref=f4e78] [cursor=pointer]:
+          - generic [ref=f4e83]:
+            - strong [ref=f4e84]: Encontrar oportunidades
+            - generic [ref=f4e85]: Descubre contratos que tu empresa puede ganar.
+        - button "Comparar proveedores Compara precios y elige al proveedor más conveniente." [ref=f4e88] [cursor=pointer]:
+          - generic [ref=f4e92]:
+            - strong [ref=f4e93]: Comparar proveedores
+            - generic [ref=f4e94]: Compara precios y elige al proveedor más conveniente.

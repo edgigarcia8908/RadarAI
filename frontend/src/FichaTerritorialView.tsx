@@ -161,3 +161,4 @@ function Metrica({ etiqueta, valor, alerta }: { etiqueta: string; valor: string;
     </div>
   );
 }
+import React from 'react';

@@ -90,3 +90,4 @@ export default function MapaView() {
     </div>
   );
 }
+import React from 'react';

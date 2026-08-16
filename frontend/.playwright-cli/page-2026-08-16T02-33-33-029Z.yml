@@ -1,0 +1,70 @@
+- generic [ref=f19e3]:
+  - button "← Volver" [ref=f19e90] [cursor=pointer]
+  - generic [ref=f19e91]:
+    - complementary [ref=f19e92]:
+      - generic "RadarAI" [ref=f19e93]
+      - navigation "Navegación principal" [ref=f19e99]:
+        - button "Inicio" [ref=f19e100] [cursor=pointer]
+        - button "Entender gasto" [ref=f19e102] [cursor=pointer]
+        - button "Encontrar oportunidades" [ref=f19e104] [cursor=pointer]
+        - button "Comparar proveedores" [ref=f19e106] [cursor=pointer]
+        - button "Veedurías" [ref=f19e108] [cursor=pointer]
+        - button "Mapa de riesgo" [ref=f19e110] [cursor=pointer]
+        - button "Ficha territorial" [ref=f19e112] [cursor=pointer]
+    - region [ref=f19e114]:
+      - generic [ref=f19e115]: Inteligencia territorial
+      - heading "Mapa de riesgo" [level=1] [ref=f19e119]
+      - paragraph [ref=f19e120]: Identifica los municipios donde la contratación está más concentrada en pocos proveedores.
+      - generic [ref=f19e121]:
+        - generic [ref=f19e122]: Departamento
+        - combobox "Departamento" [ref=f19e126]:
+          - option "Todos los departamentos" [selected]
+      - generic [ref=f19e127]:
+        - generic [ref=f19e128]: Nivel de riesgo
+        - combobox "Nivel de riesgo" [ref=f19e133]:
+          - option "Todos los niveles" [selected]
+          - option "Alto riesgo"
+          - option "Riesgo medio"
+          - option "Bajo riesgo"
+      - generic [ref=f19e134]: El color muestra concentración de proveedores. El tamaño indica la cantidad de contratos.
+      - generic "Leyenda de riesgo" [ref=f19e139]:
+        - strong [ref=f19e140]: Cómo leer el mapa
+        - generic [ref=f19e143]:
+          - strong [ref=f19e144]: Alto
+          - generic [ref=f19e145]: 80% o más concentrado
+        - generic [ref=f19e148]:
+          - strong [ref=f19e149]: Medio
+          - generic [ref=f19e150]: 50% a 79% concentrado
+        - generic [ref=f19e153]:
+          - strong [ref=f19e154]: Bajo
+          - generic [ref=f19e155]: Menos de 50% concentrado
+    - region [ref=f19e156]:
+      - generic [ref=f19e157]:
+        - generic [ref=f19e158]:
+          - heading "Riesgo territorial" [level=2] [ref=f19e159]
+          - paragraph [ref=f19e160]: Todos los municipios sincronizados
+        - generic [ref=f19e161]: Datos SECOP
+      - generic [ref=f19e166]:
+        - generic [ref=f19e167]:
+          - generic [ref=f19e168]: Municipios
+          - strong [ref=f19e169]: "0"
+        - generic [ref=f19e170]:
+          - generic [ref=f19e171]: Contratos
+          - strong [ref=f19e172]: "0"
+        - generic [ref=f19e173]:
+          - generic [ref=f19e174]: Valor contratado
+          - strong [ref=f19e175]: $0
+      - generic [ref=f19e176]:
+        - generic [ref=f19e177]:
+          - generic:
+            - generic [ref=f19e178]:
+              - button "Zoom in" [ref=f19e179] [cursor=pointer]: +
+              - button "Zoom out" [ref=f19e180] [cursor=pointer]: −
+            - generic [ref=f19e181]:
+              - link "Leaflet" [ref=f19e182] [cursor=pointer]:
+                - /url: https://leafletjs.com
+              - text: "| © OpenStreetMap contributors © CARTO"
+        - generic [ref=f19e187]:
+          - strong [ref=f19e191]: Aún no hay datos para mostrar
+          - generic [ref=f19e192]: Sincroniza un territorio desde Entender gasto para ver sus señales aquí.
+      - paragraph [ref=f19e193]: La concentración se calcula sobre los contratos sincronizados. Un municipio con pocos contratos puede mostrar un porcentaje alto con una base pequeña.

@@ -138,3 +138,4 @@ export default function ContratoCard({
     </div>
   );
 }
+import React from 'react';

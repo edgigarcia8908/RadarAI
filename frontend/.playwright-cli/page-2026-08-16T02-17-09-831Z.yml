@@ -1,0 +1,73 @@
+- generic [ref=f11e97]:
+  - complementary [ref=f11e98]:
+    - generic "RadarAI" [ref=f11e99]
+    - navigation "Navegación principal" [ref=f11e105]:
+      - button "Inicio" [ref=f11e106] [cursor=pointer]
+      - button "Entender gasto" [ref=f11e112] [cursor=pointer]
+      - button "Encontrar oportunidades" [ref=f11e117] [cursor=pointer]
+      - button "Comparar proveedores" [ref=f11e122] [cursor=pointer]
+    - generic [ref=f11e126]: Datos oficiales.Respuestassimples.
+  - region [ref=f11e131]:
+    - heading "Encontrar oportunidades para mi empresa" [level=1] [ref=f11e132]
+    - paragraph [ref=f11e133]: Te mostramos contratos que tu empresa puede ganar según lo que vendes.
+    - generic [ref=f11e134]:
+      - generic [ref=f11e135]: Nombre de empresa
+      - textbox "Nombre de empresa" [ref=f11e140]:
+        - /placeholder: Nombre de tu empresa
+    - generic [ref=f11e141]:
+      - generic [ref=f11e142]: ¿Qué vende tu empresa?
+      - textbox "¿Qué vende tu empresa?" [ref=f11e146]:
+        - /placeholder: Productos o servicios
+    - generic [ref=f11e147]:
+      - generic [ref=f11e148]:
+        - generic [ref=f11e149]: Departamento
+        - combobox "Departamento" [ref=f11e154]:
+          - option "Cundinamarca" [selected]
+          - option "Antioquia"
+          - option "Valle del Cauca"
+      - generic [ref=f11e155]:
+        - generic [ref=f11e156]: Municipio opcional
+        - combobox "Municipio opcional" [ref=f11e162]:
+          - option "Todos" [selected]
+          - option "Chía"
+          - option "Zipaquirá"
+          - option "Tocancipá"
+    - button [active] [ref=f11e235] [cursor=pointer]:
+      - generic [ref=f11e167]:
+        - text: Usar mi ubicación
+        - strong [ref=f11e168]: Ubicación desactivada
+    - generic [ref=f11e171]:
+      - generic [ref=f11e172]: Período
+      - combobox "Período" [ref=f11e177]:
+        - option "Este año" [selected]
+        - option "Último año"
+        - option "Últimos 3 años"
+    - button "Buscar oportunidades" [ref=f11e178] [cursor=pointer]
+    - paragraph [ref=f11e183]: Usamos datos oficiales de SECOP.
+  - region [ref=f11e184]:
+    - heading "Oportunidades para tu empresa" [level=2] [ref=f11e185]
+    - button "Compra de computadores y periféricos para instituciones Alcaldía de Chía Competencia estimada 5 a 10 empresas Recomendación Tu solución cumple muy bien los requisitos. Alta posibilidad" [ref=f11e186] [cursor=pointer]:
+      - generic [ref=f11e191]:
+        - strong [ref=f11e192]: Compra de computadores y periféricos para instituciones
+        - generic [ref=f11e193]: Alcaldía de Chía
+        - generic [ref=f11e194]:
+          - generic [ref=f11e195]: Competencia estimada 5 a 10 empresas
+          - generic [ref=f11e196]: Recomendación Tu solución cumple muy bien los requisitos.
+      - generic [ref=f11e197]: Alta posibilidad
+    - button "Adquisición de servidores y almacenamiento Gobernación de Cundinamarca Competencia estimada 3 a 8 empresas Recomendación Tienes ventaja por experiencia previa. Alta posibilidad" [ref=f11e200] [cursor=pointer]:
+      - generic [ref=f11e206]:
+        - strong [ref=f11e207]: Adquisición de servidores y almacenamiento
+        - generic [ref=f11e208]: Gobernación de Cundinamarca
+        - generic [ref=f11e209]:
+          - generic [ref=f11e210]: Competencia estimada 3 a 8 empresas
+          - generic [ref=f11e211]: Recomendación Tienes ventaja por experiencia previa.
+      - generic [ref=f11e212]: Alta posibilidad
+    - button "Renovación de red y cableado estructurado Alcaldía de Zipaquirá Competencia estimada 8 a 15 empresas Recomendación Ajusta tu propuesta a las especificaciones. Media posibilidad" [ref=f11e215] [cursor=pointer]:
+      - generic [ref=f11e222]:
+        - strong [ref=f11e223]: Renovación de red y cableado estructurado
+        - generic [ref=f11e224]: Alcaldía de Zipaquirá
+        - generic [ref=f11e225]:
+          - generic [ref=f11e226]: Competencia estimada 8 a 15 empresas
+          - generic [ref=f11e227]: Recomendación Ajusta tu propuesta a las especificaciones.
+      - generic [ref=f11e228]: Media posibilidad
+    - button "Ver todas las oportunidades" [ref=f11e231] [cursor=pointer]

@@ -144,3 +144,4 @@ export default function EmpresaView() {
     </div>
   );
 }
+import React from 'react';

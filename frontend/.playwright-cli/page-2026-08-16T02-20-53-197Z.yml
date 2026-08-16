@@ -1,0 +1,242 @@
+- generic [ref=f14e3]:
+  - generic [ref=f14e97]:
+    - complementary [ref=f14e98]:
+      - generic "RadarAI" [ref=f14e99]
+      - navigation "Navegación principal" [ref=f14e105]:
+        - button "Inicio" [ref=f14e106] [cursor=pointer]
+        - button "Entender gasto" [ref=f14e112] [cursor=pointer]
+        - button "Encontrar oportunidades" [ref=f14e117] [cursor=pointer]
+        - button "Comparar proveedores" [ref=f14e122] [cursor=pointer]
+      - generic [ref=f14e126]: Datos oficiales.Respuestassimples.
+    - region [ref=f14e131]:
+      - heading "Comparar proveedores antes de contratar" [level=1] [ref=f14e132]
+      - paragraph [ref=f14e133]: Compara precios, experiencia y riesgos para elegir al mejor proveedor.
+      - generic [ref=f14e134]:
+        - generic [ref=f14e135]: ¿Qué necesitas contratar?
+        - textbox "¿Qué necesitas contratar?" [ref=f14e140]:
+          - /placeholder: Ej. mantenimiento de vías
+      - generic [ref=f14e141]:
+        - generic [ref=f14e142]: Departamento
+        - combobox "Departamento" [ref=f14e147]:
+          - option "Cundinamarca" [selected]
+          - option "Antioquia"
+          - option "Valle del Cauca"
+      - generic [ref=f14e148]:
+        - generic [ref=f14e149]: Municipio
+        - combobox "Municipio" [ref=f14e155]:
+          - option "Todos" [selected]
+          - option "Chía"
+          - option "Zipaquirá"
+          - option "Tocancipá"
+      - generic [ref=f14e156]:
+        - generic [ref=f14e157]: Período para comparar
+        - combobox "Período para comparar" [ref=f14e162]:
+          - option "Últimos 2 años" [selected]
+          - option "Último año"
+          - option "Últimos 3 años"
+      - button "Comparar precios y proveedores" [ref=f14e163] [cursor=pointer]
+    - region [ref=f14e167]:
+      - heading "Comparación de proveedores" [level=2] [ref=f14e168]
+      - button [ref=f14e169] [cursor=pointer]:
+        - generic [ref=f14e174]:
+          - strong [ref=f14e175]: Construcampos SAS
+          - generic [ref=f14e176]: Experiencia● Alta (15 años)
+        - generic [ref=f14e177]:
+          - strong [ref=f14e178]: Precio de referencia$ 1.245 millones
+          - generic [ref=f14e179]: Riesgo● Bajo
+      - button [ref=f14e180] [cursor=pointer]:
+        - generic [ref=f14e186]:
+          - strong [ref=f14e187]: Vías Andinas Ltda.
+          - generic [ref=f14e188]: Experiencia● Media (8 años)
+        - generic [ref=f14e189]:
+          - strong [ref=f14e190]: Precio de referencia$ 1.318 millones
+          - generic [ref=f14e191]: Riesgo● Medio
+      - button [ref=f14e192] [cursor=pointer]:
+        - generic [ref=f14e196]:
+          - strong [ref=f14e197]: Infraestructura Total SAS
+          - generic [ref=f14e198]: Experiencia● Media (6 años)
+        - generic [ref=f14e199]:
+          - strong [ref=f14e200]: Precio de referencia$ 1.462 millones
+          - generic [ref=f14e201]: Riesgo● Alto
+      - generic [ref=f14e202]:
+        - generic [ref=f14e207]:
+          - strong [ref=f14e208]: Proveedor sugerido
+          - generic [ref=f14e209]: Construcampos SAS ofrece el mejor equilibrio entre precio, experiencia y riesgo para este contrato.
+        - button "Ver detalles" [ref=f14e210] [cursor=pointer]
+  - generic [ref=f14e214]:
+    - heading "🏛️ Estudio de mercado" [level=1] [ref=f14e215]
+    - paragraph [ref=f14e216]:
+      - text: "Para entidades públicas: antes de sacar un proceso, mira qué pagó el resto del Estado por algo parecido, con qué proveedores y en cuánto tiempo — sobre contratos ya"
+      - strong [ref=f14e217]: terminados/cerrados
+      - text: (no en ejecución, para no comparar contra un precio que todavía puede cambiar).
+    - generic [ref=f14e218]:
+      - button "📍 Usar mi ubicación" [ref=f14e220] [cursor=pointer]
+      - generic [ref=f14e221]:
+        - text: Objeto a contratar
+        - textbox "Objeto a contratar" [ref=f14e222]: mantenimiento de vías
+      - generic [ref=f14e223]:
+        - text: Departamento
+        - combobox "Departamento" [ref=f14e224]:
+          - option "Amazonas"
+          - option "Antioquia"
+          - option "Arauca"
+          - option "Atlántico"
+          - option "Bolívar"
+          - option "Boyacá"
+          - option "Caldas"
+          - option "Caquetá"
+          - option "Casanare"
+          - option "Cauca"
+          - option "Cesar"
+          - option "Chocó"
+          - option "Cundinamarca" [selected]
+          - option "Córdoba"
+          - option "Guainía"
+          - option "Guaviare"
+          - option "Huila"
+          - option "La Guajira"
+          - option "Magdalena"
+          - option "Meta"
+          - option "Nariño"
+          - option "Norte de Santander"
+          - option "Putumayo"
+          - option "Quindío"
+          - option "Risaralda"
+          - option "San Andrés y Providencia"
+          - option "Santander"
+          - option "Sucre"
+          - option "Tolima"
+          - option "Valle del Cauca"
+          - option "Vaupés"
+          - option "Vichada"
+      - generic [ref=f14e225]:
+        - text: Ciudad/Municipio (opcional, todo el departamento si se deja vacío)
+        - combobox "Ciudad/Municipio (opcional, todo el departamento si se deja vacío)" [ref=f14e226]:
+          - option "Todo el departamento" [selected]
+          - option "Agua de Dios"
+          - option "Albán"
+          - option "Anapoima"
+          - option "Anolaima"
+          - option "Apulo"
+          - option "Arbeláez"
+          - option "Beltrán"
+          - option "Bituima"
+          - option "Bogotá"
+          - option "Bojacá"
+          - option "Cabrera"
+          - option "Cachipay"
+          - option "Cajicá"
+          - option "Caparrapí"
+          - option "Cáqueza"
+          - option "Carmen de Carupa"
+          - option "Chaguaní"
+          - option "Chía"
+          - option "Chipaque"
+          - option "Choachí"
+          - option "Chocontá"
+          - option "Cogua"
+          - option "Cota"
+          - option "Cucunubá"
+          - option "El Colegio"
+          - option "El Peñón"
+          - option "El Rosal"
+          - option "Facatativá"
+          - option "Fómeque"
+          - option "Fosca"
+          - option "Funza"
+          - option "Fúquene"
+          - option "Fusagasugá"
+          - option "Gachalá"
+          - option "Gachancipá"
+          - option "Gachetá"
+          - option "Gama"
+          - option "Girardot"
+          - option "Granada"
+          - option "Guachetá"
+          - option "Guaduas"
+          - option "Guasca"
+          - option "Guataquí"
+          - option "Guatavita"
+          - option "Guayabal de Síquima"
+          - option "Guayabetal"
+          - option "Gutiérrez"
+          - option "Jerusalén"
+          - option "Junín"
+          - option "La Calera"
+          - option "La Mesa"
+          - option "La Palma"
+          - option "La Peña"
+          - option "La Vega"
+          - option "Lenguazaque"
+          - option "Machetá"
+          - option "Madrid"
+          - option "Manta"
+          - option "Medina"
+          - option "Mosquera"
+          - option "Nariño"
+          - option "Nemocón"
+          - option "Nilo"
+          - option "Nimaima"
+          - option "Nocaima"
+          - option "Pacho"
+          - option "Paime"
+          - option "Pandi"
+          - option "Paratebueno"
+          - option "Pasca"
+          - option "Puerto Salgar"
+          - option "Pulí"
+          - option "Quebradanegra"
+          - option "Quetame"
+          - option "Quipile"
+          - option "Ricaurte"
+          - option "San Antonio del Tequendama"
+          - option "San Bernardo"
+          - option "San Cayetano"
+          - option "San Francisco"
+          - option "San Juan de Rioseco"
+          - option "Sasaima"
+          - option "Sesquilé"
+          - option "Sibaté"
+          - option "Silvania"
+          - option "Simijaca"
+          - option "Soacha"
+          - option "Sopó"
+          - option "Subachoque"
+          - option "Suesca"
+          - option "Supatá"
+          - option "Susa"
+          - option "Sutatausa"
+          - option "Tabio"
+          - option "Tausa"
+          - option "Tena"
+          - option "Tenjo"
+          - option "Tibacuy"
+          - option "Tibirita"
+          - option "Tocaima"
+          - option "Tocancipá"
+          - option "Topaipí"
+          - option "Ubalá"
+          - option "Ubaque"
+          - option "Ubaté"
+          - option "Une"
+          - option "Útica"
+          - option "Venecia"
+          - option "Vergara"
+          - option "Vianí"
+          - option "Villagómez"
+          - option "Villapinzón"
+          - option "Villeta"
+          - option "Viotá"
+          - option "Yacopí"
+          - option "Zipacón"
+          - option "Zipaquirá"
+      - generic [ref=f14e227]:
+        - generic [ref=f14e228]:
+          - text: Desde
+          - textbox "Desde" [ref=f14e229]: 2024-08-16
+        - generic [ref=f14e230]:
+          - text: Hasta
+          - textbox "Hasta" [ref=f14e231]: 2026-08-16
+    - generic [ref=f14e232]:
+      - button "1. Sincronizar datos de SECOP" [ref=f14e233] [cursor=pointer]
+      - button "2. Generar estudio" [ref=f14e234] [cursor=pointer]

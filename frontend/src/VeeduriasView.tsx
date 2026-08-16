@@ -273,3 +273,4 @@ export default function VeeduriasView({ abrirId, onAbierta }: { abrirId?: string
   }
   return <ListaVeedurias onAbrir={(id) => setVista({ modo: 'detalle', id })} onNueva={() => setVista({ modo: 'nueva' })} />;
 }
+import React from 'react';

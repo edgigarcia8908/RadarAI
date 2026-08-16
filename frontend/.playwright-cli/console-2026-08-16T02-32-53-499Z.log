@@ -1,0 +1,48 @@
+[      61ms] [INFO] %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold @ http://127.0.0.1:5490/node_modules/.vite/deps/chunk-M324AGAM.js?v=afa99f61:21548
+[   30213ms] [INFO] %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold @ http://127.0.0.1:5490/node_modules/.vite/deps/chunk-M324AGAM.js?v=afa99f61:21548
+[   81154ms] TypeError: veedurias?.map is not a function
+    at ListaVeedurias (http://127.0.0.1:5490/src/VeeduriasView.tsx?t=1786846094164:21:781)
+    at renderWithHooks (http://127.0.0.1:5490/node_modules/.vite/deps/chunk-M324AGAM.js?v=afa99f61:11546:26)
+    at updateFunctionComponent (http://127.0.0.1:5490/node_modules/.vite/deps/chunk-M324AGAM.js?v=afa99f61:14580:28)
+    at beginWork (http://127.0.0.1:5490/node_modules/.vite/deps/chunk-M324AGAM.js?v=afa99f61:15922:22)
+    at HTMLUnknownElement.callCallback2 (http://127.0.0.1:5490/node_modules/.vite/deps/chunk-M324AGAM.js?v=afa99f61:3672:22)
+    at Object.invokeGuardedCallbackDev (http://127.0.0.1:5490/node_modules/.vite/deps/chunk-M324AGAM.js?v=afa99f61:3697:24)
+    at invokeGuardedCallback (http://127.0.0.1:5490/node_modules/.vite/deps/chunk-M324AGAM.js?v=afa99f61:3731:39)
+    at beginWork$1 (http://127.0.0.1:5490/node_modules/.vite/deps/chunk-M324AGAM.js?v=afa99f61:19763:15)
+    at performUnitOfWork (http://127.0.0.1:5490/node_modules/.vite/deps/chunk-M324AGAM.js?v=afa99f61:19199:20)
+    at workLoopSync (http://127.0.0.1:5490/node_modules/.vite/deps/chunk-M324AGAM.js?v=afa99f61:19135:13)
+[   81156ms] TypeError: veedurias?.map is not a function
+    at ListaVeedurias (http://127.0.0.1:5490/src/VeeduriasView.tsx?t=1786846094164:21:781)
+    at renderWithHooks (http://127.0.0.1:5490/node_modules/.vite/deps/chunk-M324AGAM.js?v=afa99f61:11546:26)
+    at updateFunctionComponent (http://127.0.0.1:5490/node_modules/.vite/deps/chunk-M324AGAM.js?v=afa99f61:14580:28)
+    at beginWork (http://127.0.0.1:5490/node_modules/.vite/deps/chunk-M324AGAM.js?v=afa99f61:15922:22)
+    at HTMLUnknownElement.callCallback2 (http://127.0.0.1:5490/node_modules/.vite/deps/chunk-M324AGAM.js?v=afa99f61:3672:22)
+    at Object.invokeGuardedCallbackDev (http://127.0.0.1:5490/node_modules/.vite/deps/chunk-M324AGAM.js?v=afa99f61:3697:24)
+    at invokeGuardedCallback (http://127.0.0.1:5490/node_modules/.vite/deps/chunk-M324AGAM.js?v=afa99f61:3731:39)
+    at beginWork$1 (http://127.0.0.1:5490/node_modules/.vite/deps/chunk-M324AGAM.js?v=afa99f61:19763:15)
+    at performUnitOfWork (http://127.0.0.1:5490/node_modules/.vite/deps/chunk-M324AGAM.js?v=afa99f61:19199:20)
+    at workLoopSync (http://127.0.0.1:5490/node_modules/.vite/deps/chunk-M324AGAM.js?v=afa99f61:19135:13)
+[   81157ms] [ERROR] The above error occurred in the <ListaVeedurias> component:
+
+    at ListaVeedurias (http://127.0.0.1:5490/src/VeeduriasView.tsx?t=1786846094164:15:27)
+    at VeeduriasView (http://127.0.0.1:5490/src/VeeduriasView.tsx?t=1786846094164:126:29)
+    at div
+    at App (http://127.0.0.1:5490/src/App.tsx?t=1786847603565:10:27)
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries. @ http://127.0.0.1:5490/node_modules/.vite/deps/chunk-M324AGAM.js?v=afa99f61:14029
+[   81157ms] TypeError: veedurias?.map is not a function
+    at ListaVeedurias (http://127.0.0.1:5490/src/VeeduriasView.tsx?t=1786846094164:21:781)
+    at renderWithHooks (http://127.0.0.1:5490/node_modules/.vite/deps/chunk-M324AGAM.js?v=afa99f61:11546:26)
+    at updateFunctionComponent (http://127.0.0.1:5490/node_modules/.vite/deps/chunk-M324AGAM.js?v=afa99f61:14580:28)
+    at beginWork (http://127.0.0.1:5490/node_modules/.vite/deps/chunk-M324AGAM.js?v=afa99f61:15922:22)
+    at beginWork$1 (http://127.0.0.1:5490/node_modules/.vite/deps/chunk-M324AGAM.js?v=afa99f61:19751:22)
+    at performUnitOfWork (http://127.0.0.1:5490/node_modules/.vite/deps/chunk-M324AGAM.js?v=afa99f61:19199:20)
+    at workLoopSync (http://127.0.0.1:5490/node_modules/.vite/deps/chunk-M324AGAM.js?v=afa99f61:19135:13)
+    at renderRootSync (http://127.0.0.1:5490/node_modules/.vite/deps/chunk-M324AGAM.js?v=afa99f61:19114:15)
+    at recoverFromConcurrentError (http://127.0.0.1:5490/node_modules/.vite/deps/chunk-M324AGAM.js?v=afa99f61:18734:28)
+    at performConcurrentWorkOnRoot (http://127.0.0.1:5490/node_modules/.vite/deps/chunk-M324AGAM.js?v=afa99f61:18682:30)
+[   93627ms] [INFO] %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold @ http://127.0.0.1:5490/node_modules/.vite/deps/chunk-M324AGAM.js?v=afa99f61:21548
+[   97662ms] [INFO] %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold @ http://127.0.0.1:5490/node_modules/.vite/deps/chunk-M324AGAM.js?v=afa99f61:21548
+[  154193ms] [INFO] %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold @ http://127.0.0.1:5490/node_modules/.vite/deps/chunk-M324AGAM.js?v=afa99f61:21548
+[  164948ms] [INFO] %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold @ http://127.0.0.1:5490/node_modules/.vite/deps/chunk-M324AGAM.js?v=afa99f61:21548

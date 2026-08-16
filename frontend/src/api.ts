@@ -156,7 +156,7 @@ export function crearVeeduria(input: {
 }
 
 export function listarVeedurias(): Promise<Veeduria[]> {
-  return fetch('/api/veedurias').then(manejar);
+  return fetch('/api/veedurias').then(manejar).then((data) => (Array.isArray(data) ? data : []));
 }
 
 export function obtenerVeeduria(id: string): Promise<Veeduria> {

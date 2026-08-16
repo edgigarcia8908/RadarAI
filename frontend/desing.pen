@@ -1,0 +1,4808 @@
+{
+  "version": "2.17",
+  "children": [
+    {
+      "type": "frame",
+      "id": "i1sbml",
+      "x": -4169,
+      "y": -23581,
+      "name": "RadarAI UI Proposal",
+      "clip": true,
+      "width": 1920,
+      "height": 1500,
+      "fill": "#EEF2EA",
+      "cornerRadius": 22,
+      "layout": "vertical",
+      "gap": 18,
+      "padding": 18,
+      "children": [
+        {
+          "type": "frame",
+          "id": "KbXqY",
+          "name": "Fila superior",
+          "width": "fill_container",
+          "height": "fill_container",
+          "gap": 18,
+          "children": [
+            {
+              "type": "frame",
+              "id": "uLZHK",
+              "name": "Pantalla 1 - Home Inicio",
+              "clip": true,
+              "width": "fill_container",
+              "height": "fill_container",
+              "fill": "$ra-surface",
+              "cornerRadius": 12,
+              "stroke": "$ra-border",
+              "strokeWidth": 1,
+              "effect": {
+                "type": "shadow",
+                "shadowType": "outer",
+                "color": "#24401A18",
+                "offset": {
+                  "x": 0,
+                  "y": 4
+                },
+                "blur": 14
+              },
+              "gap": 18,
+              "padding": 14,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "T0tPU",
+                  "name": "Navegación lateral",
+                  "width": 160,
+                  "height": "fill_container",
+                  "fill": "#FFFFFF00",
+                  "layout": "vertical",
+                  "gap": 18,
+                  "padding": [
+                    18,
+                    14
+                  ],
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "dSXDU",
+                      "name": "Logo RadarAI",
+                      "width": "fill_container",
+                      "gap": 8,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "O4mcb",
+                          "name": "Icono RadarAI",
+                          "width": 26,
+                          "height": 26,
+                          "icon": "radar",
+                          "library": "lucide",
+                          "fill": "$ra-green"
+                        },
+                        {
+                          "type": "text",
+                          "id": "SLaFd",
+                          "name": "Marca RadarAI",
+                          "fill": "$ra-text",
+                          "content": "RadarAI",
+                          "lineHeight": 1.15,
+                          "fontFamily": "$ra-font",
+                          "fontSize": 20,
+                          "fontWeight": "800"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "W1xJ3f",
+                      "name": "Opciones de navegación",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 8,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "u79PG",
+                          "name": "Nav Inicio",
+                          "width": "fill_container",
+                          "fill": "$ra-green-soft",
+                          "cornerRadius": 10,
+                          "stroke": "$ra-border",
+                          "strokeWidth": 1,
+                          "gap": 10,
+                          "padding": [
+                            11,
+                            10
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "yWcZk",
+                              "name": "Icono Inicio",
+                              "width": 17,
+                              "height": 17,
+                              "icon": "house",
+                              "library": "lucide",
+                              "fill": "$ra-text"
+                            },
+                            {
+                              "type": "text",
+                              "id": "kXZet",
+                              "name": "Texto Inicio",
+                              "fill": "$ra-text",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Inicio",
+                              "lineHeight": 1.15,
+                              "fontFamily": "$ra-font",
+                              "fontSize": 11,
+                              "fontWeight": "750"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "Jm3e0",
+                          "name": "Nav Entender gasto",
+                          "width": "fill_container",
+                          "fill": "#FFFFFF00",
+                          "cornerRadius": 10,
+                          "stroke": "#FFFFFF00",
+                          "strokeWidth": 1,
+                          "gap": 10,
+                          "padding": [
+                            11,
+                            10
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "GNkJP",
+                              "name": "Icono Entender gasto",
+                              "width": 17,
+                              "height": 17,
+                              "icon": "clipboard-list",
+                              "library": "lucide",
+                              "fill": "$ra-muted"
+                            },
+                            {
+                              "type": "text",
+                              "id": "n0urR2",
+                              "name": "Texto Entender gasto",
+                              "fill": "$ra-muted",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Entender gasto",
+                              "lineHeight": 1.15,
+                              "fontFamily": "$ra-font",
+                              "fontSize": 11,
+                              "fontWeight": "500"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "kcVYO",
+                          "name": "Nav Encontrar oportunidades",
+                          "width": "fill_container",
+                          "fill": "#FFFFFF00",
+                          "cornerRadius": 10,
+                          "stroke": "#FFFFFF00",
+                          "strokeWidth": 1,
+                          "gap": 10,
+                          "padding": [
+                            11,
+                            10
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "ziP66",
+                              "name": "Icono Encontrar oportunidades",
+                              "width": 17,
+                              "height": 17,
+                              "icon": "network",
+                              "library": "lucide",
+                              "fill": "$ra-muted"
+                            },
+                            {
+                              "type": "text",
+                              "id": "EHFi1",
+                              "name": "Texto Encontrar oportunidades",
+                              "fill": "$ra-muted",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Encontrar oportunidades",
+                              "lineHeight": 1.15,
+                              "fontFamily": "$ra-font",
+                              "fontSize": 11,
+                              "fontWeight": "500"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "Y8fNUP",
+                          "name": "Nav Comparar proveedores",
+                          "width": "fill_container",
+                          "fill": "#FFFFFF00",
+                          "cornerRadius": 10,
+                          "stroke": "#FFFFFF00",
+                          "strokeWidth": 1,
+                          "gap": 10,
+                          "padding": [
+                            11,
+                            10
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "TYR3N",
+                              "name": "Icono Comparar proveedores",
+                              "width": 17,
+                              "height": 17,
+                              "icon": "scale",
+                              "library": "lucide",
+                              "fill": "$ra-muted"
+                            },
+                            {
+                              "type": "text",
+                              "id": "ZPKIP",
+                              "name": "Texto Comparar proveedores",
+                              "fill": "$ra-muted",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Comparar proveedores",
+                              "lineHeight": 1.15,
+                              "fontFamily": "$ra-font",
+                              "fontSize": 11,
+                              "fontWeight": "500"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "dKxi6",
+                      "name": "Espaciador navegación",
+                      "width": "fill_container",
+                      "height": "fill_container"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "WsENv",
+                      "name": "Mensaje de confianza",
+                      "width": "fill_container",
+                      "fill": "$ra-surface",
+                      "cornerRadius": 12,
+                      "stroke": "$ra-border",
+                      "strokeWidth": 1,
+                      "gap": 8,
+                      "padding": 12,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "N1iOm",
+                          "name": "Icono datos oficiales",
+                          "width": 20,
+                          "height": 20,
+                          "icon": "shield-check",
+                          "library": "lucide",
+                          "fill": "$ra-green"
+                        },
+                        {
+                          "type": "text",
+                          "id": "cwyfq",
+                          "name": "Datos oficiales texto",
+                          "fill": "$ra-text",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Datos oficiales.\nRespuestas simples.",
+                          "lineHeight": 1.15,
+                          "fontFamily": "$ra-font",
+                          "fontSize": 10,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "IKQIt",
+                  "name": "Contenido Home",
+                  "width": "fill_container",
+                  "height": "fill_container",
+                  "layout": "vertical",
+                  "gap": 18,
+                  "padding": [
+                    48,
+                    36,
+                    20,
+                    26
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "C5qxE",
+                      "name": "Titular Home",
+                      "fill": "$ra-text",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "RadarAI te ayuda a entender,\ncompetir y decidir sobre\nplata pública.",
+                      "lineHeight": 1.15,
+                      "fontFamily": "$ra-font",
+                      "fontSize": 34,
+                      "fontWeight": "850"
+                    },
+                    {
+                      "type": "text",
+                      "id": "h0MTP",
+                      "name": "Subtítulo Home",
+                      "fill": "$ra-muted",
+                      "content": "Haz una pregunta o elige una ruta para empezar.",
+                      "lineHeight": 1.15,
+                      "fontFamily": "$ra-font",
+                      "fontSize": 13,
+                      "fontWeight": "500"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "it59B",
+                      "name": "Caja central de pregunta",
+                      "width": "fill_container",
+                      "fill": "$ra-surface",
+                      "cornerRadius": 18,
+                      "stroke": "$ra-border",
+                      "strokeWidth": 1,
+                      "effect": {
+                        "type": "shadow",
+                        "shadowType": "outer",
+                        "color": "#24401A16",
+                        "offset": {
+                          "x": 0,
+                          "y": 8
+                        },
+                        "blur": 20
+                      },
+                      "gap": 14,
+                      "padding": [
+                        16,
+                        18
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "g77ts",
+                          "name": "Icono pregunta",
+                          "width": 22,
+                          "height": 22,
+                          "icon": "sparkles",
+                          "library": "lucide",
+                          "fill": "$ra-green"
+                        },
+                        {
+                          "type": "text",
+                          "id": "E8rhq",
+                          "name": "Placeholder pregunta",
+                          "fill": "$ra-muted",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "¿Qué quieres saber sobre plata pública?",
+                          "lineHeight": 1.15,
+                          "fontFamily": "$ra-font",
+                          "fontSize": 14,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "J33bbw",
+                          "name": "Enviar pregunta",
+                          "width": 42,
+                          "height": 42,
+                          "fill": "$ra-green",
+                          "cornerRadius": 21,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "tTYWm",
+                              "name": "Enviar pregunta icono",
+                              "width": 22,
+                              "height": 22,
+                              "icon": "arrow-up-right",
+                              "library": "lucide",
+                              "fill": "$ra-surface"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "Drarl",
+                      "name": "Etiqueta ejemplos",
+                      "fill": "$ra-muted",
+                      "content": "Ejemplos para empezar",
+                      "lineHeight": 1.15,
+                      "fontFamily": "$ra-font",
+                      "fontSize": 10,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "VBoau",
+                      "name": "Chips de ejemplos",
+                      "width": "fill_container",
+                      "gap": 14,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "eRAfP",
+                          "name": "Ejemplo landmark",
+                          "width": "fill_container",
+                          "fill": "#E9F6F1",
+                          "cornerRadius": 16,
+                          "gap": 8,
+                          "padding": 12,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "lrY5d",
+                              "name": "Icono ejemplo landmark",
+                              "width": 24,
+                              "height": 24,
+                              "icon": "landmark",
+                              "library": "lucide",
+                              "fill": "$ra-text"
+                            },
+                            {
+                              "type": "text",
+                              "id": "cVQX4",
+                              "name": "Texto ejemplo landmark",
+                              "fill": "$ra-text",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "¿En qué se gastó la alcaldía de Tocancipá este año?",
+                              "lineHeight": 1.15,
+                              "fontFamily": "$ra-font",
+                              "fontSize": 11,
+                              "fontWeight": "750"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "WhD7v",
+                          "name": "Ejemplo briefcase",
+                          "width": "fill_container",
+                          "fill": "$ra-purple-soft",
+                          "cornerRadius": 16,
+                          "gap": 8,
+                          "padding": 12,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "G0l83U",
+                              "name": "Icono ejemplo briefcase",
+                              "width": 24,
+                              "height": 24,
+                              "icon": "briefcase",
+                              "library": "lucide",
+                              "fill": "$ra-text"
+                            },
+                            {
+                              "type": "text",
+                              "id": "SYmEm",
+                              "name": "Texto ejemplo briefcase",
+                              "fill": "$ra-text",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Tengo una empresa de computadores, ¿qué contratos puedo ganar?",
+                              "lineHeight": 1.15,
+                              "fontFamily": "$ra-font",
+                              "fontSize": 11,
+                              "fontWeight": "750"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "GJzVP",
+                          "name": "Ejemplo users",
+                          "width": "fill_container",
+                          "fill": "$ra-mustard-soft",
+                          "cornerRadius": 16,
+                          "gap": 8,
+                          "padding": 12,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "sM7u2",
+                              "name": "Icono ejemplo users",
+                              "width": 24,
+                              "height": 24,
+                              "icon": "users",
+                              "library": "lucide",
+                              "fill": "$ra-text"
+                            },
+                            {
+                              "type": "text",
+                              "id": "ACKpP",
+                              "name": "Texto ejemplo users",
+                              "fill": "$ra-text",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Voy a contratar mantenimiento de colegios, ¿qué proveedor conviene?",
+                              "lineHeight": 1.15,
+                              "fontFamily": "$ra-font",
+                              "fontSize": 11,
+                              "fontWeight": "750"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "AsdeK",
+                      "name": "Etiqueta rutas",
+                      "fill": "$ra-muted",
+                      "content": "Elige una ruta rápida",
+                      "lineHeight": 1.15,
+                      "fontFamily": "$ra-font",
+                      "fontSize": 10,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "L8NLyy",
+                      "name": "Tarjetas de acceso rápido",
+                      "width": "fill_container",
+                      "gap": 12,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "yqKEv",
+                          "name": "Ruta Entender gasto",
+                          "width": "fill_container",
+                          "fill": "$ra-surface",
+                          "cornerRadius": 12,
+                          "stroke": "$ra-border",
+                          "strokeWidth": 1,
+                          "gap": 10,
+                          "padding": 14,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "xDg7Z",
+                              "name": "Icono ruta Entender gasto",
+                              "width": 42,
+                              "height": 42,
+                              "fill": "$ra-green-soft",
+                              "cornerRadius": 21,
+                              "justifyContent": "center",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "icon",
+                                  "id": "XlLs5",
+                                  "name": "Icono ruta Entender gasto icono",
+                                  "width": 22,
+                                  "height": 22,
+                                  "icon": "trending-up",
+                                  "library": "lucide",
+                                  "fill": "$ra-text"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "s9Jjn",
+                              "name": "Texto ruta Entender gasto",
+                              "width": "fill_container",
+                              "layout": "vertical",
+                              "gap": 4,
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "ZjpYW",
+                                  "name": "Título ruta Entender gasto",
+                                  "fill": "$ra-text",
+                                  "textGrowth": "fixed-width",
+                                  "width": "fill_container",
+                                  "content": "Entender gasto",
+                                  "lineHeight": 1.15,
+                                  "fontFamily": "$ra-font",
+                                  "fontSize": 12,
+                                  "fontWeight": "800"
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "ddRII",
+                                  "name": "Descripción ruta Entender gasto",
+                                  "fill": "$ra-text",
+                                  "textGrowth": "fixed-width",
+                                  "width": "fill_container",
+                                  "content": "Mira en qué se ha gastado el dinero público.",
+                                  "lineHeight": 1.15,
+                                  "fontFamily": "$ra-font",
+                                  "fontSize": 10,
+                                  "fontWeight": "500"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "icon",
+                              "id": "pOPcs",
+                              "name": "Flecha ruta Entender gasto",
+                              "width": 18,
+                              "height": 18,
+                              "icon": "arrow-right",
+                              "library": "lucide",
+                              "fill": "$ra-text"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "nBT8w",
+                          "name": "Ruta Encontrar oportunidades",
+                          "width": "fill_container",
+                          "fill": "$ra-surface",
+                          "cornerRadius": 12,
+                          "stroke": "$ra-border",
+                          "strokeWidth": 1,
+                          "gap": 10,
+                          "padding": 14,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "S7xWiI",
+                              "name": "Icono ruta Encontrar oportunidades",
+                              "width": 42,
+                              "height": 42,
+                              "fill": "$ra-purple-soft",
+                              "cornerRadius": 21,
+                              "justifyContent": "center",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "icon",
+                                  "id": "EM40w",
+                                  "name": "Icono ruta Encontrar oportunidades icono",
+                                  "width": 22,
+                                  "height": 22,
+                                  "icon": "briefcase",
+                                  "library": "lucide",
+                                  "fill": "$ra-text"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "quIFa",
+                              "name": "Texto ruta Encontrar oportunidades",
+                              "width": "fill_container",
+                              "layout": "vertical",
+                              "gap": 4,
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "eF0f7",
+                                  "name": "Título ruta Encontrar oportunidades",
+                                  "fill": "$ra-text",
+                                  "textGrowth": "fixed-width",
+                                  "width": "fill_container",
+                                  "content": "Encontrar oportunidades",
+                                  "lineHeight": 1.15,
+                                  "fontFamily": "$ra-font",
+                                  "fontSize": 12,
+                                  "fontWeight": "800"
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "mO1hE",
+                                  "name": "Descripción ruta Encontrar oportunidades",
+                                  "fill": "$ra-text",
+                                  "textGrowth": "fixed-width",
+                                  "width": "fill_container",
+                                  "content": "Descubre contratos que tu empresa puede ganar.",
+                                  "lineHeight": 1.15,
+                                  "fontFamily": "$ra-font",
+                                  "fontSize": 10,
+                                  "fontWeight": "500"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "icon",
+                              "id": "PJdrB",
+                              "name": "Flecha ruta Encontrar oportunidades",
+                              "width": 18,
+                              "height": 18,
+                              "icon": "arrow-right",
+                              "library": "lucide",
+                              "fill": "$ra-text"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "vZMBr",
+                          "name": "Ruta Comparar proveedores",
+                          "width": "fill_container",
+                          "fill": "$ra-surface",
+                          "cornerRadius": 12,
+                          "stroke": "$ra-border",
+                          "strokeWidth": 1,
+                          "gap": 10,
+                          "padding": 14,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "hsYb2",
+                              "name": "Icono ruta Comparar proveedores",
+                              "width": 42,
+                              "height": 42,
+                              "fill": "$ra-mustard-soft",
+                              "cornerRadius": 21,
+                              "justifyContent": "center",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "icon",
+                                  "id": "JC9Ma",
+                                  "name": "Icono ruta Comparar proveedores icono",
+                                  "width": 22,
+                                  "height": 22,
+                                  "icon": "scale",
+                                  "library": "lucide",
+                                  "fill": "$ra-text"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "VKcvy",
+                              "name": "Texto ruta Comparar proveedores",
+                              "width": "fill_container",
+                              "layout": "vertical",
+                              "gap": 4,
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "z3inMB",
+                                  "name": "Título ruta Comparar proveedores",
+                                  "fill": "$ra-text",
+                                  "textGrowth": "fixed-width",
+                                  "width": "fill_container",
+                                  "content": "Comparar proveedores",
+                                  "lineHeight": 1.15,
+                                  "fontFamily": "$ra-font",
+                                  "fontSize": 12,
+                                  "fontWeight": "800"
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "eFF7l",
+                                  "name": "Descripción ruta Comparar proveedores",
+                                  "fill": "$ra-text",
+                                  "textGrowth": "fixed-width",
+                                  "width": "fill_container",
+                                  "content": "Compara precios y elige al proveedor más conveniente.",
+                                  "lineHeight": 1.15,
+                                  "fontFamily": "$ra-font",
+                                  "fontSize": 10,
+                                  "fontWeight": "500"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "icon",
+                              "id": "pbH3d",
+                              "name": "Flecha ruta Comparar proveedores",
+                              "width": 18,
+                              "height": 18,
+                              "icon": "arrow-right",
+                              "library": "lucide",
+                              "fill": "$ra-text"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "qWnhD",
+              "name": "Pantalla 2 - Entender gasto público",
+              "clip": true,
+              "width": "fill_container",
+              "height": "fill_container",
+              "fill": "$ra-surface",
+              "cornerRadius": 12,
+              "stroke": "$ra-border",
+              "strokeWidth": 1,
+              "effect": {
+                "type": "shadow",
+                "shadowType": "outer",
+                "color": "#24401A18",
+                "offset": {
+                  "x": 0,
+                  "y": 4
+                },
+                "blur": 14
+              },
+              "gap": 18,
+              "padding": 14,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "XHReq",
+                  "name": "Navegación lateral",
+                  "width": 160,
+                  "height": "fill_container",
+                  "fill": "#FFFFFF00",
+                  "layout": "vertical",
+                  "gap": 18,
+                  "padding": [
+                    18,
+                    14
+                  ],
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "VfTnU",
+                      "name": "Logo RadarAI",
+                      "width": "fill_container",
+                      "gap": 8,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "s5BhA",
+                          "name": "Icono RadarAI",
+                          "width": 26,
+                          "height": 26,
+                          "icon": "radar",
+                          "library": "lucide",
+                          "fill": "$ra-green"
+                        },
+                        {
+                          "type": "text",
+                          "id": "cnRwE",
+                          "name": "Marca RadarAI",
+                          "fill": "$ra-text",
+                          "content": "RadarAI",
+                          "lineHeight": 1.15,
+                          "fontFamily": "$ra-font",
+                          "fontSize": 20,
+                          "fontWeight": "800"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "L5zj1V",
+                      "name": "Opciones de navegación",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 8,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "z8YKoD",
+                          "name": "Nav Inicio",
+                          "width": "fill_container",
+                          "fill": "#FFFFFF00",
+                          "cornerRadius": 10,
+                          "stroke": "#FFFFFF00",
+                          "strokeWidth": 1,
+                          "gap": 10,
+                          "padding": [
+                            11,
+                            10
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "P5c1CY",
+                              "name": "Icono Inicio",
+                              "width": 17,
+                              "height": 17,
+                              "icon": "house",
+                              "library": "lucide",
+                              "fill": "$ra-muted"
+                            },
+                            {
+                              "type": "text",
+                              "id": "LJvF9",
+                              "name": "Texto Inicio",
+                              "fill": "$ra-muted",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Inicio",
+                              "lineHeight": 1.15,
+                              "fontFamily": "$ra-font",
+                              "fontSize": 11,
+                              "fontWeight": "500"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "NmKLX",
+                          "name": "Nav Entender gasto",
+                          "width": "fill_container",
+                          "fill": "$ra-green-soft",
+                          "cornerRadius": 10,
+                          "stroke": "$ra-border",
+                          "strokeWidth": 1,
+                          "gap": 10,
+                          "padding": [
+                            11,
+                            10
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "LnRLm",
+                              "name": "Icono Entender gasto",
+                              "width": 17,
+                              "height": 17,
+                              "icon": "clipboard-list",
+                              "library": "lucide",
+                              "fill": "$ra-text"
+                            },
+                            {
+                              "type": "text",
+                              "id": "HylIJ",
+                              "name": "Texto Entender gasto",
+                              "fill": "$ra-text",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Entender gasto",
+                              "lineHeight": 1.15,
+                              "fontFamily": "$ra-font",
+                              "fontSize": 11,
+                              "fontWeight": "750"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "T9xlhm",
+                          "name": "Nav Encontrar oportunidades",
+                          "width": "fill_container",
+                          "fill": "#FFFFFF00",
+                          "cornerRadius": 10,
+                          "stroke": "#FFFFFF00",
+                          "strokeWidth": 1,
+                          "gap": 10,
+                          "padding": [
+                            11,
+                            10
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "AGY86",
+                              "name": "Icono Encontrar oportunidades",
+                              "width": 17,
+                              "height": 17,
+                              "icon": "network",
+                              "library": "lucide",
+                              "fill": "$ra-muted"
+                            },
+                            {
+                              "type": "text",
+                              "id": "wixBs",
+                              "name": "Texto Encontrar oportunidades",
+                              "fill": "$ra-muted",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Encontrar oportunidades",
+                              "lineHeight": 1.15,
+                              "fontFamily": "$ra-font",
+                              "fontSize": 11,
+                              "fontWeight": "500"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "aCDaw",
+                          "name": "Nav Comparar proveedores",
+                          "width": "fill_container",
+                          "fill": "#FFFFFF00",
+                          "cornerRadius": 10,
+                          "stroke": "#FFFFFF00",
+                          "strokeWidth": 1,
+                          "gap": 10,
+                          "padding": [
+                            11,
+                            10
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "U9alL",
+                              "name": "Icono Comparar proveedores",
+                              "width": 17,
+                              "height": 17,
+                              "icon": "scale",
+                              "library": "lucide",
+                              "fill": "$ra-muted"
+                            },
+                            {
+                              "type": "text",
+                              "id": "iOyGg",
+                              "name": "Texto Comparar proveedores",
+                              "fill": "$ra-muted",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Comparar proveedores",
+                              "lineHeight": 1.15,
+                              "fontFamily": "$ra-font",
+                              "fontSize": 11,
+                              "fontWeight": "500"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "f6aS7",
+                      "name": "Espaciador navegación",
+                      "width": "fill_container",
+                      "height": "fill_container"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "l78S9R",
+                      "name": "Mensaje de confianza",
+                      "width": "fill_container",
+                      "fill": "$ra-surface",
+                      "cornerRadius": 12,
+                      "stroke": "$ra-border",
+                      "strokeWidth": 1,
+                      "gap": 8,
+                      "padding": 12,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "o9iNTx",
+                          "name": "Icono datos oficiales",
+                          "width": 20,
+                          "height": 20,
+                          "icon": "shield-check",
+                          "library": "lucide",
+                          "fill": "$ra-green"
+                        },
+                        {
+                          "type": "text",
+                          "id": "gl0V8",
+                          "name": "Datos oficiales texto",
+                          "fill": "$ra-text",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Datos oficiales.\nRespuestas simples.",
+                          "lineHeight": 1.15,
+                          "fontFamily": "$ra-font",
+                          "fontSize": 10,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "DYB9w",
+                  "name": "Formulario entender gasto",
+                  "width": 270,
+                  "height": "fill_container",
+                  "fill": "$ra-surface",
+                  "cornerRadius": 18,
+                  "stroke": "$ra-border",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "gap": 14,
+                  "padding": 22,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "p3llV1",
+                      "name": "Título entender gasto",
+                      "fill": "$ra-text",
+                      "content": "Entender gasto público",
+                      "lineHeight": 1.15,
+                      "fontFamily": "$ra-font",
+                      "fontSize": 20,
+                      "fontWeight": "850"
+                    },
+                    {
+                      "type": "text",
+                      "id": "SEANO",
+                      "name": "Descripción entender gasto",
+                      "fill": "$ra-muted",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Descubre en qué se ha gastado el dinero público y entiende los contratos de tu municipio.",
+                      "lineHeight": 1.15,
+                      "fontFamily": "$ra-font",
+                      "fontSize": 11,
+                      "fontWeight": "500"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "FhaEp",
+                      "name": "Campo Departamento",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 6,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "L8CMxk",
+                          "name": "Etiqueta Departamento",
+                          "fill": "$ra-muted",
+                          "content": "Departamento",
+                          "lineHeight": 1.15,
+                          "fontFamily": "$ra-font",
+                          "fontSize": 10,
+                          "fontWeight": "650"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "mc2Kg",
+                          "name": "Entrada Departamento",
+                          "width": "fill_container",
+                          "fill": "$ra-surface",
+                          "cornerRadius": 8,
+                          "stroke": "$ra-border",
+                          "strokeWidth": 1,
+                          "gap": 8,
+                          "padding": [
+                            10,
+                            12
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "KCAqc",
+                              "name": "Icono campo Departamento",
+                              "width": 15,
+                              "height": 15,
+                              "icon": "map-pin",
+                              "library": "lucide",
+                              "fill": "$ra-muted"
+                            },
+                            {
+                              "type": "text",
+                              "id": "iOfS5",
+                              "name": "Valor Departamento",
+                              "fill": "$ra-text",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Cundinamarca",
+                              "lineHeight": 1.15,
+                              "fontFamily": "$ra-font",
+                              "fontSize": 11,
+                              "fontWeight": "500"
+                            },
+                            {
+                              "type": "icon",
+                              "id": "XMXSU",
+                              "name": "Flecha Departamento",
+                              "width": 14,
+                              "height": 14,
+                              "icon": "chevron-down",
+                              "library": "lucide",
+                              "fill": "$ra-muted"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "r4Ys3",
+                      "name": "Campo Municipio",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 6,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "YvROk",
+                          "name": "Etiqueta Municipio",
+                          "fill": "$ra-muted",
+                          "content": "Municipio",
+                          "lineHeight": 1.15,
+                          "fontFamily": "$ra-font",
+                          "fontSize": 10,
+                          "fontWeight": "650"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "FwLG7",
+                          "name": "Entrada Municipio",
+                          "width": "fill_container",
+                          "fill": "$ra-surface",
+                          "cornerRadius": 8,
+                          "stroke": "$ra-border",
+                          "strokeWidth": 1,
+                          "gap": 8,
+                          "padding": [
+                            10,
+                            12
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "ivBBg",
+                              "name": "Icono campo Municipio",
+                              "width": 15,
+                              "height": 15,
+                              "icon": "building-2",
+                              "library": "lucide",
+                              "fill": "$ra-muted"
+                            },
+                            {
+                              "type": "text",
+                              "id": "vq52N",
+                              "name": "Valor Municipio",
+                              "fill": "$ra-text",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Tocancipá",
+                              "lineHeight": 1.15,
+                              "fontFamily": "$ra-font",
+                              "fontSize": 11,
+                              "fontWeight": "500"
+                            },
+                            {
+                              "type": "icon",
+                              "id": "Y0TpN",
+                              "name": "Flecha Municipio",
+                              "width": 14,
+                              "height": 14,
+                              "icon": "chevron-down",
+                              "library": "lucide",
+                              "fill": "$ra-muted"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "Q9AwG",
+                      "name": "Campo Período",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 6,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "An9vE",
+                          "name": "Etiqueta Período",
+                          "fill": "$ra-muted",
+                          "content": "Período",
+                          "lineHeight": 1.15,
+                          "fontFamily": "$ra-font",
+                          "fontSize": 10,
+                          "fontWeight": "650"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "GWYUr",
+                          "name": "Entrada Período",
+                          "width": "fill_container",
+                          "fill": "$ra-surface",
+                          "cornerRadius": 8,
+                          "stroke": "$ra-border",
+                          "strokeWidth": 1,
+                          "gap": 8,
+                          "padding": [
+                            10,
+                            12
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "sCNCg",
+                              "name": "Icono campo Período",
+                              "width": 15,
+                              "height": 15,
+                              "icon": "calendar",
+                              "library": "lucide",
+                              "fill": "$ra-muted"
+                            },
+                            {
+                              "type": "text",
+                              "id": "G7AWSf",
+                              "name": "Valor Período",
+                              "fill": "$ra-text",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Este año (2025)",
+                              "lineHeight": 1.15,
+                              "fontFamily": "$ra-font",
+                              "fontSize": 11,
+                              "fontWeight": "500"
+                            },
+                            {
+                              "type": "icon",
+                              "id": "Buntz",
+                              "name": "Flecha Período",
+                              "width": 14,
+                              "height": 14,
+                              "icon": "chevron-down",
+                              "library": "lucide",
+                              "fill": "$ra-muted"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "j6Icw",
+                      "name": "Campo Pregunta opcional",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 6,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "rYmG1",
+                          "name": "Etiqueta Pregunta opcional",
+                          "fill": "$ra-muted",
+                          "content": "Pregunta opcional",
+                          "lineHeight": 1.15,
+                          "fontFamily": "$ra-font",
+                          "fontSize": 10,
+                          "fontWeight": "650"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "cdt8k",
+                          "name": "Entrada Pregunta opcional",
+                          "width": "fill_container",
+                          "fill": "$ra-surface",
+                          "cornerRadius": 8,
+                          "stroke": "$ra-border",
+                          "strokeWidth": 1,
+                          "gap": 8,
+                          "padding": [
+                            10,
+                            12
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "r1T7M",
+                              "name": "Icono campo Pregunta opcional",
+                              "width": 15,
+                              "height": 15,
+                              "icon": "message-circle",
+                              "library": "lucide",
+                              "fill": "$ra-muted"
+                            },
+                            {
+                              "type": "text",
+                              "id": "BfxgL",
+                              "name": "Valor Pregunta opcional",
+                              "fill": "$ra-text",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "¿Hay algo raro en los contratos de vías?",
+                              "lineHeight": 1.15,
+                              "fontFamily": "$ra-font",
+                              "fontSize": 11,
+                              "fontWeight": "500"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "bw09d",
+                      "name": "Botón analizar municipio",
+                      "width": "fill_container",
+                      "fill": "$ra-green",
+                      "cornerRadius": 9,
+                      "gap": 8,
+                      "padding": [
+                        13,
+                        16
+                      ],
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "gEAV8",
+                          "name": "Botón analizar municipio icono",
+                          "width": 16,
+                          "height": 16,
+                          "icon": "sparkles",
+                          "library": "lucide",
+                          "fill": "$ra-surface"
+                        },
+                        {
+                          "type": "text",
+                          "id": "nTfCR",
+                          "name": "Botón analizar municipio texto",
+                          "fill": "$ra-surface",
+                          "content": "Analizar municipio",
+                          "lineHeight": 1.15,
+                          "fontFamily": "$ra-font",
+                          "fontSize": 12,
+                          "fontWeight": "800"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "hecZY",
+                  "name": "Resultados entender gasto",
+                  "width": "fill_container",
+                  "height": "fill_container",
+                  "fill": "#FFFFFF",
+                  "cornerRadius": 18,
+                  "stroke": "$ra-border",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "gap": 12,
+                  "padding": 18,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "iX3t0",
+                      "name": "Título resultados gasto",
+                      "fill": "$ra-text",
+                      "content": "Resultados para Tocancipá (Este año)",
+                      "lineHeight": 1.15,
+                      "fontFamily": "$ra-font",
+                      "fontSize": 16,
+                      "fontWeight": "800"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "UNZJb",
+                      "name": "Resumen contratación",
+                      "width": "fill_container",
+                      "fill": "$ra-green-soft",
+                      "cornerRadius": 12,
+                      "stroke": "#CFE3C4",
+                      "strokeWidth": 1,
+                      "gap": 12,
+                      "padding": 16,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "fW9f3",
+                          "name": "Icono dinero",
+                          "width": 42,
+                          "height": 42,
+                          "fill": "#D9EBCF",
+                          "cornerRadius": 21,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "P72wEl",
+                              "name": "Icono dinero icono",
+                              "width": 22,
+                              "height": 22,
+                              "icon": "circle-dollar-sign",
+                              "library": "lucide",
+                              "fill": "$ra-green"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "vu8VM",
+                          "name": "Texto resumen contratación",
+                          "fill": "$ra-text",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Tocancipá ha contratado\n$43.320 millones\nen 312 contratos.",
+                          "lineHeight": 1.15,
+                          "fontFamily": "$ra-font",
+                          "fontSize": 15,
+                          "fontWeight": "850"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "IdS0L",
+                      "name": "Lo más contratado",
+                      "width": "fill_container",
+                      "fill": "$ra-surface",
+                      "cornerRadius": 12,
+                      "stroke": "$ra-border",
+                      "strokeWidth": 1,
+                      "gap": 12,
+                      "padding": 16,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "Pt4oX",
+                          "name": "Icono sectores",
+                          "width": 42,
+                          "height": 42,
+                          "fill": "#E6F6F3",
+                          "cornerRadius": 21,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "UyoSB",
+                              "name": "Icono sectores icono",
+                              "width": 22,
+                              "height": 22,
+                              "icon": "briefcase-business",
+                              "library": "lucide",
+                              "fill": "$ra-green"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "ffJEh",
+                          "name": "Texto sectores",
+                          "fill": "$ra-text",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Lo que más se ha contratado:\nVías, Educación y Servicios públicos.",
+                          "lineHeight": 1.15,
+                          "fontFamily": "$ra-font",
+                          "fontSize": 13,
+                          "fontWeight": "800"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "p3CeAI",
+                      "name": "Título alertas",
+                      "fill": "$ra-text",
+                      "content": "⚠️  Alertas para revisar",
+                      "lineHeight": 1.15,
+                      "fontFamily": "$ra-font",
+                      "fontSize": 12,
+                      "fontWeight": "800"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "L4biE",
+                      "name": "Alerta 3 contratos ",
+                      "width": "fill_container",
+                      "fill": "$ra-surface",
+                      "cornerRadius": 10,
+                      "stroke": "$ra-border",
+                      "strokeWidth": 1,
+                      "gap": 10,
+                      "padding": [
+                        11,
+                        12
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "Y3oMe",
+                          "name": "Icono alerta",
+                          "width": 16,
+                          "height": 16,
+                          "icon": "circle-alert",
+                          "library": "lucide",
+                          "fill": "#F2A51D"
+                        },
+                        {
+                          "type": "text",
+                          "id": "AW504",
+                          "name": "Texto alerta",
+                          "fill": "$ra-text",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "3 contratos de vías con aumentos altos de precio.",
+                          "lineHeight": 1.15,
+                          "fontFamily": "$ra-font",
+                          "fontSize": 11,
+                          "fontWeight": "650"
+                        },
+                        {
+                          "type": "icon",
+                          "id": "l6Iwp",
+                          "name": "Flecha alerta",
+                          "width": 15,
+                          "height": 15,
+                          "icon": "chevron-right",
+                          "library": "lucide",
+                          "fill": "$ra-muted"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "B4zrIR",
+                      "name": "Alerta 2 contratos ",
+                      "width": "fill_container",
+                      "fill": "$ra-surface",
+                      "cornerRadius": 10,
+                      "stroke": "$ra-border",
+                      "strokeWidth": 1,
+                      "gap": 10,
+                      "padding": [
+                        11,
+                        12
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "VhBxd",
+                          "name": "Icono alerta",
+                          "width": 16,
+                          "height": 16,
+                          "icon": "circle-alert",
+                          "library": "lucide",
+                          "fill": "#F2A51D"
+                        },
+                        {
+                          "type": "text",
+                          "id": "xPX1W",
+                          "name": "Texto alerta",
+                          "fill": "$ra-text",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "2 contratos con pocos competidores habilitados.",
+                          "lineHeight": 1.15,
+                          "fontFamily": "$ra-font",
+                          "fontSize": 11,
+                          "fontWeight": "650"
+                        },
+                        {
+                          "type": "icon",
+                          "id": "VhLt2",
+                          "name": "Flecha alerta",
+                          "width": 15,
+                          "height": 15,
+                          "icon": "chevron-right",
+                          "library": "lucide",
+                          "fill": "$ra-muted"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "h4YcYs",
+                      "name": "Alerta 1 proveedor ",
+                      "width": "fill_container",
+                      "fill": "$ra-surface",
+                      "cornerRadius": 10,
+                      "stroke": "$ra-border",
+                      "strokeWidth": 1,
+                      "gap": 10,
+                      "padding": [
+                        11,
+                        12
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "CmkcX",
+                          "name": "Icono alerta",
+                          "width": 16,
+                          "height": 16,
+                          "icon": "circle-alert",
+                          "library": "lucide",
+                          "fill": "#F2A51D"
+                        },
+                        {
+                          "type": "text",
+                          "id": "bb0Cn",
+                          "name": "Texto alerta",
+                          "fill": "$ra-text",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "1 proveedor concentra muchos contratos.",
+                          "lineHeight": 1.15,
+                          "fontFamily": "$ra-font",
+                          "fontSize": 11,
+                          "fontWeight": "650"
+                        },
+                        {
+                          "type": "icon",
+                          "id": "N76Jt",
+                          "name": "Flecha alerta",
+                          "width": 15,
+                          "height": 15,
+                          "icon": "chevron-right",
+                          "library": "lucide",
+                          "fill": "$ra-muted"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "T6qgO",
+                      "name": "CTA detalles gasto",
+                      "width": "fill_container",
+                      "fill": "$ra-green-soft",
+                      "cornerRadius": 12,
+                      "stroke": "#CFE3C4",
+                      "strokeWidth": 1,
+                      "gap": 12,
+                      "padding": 14,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "y3B62I",
+                          "name": "Texto CTA gasto",
+                          "fill": "$ra-text",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Revisa los detalles y decide con confianza.",
+                          "lineHeight": 1.15,
+                          "fontFamily": "$ra-font",
+                          "fontSize": 11,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "OlC0o",
+                          "name": "Botón ver detalles gasto",
+                          "width": "fill_container",
+                          "fill": "$ra-surface",
+                          "cornerRadius": 9,
+                          "gap": 8,
+                          "padding": [
+                            13,
+                            16
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "Hgtba",
+                              "name": "Botón ver detalles gasto icono",
+                              "width": 16,
+                              "height": 16,
+                              "icon": "arrow-right",
+                              "library": "lucide",
+                              "fill": "$ra-text"
+                            },
+                            {
+                              "type": "text",
+                              "id": "xyY4p",
+                              "name": "Botón ver detalles gasto texto",
+                              "fill": "$ra-text",
+                              "content": "Ver detalles",
+                              "lineHeight": 1.15,
+                              "fontFamily": "$ra-font",
+                              "fontSize": 12,
+                              "fontWeight": "800"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "TKtOR",
+          "name": "Fila inferior",
+          "width": "fill_container",
+          "height": "fill_container",
+          "gap": 18,
+          "children": [
+            {
+              "type": "frame",
+              "id": "oQOXd",
+              "name": "Pantalla 3 - Encontrar oportunidades",
+              "clip": true,
+              "width": "fill_container",
+              "height": "fill_container",
+              "fill": "$ra-surface",
+              "cornerRadius": 12,
+              "stroke": "$ra-border",
+              "strokeWidth": 1,
+              "effect": {
+                "type": "shadow",
+                "shadowType": "outer",
+                "color": "#24401A18",
+                "offset": {
+                  "x": 0,
+                  "y": 4
+                },
+                "blur": 14
+              },
+              "gap": 18,
+              "padding": 14,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "k68d3j",
+                  "name": "Navegación lateral",
+                  "width": 160,
+                  "height": "fill_container",
+                  "fill": "#FFFFFF00",
+                  "layout": "vertical",
+                  "gap": 18,
+                  "padding": [
+                    18,
+                    14
+                  ],
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "iudfU",
+                      "name": "Logo RadarAI",
+                      "width": "fill_container",
+                      "gap": 8,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "smQnt",
+                          "name": "Icono RadarAI",
+                          "width": 26,
+                          "height": 26,
+                          "icon": "radar",
+                          "library": "lucide",
+                          "fill": "$ra-green"
+                        },
+                        {
+                          "type": "text",
+                          "id": "Lltln",
+                          "name": "Marca RadarAI",
+                          "fill": "$ra-text",
+                          "content": "RadarAI",
+                          "lineHeight": 1.15,
+                          "fontFamily": "$ra-font",
+                          "fontSize": 20,
+                          "fontWeight": "800"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "ijMxc",
+                      "name": "Opciones de navegación",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 8,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "xiOgK",
+                          "name": "Nav Inicio",
+                          "width": "fill_container",
+                          "fill": "#FFFFFF00",
+                          "cornerRadius": 10,
+                          "stroke": "#FFFFFF00",
+                          "strokeWidth": 1,
+                          "gap": 10,
+                          "padding": [
+                            11,
+                            10
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "hPipY",
+                              "name": "Icono Inicio",
+                              "width": 17,
+                              "height": 17,
+                              "icon": "house",
+                              "library": "lucide",
+                              "fill": "$ra-muted"
+                            },
+                            {
+                              "type": "text",
+                              "id": "A2e0AL",
+                              "name": "Texto Inicio",
+                              "fill": "$ra-muted",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Inicio",
+                              "lineHeight": 1.15,
+                              "fontFamily": "$ra-font",
+                              "fontSize": 11,
+                              "fontWeight": "500"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "FEXiR",
+                          "name": "Nav Entender gasto",
+                          "width": "fill_container",
+                          "fill": "#FFFFFF00",
+                          "cornerRadius": 10,
+                          "stroke": "#FFFFFF00",
+                          "strokeWidth": 1,
+                          "gap": 10,
+                          "padding": [
+                            11,
+                            10
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "HLcfm",
+                              "name": "Icono Entender gasto",
+                              "width": 17,
+                              "height": 17,
+                              "icon": "clipboard-list",
+                              "library": "lucide",
+                              "fill": "$ra-muted"
+                            },
+                            {
+                              "type": "text",
+                              "id": "kYZoZ",
+                              "name": "Texto Entender gasto",
+                              "fill": "$ra-muted",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Entender gasto",
+                              "lineHeight": 1.15,
+                              "fontFamily": "$ra-font",
+                              "fontSize": 11,
+                              "fontWeight": "500"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "TBC3i",
+                          "name": "Nav Encontrar oportunidades",
+                          "width": "fill_container",
+                          "fill": "$ra-purple-soft",
+                          "cornerRadius": 10,
+                          "stroke": "$ra-border",
+                          "strokeWidth": 1,
+                          "gap": 10,
+                          "padding": [
+                            11,
+                            10
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "Ota1C",
+                              "name": "Icono Encontrar oportunidades",
+                              "width": 17,
+                              "height": 17,
+                              "icon": "network",
+                              "library": "lucide",
+                              "fill": "$ra-text"
+                            },
+                            {
+                              "type": "text",
+                              "id": "atku0",
+                              "name": "Texto Encontrar oportunidades",
+                              "fill": "$ra-text",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Encontrar oportunidades",
+                              "lineHeight": 1.15,
+                              "fontFamily": "$ra-font",
+                              "fontSize": 11,
+                              "fontWeight": "750"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "IFIft",
+                          "name": "Nav Comparar proveedores",
+                          "width": "fill_container",
+                          "fill": "#FFFFFF00",
+                          "cornerRadius": 10,
+                          "stroke": "#FFFFFF00",
+                          "strokeWidth": 1,
+                          "gap": 10,
+                          "padding": [
+                            11,
+                            10
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "kROCy",
+                              "name": "Icono Comparar proveedores",
+                              "width": 17,
+                              "height": 17,
+                              "icon": "scale",
+                              "library": "lucide",
+                              "fill": "$ra-muted"
+                            },
+                            {
+                              "type": "text",
+                              "id": "oifEX",
+                              "name": "Texto Comparar proveedores",
+                              "fill": "$ra-muted",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Comparar proveedores",
+                              "lineHeight": 1.15,
+                              "fontFamily": "$ra-font",
+                              "fontSize": 11,
+                              "fontWeight": "500"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "dNwiO",
+                      "name": "Espaciador navegación",
+                      "width": "fill_container",
+                      "height": "fill_container"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "gtUk3",
+                      "name": "Mensaje de confianza",
+                      "width": "fill_container",
+                      "fill": "$ra-surface",
+                      "cornerRadius": 12,
+                      "stroke": "$ra-border",
+                      "strokeWidth": 1,
+                      "gap": 8,
+                      "padding": 12,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "qcQm8",
+                          "name": "Icono datos oficiales",
+                          "width": 20,
+                          "height": 20,
+                          "icon": "shield-check",
+                          "library": "lucide",
+                          "fill": "$ra-green"
+                        },
+                        {
+                          "type": "text",
+                          "id": "dYR6u",
+                          "name": "Datos oficiales texto",
+                          "fill": "$ra-text",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Datos oficiales.\nRespuestas simples.",
+                          "lineHeight": 1.15,
+                          "fontFamily": "$ra-font",
+                          "fontSize": 10,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "IGixG",
+                  "name": "Formulario oportunidades",
+                  "width": 300,
+                  "height": "fill_container",
+                  "fill": "$ra-surface",
+                  "cornerRadius": 18,
+                  "stroke": "$ra-border",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "gap": 10,
+                  "padding": 18,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "ERyYT",
+                      "name": "Título oportunidades",
+                      "fill": "$ra-text",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Encontrar oportunidades para mi empresa",
+                      "lineHeight": 1.15,
+                      "fontFamily": "$ra-font",
+                      "fontSize": 17,
+                      "fontWeight": "850"
+                    },
+                    {
+                      "type": "text",
+                      "id": "t14uKl",
+                      "name": "Descripción oportunidades",
+                      "fill": "$ra-muted",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Te mostramos contratos que tu empresa puede ganar según lo que vendes.",
+                      "lineHeight": 1.15,
+                      "fontFamily": "$ra-font",
+                      "fontSize": 10,
+                      "fontWeight": "500"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "lsQYI",
+                      "name": "Campo Nombre de empresa",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 6,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "f1rZcw",
+                          "name": "Etiqueta Nombre de empresa",
+                          "fill": "$ra-muted",
+                          "content": "Nombre de empresa",
+                          "lineHeight": 1.15,
+                          "fontFamily": "$ra-font",
+                          "fontSize": 10,
+                          "fontWeight": "650"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "VuZ4Q",
+                          "name": "Entrada Nombre de empresa",
+                          "width": "fill_container",
+                          "fill": "$ra-surface",
+                          "cornerRadius": 8,
+                          "stroke": "$ra-border",
+                          "strokeWidth": 1,
+                          "gap": 8,
+                          "padding": [
+                            10,
+                            12
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "HUP69",
+                              "name": "Icono campo Nombre de empresa",
+                              "width": 15,
+                              "height": 15,
+                              "icon": "user",
+                              "library": "lucide",
+                              "fill": "$ra-muted"
+                            },
+                            {
+                              "type": "text",
+                              "id": "Y5xtT",
+                              "name": "Valor Nombre de empresa",
+                              "fill": "$ra-text",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Soluciones Tecnológicas del Campo SAS",
+                              "lineHeight": 1.15,
+                              "fontFamily": "$ra-font",
+                              "fontSize": 11,
+                              "fontWeight": "500"
+                            },
+                            {
+                              "type": "icon",
+                              "id": "z7ckE",
+                              "name": "Flecha Nombre de empresa",
+                              "width": 14,
+                              "height": 14,
+                              "icon": "chevron-down",
+                              "library": "lucide",
+                              "fill": "$ra-muted"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "n2TJN",
+                      "name": "Campo ¿Qué vende tu empresa?",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 6,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "yBBRo",
+                          "name": "Etiqueta ¿Qué vende tu empresa?",
+                          "fill": "$ra-muted",
+                          "content": "¿Qué vende tu empresa?",
+                          "lineHeight": 1.15,
+                          "fontFamily": "$ra-font",
+                          "fontSize": 10,
+                          "fontWeight": "650"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "q6xV6",
+                          "name": "Entrada ¿Qué vende tu empresa?",
+                          "width": "fill_container",
+                          "fill": "$ra-surface",
+                          "cornerRadius": 8,
+                          "stroke": "$ra-border",
+                          "strokeWidth": 1,
+                          "gap": 8,
+                          "padding": [
+                            10,
+                            12
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "sTzam",
+                              "name": "Icono campo ¿Qué vende tu empresa?",
+                              "width": 15,
+                              "height": 15,
+                              "icon": "message-square",
+                              "library": "lucide",
+                              "fill": "$ra-muted"
+                            },
+                            {
+                              "type": "text",
+                              "id": "f4NvgO",
+                              "name": "Valor ¿Qué vende tu empresa?",
+                              "fill": "$ra-text",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Vendemos computadores empresariales, servidores y soluciones de infraestructura tecnológica.",
+                              "lineHeight": 1.15,
+                              "fontFamily": "$ra-font",
+                              "fontSize": 11,
+                              "fontWeight": "500"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "xTmIR",
+                      "name": "Departamento y municipio",
+                      "width": "fill_container",
+                      "gap": 8,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "embLz",
+                          "name": "Campo Departamento",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 6,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "iATn6",
+                              "name": "Etiqueta Departamento",
+                              "fill": "$ra-muted",
+                              "content": "Departamento",
+                              "lineHeight": 1.15,
+                              "fontFamily": "$ra-font",
+                              "fontSize": 10,
+                              "fontWeight": "650"
+                            },
+                            {
+                              "type": "frame",
+                              "id": "WPP19",
+                              "name": "Entrada Departamento",
+                              "width": "fill_container",
+                              "fill": "$ra-surface",
+                              "cornerRadius": 8,
+                              "stroke": "$ra-border",
+                              "strokeWidth": 1,
+                              "gap": 8,
+                              "padding": [
+                                10,
+                                12
+                              ],
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "icon",
+                                  "id": "wCrup",
+                                  "name": "Icono campo Departamento",
+                                  "width": 15,
+                                  "height": 15,
+                                  "icon": "house",
+                                  "library": "lucide",
+                                  "fill": "$ra-muted"
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "bEdeI",
+                                  "name": "Valor Departamento",
+                                  "fill": "$ra-text",
+                                  "textGrowth": "fixed-width",
+                                  "width": "fill_container",
+                                  "content": "Cundinamarca",
+                                  "lineHeight": 1.15,
+                                  "fontFamily": "$ra-font",
+                                  "fontSize": 11,
+                                  "fontWeight": "500"
+                                },
+                                {
+                                  "type": "icon",
+                                  "id": "sYBTC",
+                                  "name": "Flecha Departamento",
+                                  "width": 14,
+                                  "height": 14,
+                                  "icon": "chevron-down",
+                                  "library": "lucide",
+                                  "fill": "$ra-muted"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "nLGU0",
+                          "name": "Campo Municipio opcional",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 6,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "p0Pjj",
+                              "name": "Etiqueta Municipio opcional",
+                              "fill": "$ra-muted",
+                              "content": "Municipio opcional",
+                              "lineHeight": 1.15,
+                              "fontFamily": "$ra-font",
+                              "fontSize": 10,
+                              "fontWeight": "650"
+                            },
+                            {
+                              "type": "frame",
+                              "id": "R8IeR",
+                              "name": "Entrada Municipio opcional",
+                              "width": "fill_container",
+                              "fill": "$ra-surface",
+                              "cornerRadius": 8,
+                              "stroke": "$ra-border",
+                              "strokeWidth": 1,
+                              "gap": 8,
+                              "padding": [
+                                10,
+                                12
+                              ],
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "icon",
+                                  "id": "yAq4g",
+                                  "name": "Icono campo Municipio opcional",
+                                  "width": 15,
+                                  "height": 15,
+                                  "icon": "map",
+                                  "library": "lucide",
+                                  "fill": "$ra-muted"
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "uINPi",
+                                  "name": "Valor Municipio opcional",
+                                  "fill": "$ra-text",
+                                  "textGrowth": "fixed-width",
+                                  "width": "fill_container",
+                                  "content": "Todos los municipios",
+                                  "lineHeight": 1.15,
+                                  "fontFamily": "$ra-font",
+                                  "fontSize": 11,
+                                  "fontWeight": "500"
+                                },
+                                {
+                                  "type": "icon",
+                                  "id": "cHXZJ",
+                                  "name": "Flecha Municipio opcional",
+                                  "width": 14,
+                                  "height": 14,
+                                  "icon": "chevron-down",
+                                  "library": "lucide",
+                                  "fill": "$ra-muted"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "cY1xC",
+                      "name": "Usar mi ubicación",
+                      "width": "fill_container",
+                      "fill": "#FAF7FD",
+                      "cornerRadius": 10,
+                      "stroke": "#E5D8F2",
+                      "strokeWidth": 1,
+                      "gap": 10,
+                      "padding": 10,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "SAbOX",
+                          "name": "Icono ubicación",
+                          "width": 18,
+                          "height": 18,
+                          "icon": "map-pin",
+                          "library": "lucide",
+                          "fill": "$ra-purple"
+                        },
+                        {
+                          "type": "text",
+                          "id": "n616K",
+                          "name": "Texto ubicación",
+                          "fill": "$ra-text",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Usar mi ubicación\nCundinamarca",
+                          "lineHeight": 1.15,
+                          "fontFamily": "$ra-font",
+                          "fontSize": 10,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "type": "ellipse",
+                          "id": "rhgU8",
+                          "name": "Toggle morado",
+                          "fill": "$ra-purple",
+                          "width": 32,
+                          "height": 18
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "hqGg8",
+                      "name": "Campo Período",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 6,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "UfZRK",
+                          "name": "Etiqueta Período",
+                          "fill": "$ra-muted",
+                          "content": "Período",
+                          "lineHeight": 1.15,
+                          "fontFamily": "$ra-font",
+                          "fontSize": 10,
+                          "fontWeight": "650"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "SI2W2",
+                          "name": "Entrada Período",
+                          "width": "fill_container",
+                          "fill": "$ra-surface",
+                          "cornerRadius": 8,
+                          "stroke": "$ra-border",
+                          "strokeWidth": 1,
+                          "gap": 8,
+                          "padding": [
+                            10,
+                            12
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "jj4Ml",
+                              "name": "Icono campo Período",
+                              "width": 15,
+                              "height": 15,
+                              "icon": "calendar",
+                              "library": "lucide",
+                              "fill": "$ra-muted"
+                            },
+                            {
+                              "type": "text",
+                              "id": "g1D2A",
+                              "name": "Valor Período",
+                              "fill": "$ra-text",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "16/08/2025 - 16/08/2026",
+                              "lineHeight": 1.15,
+                              "fontFamily": "$ra-font",
+                              "fontSize": 11,
+                              "fontWeight": "500"
+                            },
+                            {
+                              "type": "icon",
+                              "id": "c1majm",
+                              "name": "Flecha Período",
+                              "width": 14,
+                              "height": 14,
+                              "icon": "chevron-down",
+                              "library": "lucide",
+                              "fill": "$ra-muted"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "QdFwd",
+                      "name": "Botón buscar oportunidades",
+                      "width": "fill_container",
+                      "fill": "$ra-purple",
+                      "cornerRadius": 9,
+                      "gap": 8,
+                      "padding": [
+                        13,
+                        16
+                      ],
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "crT0Q",
+                          "name": "Botón buscar oportunidades icono",
+                          "width": 16,
+                          "height": 16,
+                          "icon": "search",
+                          "library": "lucide",
+                          "fill": "$ra-surface"
+                        },
+                        {
+                          "type": "text",
+                          "id": "qAvvB",
+                          "name": "Botón buscar oportunidades texto",
+                          "fill": "$ra-surface",
+                          "content": "Buscar oportunidades",
+                          "lineHeight": 1.15,
+                          "fontFamily": "$ra-font",
+                          "fontSize": 12,
+                          "fontWeight": "800"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "EByIR",
+                      "name": "Nota SECOP",
+                      "fill": "$ra-muted",
+                      "content": "Usamos datos oficiales de SECOP.",
+                      "lineHeight": 1.15,
+                      "fontFamily": "$ra-font",
+                      "fontSize": 10,
+                      "fontWeight": "500"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "FT9Bd",
+                  "name": "Lista oportunidades",
+                  "width": "fill_container",
+                  "height": "fill_container",
+                  "fill": "$ra-surface",
+                  "cornerRadius": 18,
+                  "stroke": "$ra-border",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "gap": 12,
+                  "padding": 18,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "Et9TV",
+                      "name": "Título lista oportunidades",
+                      "fill": "$ra-text",
+                      "content": "Oportunidades para tu empresa",
+                      "lineHeight": 1.15,
+                      "fontFamily": "$ra-font",
+                      "fontSize": 16,
+                      "fontWeight": "850"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "CdYKk",
+                      "name": "Oportunidad Compra de computadores y periféricos para instituciones",
+                      "width": "fill_container",
+                      "fill": "#FCFAFF",
+                      "cornerRadius": 12,
+                      "stroke": "#E5D8F2",
+                      "strokeWidth": 1,
+                      "gap": 12,
+                      "padding": 13,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "UmjZU",
+                          "name": "Icono oportunidad monitor",
+                          "width": 42,
+                          "height": 42,
+                          "fill": "$ra-purple-soft",
+                          "cornerRadius": 21,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "LEPym",
+                              "name": "Icono oportunidad monitor icono",
+                              "width": 22,
+                              "height": 22,
+                              "icon": "monitor",
+                              "library": "lucide",
+                              "fill": "$ra-purple"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "vHkuF",
+                          "name": "Datos oportunidad Compra de computadores y periféricos para instituciones",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 5,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "fdc06",
+                              "name": "Título oportunidad Compra de computadores y periféricos para instituciones",
+                              "fill": "$ra-text",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Compra de computadores y periféricos para instituciones",
+                              "lineHeight": 1.15,
+                              "fontFamily": "$ra-font",
+                              "fontSize": 12,
+                              "fontWeight": "850"
+                            },
+                            {
+                              "type": "text",
+                              "id": "UKwyQ",
+                              "name": "Entidad oportunidad Compra de computadores y periféricos para instituciones",
+                              "fill": "$ra-muted",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Alcaldía de Chía",
+                              "lineHeight": 1.15,
+                              "fontFamily": "$ra-font",
+                              "fontSize": 10,
+                              "fontWeight": "500"
+                            },
+                            {
+                              "type": "frame",
+                              "id": "Z7iZe",
+                              "name": "Detalle oportunidad Compra de computadores y periféricos para instituciones",
+                              "width": "fill_container",
+                              "gap": 18,
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "QH0OO",
+                                  "name": "Competencia Compra de computadores y periféricos para instituciones",
+                                  "fill": "$ra-text",
+                                  "textGrowth": "fixed-width",
+                                  "width": "fill_container",
+                                  "content": "Competencia estimada\n5 a 10 empresas",
+                                  "lineHeight": 1.15,
+                                  "fontFamily": "$ra-font",
+                                  "fontSize": 10,
+                                  "fontWeight": "700"
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "f6Ate",
+                                  "name": "Recomendación Compra de computadores y periféricos para instituciones",
+                                  "fill": "$ra-text",
+                                  "textGrowth": "fixed-width",
+                                  "width": "fill_container",
+                                  "content": "Recomendación\nTu solución cumple muy bien los requisitos.",
+                                  "lineHeight": 1.15,
+                                  "fontFamily": "$ra-font",
+                                  "fontSize": 10,
+                                  "fontWeight": "600"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "Ww2fS",
+                          "name": "Etiqueta Alta posibilidad",
+                          "fill": "$ra-purple-soft",
+                          "cornerRadius": 12,
+                          "padding": [
+                            6,
+                            10
+                          ],
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "vuHta",
+                              "name": "Texto etiqueta Alta posibilidad",
+                              "fill": "$ra-purple",
+                              "content": "Alta posibilidad",
+                              "lineHeight": 1.15,
+                              "fontFamily": "$ra-font",
+                              "fontSize": 10,
+                              "fontWeight": "800"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "icon",
+                          "id": "x2xqX",
+                          "name": "Flecha oportunidad",
+                          "width": 17,
+                          "height": 17,
+                          "icon": "chevron-right",
+                          "library": "lucide",
+                          "fill": "$ra-text"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "D8YGrh",
+                      "name": "Oportunidad Adquisición de servidores y almacenamiento",
+                      "width": "fill_container",
+                      "fill": "#FCFAFF",
+                      "cornerRadius": 12,
+                      "stroke": "#E5D8F2",
+                      "strokeWidth": 1,
+                      "gap": 12,
+                      "padding": 13,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "bKi3C",
+                          "name": "Icono oportunidad server",
+                          "width": 42,
+                          "height": 42,
+                          "fill": "$ra-purple-soft",
+                          "cornerRadius": 21,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "F3uwI",
+                              "name": "Icono oportunidad server icono",
+                              "width": 22,
+                              "height": 22,
+                              "icon": "server",
+                              "library": "lucide",
+                              "fill": "$ra-purple"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "M6PxzT",
+                          "name": "Datos oportunidad Adquisición de servidores y almacenamiento",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 5,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "g5gnlt",
+                              "name": "Título oportunidad Adquisición de servidores y almacenamiento",
+                              "fill": "$ra-text",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Adquisición de servidores y almacenamiento",
+                              "lineHeight": 1.15,
+                              "fontFamily": "$ra-font",
+                              "fontSize": 12,
+                              "fontWeight": "850"
+                            },
+                            {
+                              "type": "text",
+                              "id": "ymlRI",
+                              "name": "Entidad oportunidad Adquisición de servidores y almacenamiento",
+                              "fill": "$ra-muted",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Gobernación de Cundinamarca",
+                              "lineHeight": 1.15,
+                              "fontFamily": "$ra-font",
+                              "fontSize": 10,
+                              "fontWeight": "500"
+                            },
+                            {
+                              "type": "frame",
+                              "id": "N1pZG",
+                              "name": "Detalle oportunidad Adquisición de servidores y almacenamiento",
+                              "width": "fill_container",
+                              "gap": 18,
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "eHyB3",
+                                  "name": "Competencia Adquisición de servidores y almacenamiento",
+                                  "fill": "$ra-text",
+                                  "textGrowth": "fixed-width",
+                                  "width": "fill_container",
+                                  "content": "Competencia estimada\n3 a 8 empresas",
+                                  "lineHeight": 1.15,
+                                  "fontFamily": "$ra-font",
+                                  "fontSize": 10,
+                                  "fontWeight": "700"
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "Lo05a",
+                                  "name": "Recomendación Adquisición de servidores y almacenamiento",
+                                  "fill": "$ra-text",
+                                  "textGrowth": "fixed-width",
+                                  "width": "fill_container",
+                                  "content": "Recomendación\nTienes ventaja por experiencia previa.",
+                                  "lineHeight": 1.15,
+                                  "fontFamily": "$ra-font",
+                                  "fontSize": 10,
+                                  "fontWeight": "600"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "BfIh4",
+                          "name": "Etiqueta Alta posibilidad",
+                          "fill": "$ra-purple-soft",
+                          "cornerRadius": 12,
+                          "padding": [
+                            6,
+                            10
+                          ],
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "f14Oaw",
+                              "name": "Texto etiqueta Alta posibilidad",
+                              "fill": "$ra-purple",
+                              "content": "Alta posibilidad",
+                              "lineHeight": 1.15,
+                              "fontFamily": "$ra-font",
+                              "fontSize": 10,
+                              "fontWeight": "800"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "icon",
+                          "id": "P36aT",
+                          "name": "Flecha oportunidad",
+                          "width": 17,
+                          "height": 17,
+                          "icon": "chevron-right",
+                          "library": "lucide",
+                          "fill": "$ra-text"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "S1LPz",
+                      "name": "Oportunidad Renovación de red y cableado estructurado",
+                      "width": "fill_container",
+                      "fill": "#FCFAFF",
+                      "cornerRadius": 12,
+                      "stroke": "#E5D8F2",
+                      "strokeWidth": 1,
+                      "gap": 12,
+                      "padding": 13,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "N1zG0A",
+                          "name": "Icono oportunidad network",
+                          "width": 42,
+                          "height": 42,
+                          "fill": "$ra-mustard-soft",
+                          "cornerRadius": 21,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "E6d1hG",
+                              "name": "Icono oportunidad network icono",
+                              "width": 22,
+                              "height": 22,
+                              "icon": "network",
+                              "library": "lucide",
+                              "fill": "$ra-purple"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "KCiLK",
+                          "name": "Datos oportunidad Renovación de red y cableado estructurado",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 5,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "m5guN7",
+                              "name": "Título oportunidad Renovación de red y cableado estructurado",
+                              "fill": "$ra-text",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Renovación de red y cableado estructurado",
+                              "lineHeight": 1.15,
+                              "fontFamily": "$ra-font",
+                              "fontSize": 12,
+                              "fontWeight": "850"
+                            },
+                            {
+                              "type": "text",
+                              "id": "mG4Ey",
+                              "name": "Entidad oportunidad Renovación de red y cableado estructurado",
+                              "fill": "$ra-muted",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Alcaldía de Zipaquirá",
+                              "lineHeight": 1.15,
+                              "fontFamily": "$ra-font",
+                              "fontSize": 10,
+                              "fontWeight": "500"
+                            },
+                            {
+                              "type": "frame",
+                              "id": "DLeVE",
+                              "name": "Detalle oportunidad Renovación de red y cableado estructurado",
+                              "width": "fill_container",
+                              "gap": 18,
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "A0WBn",
+                                  "name": "Competencia Renovación de red y cableado estructurado",
+                                  "fill": "$ra-text",
+                                  "textGrowth": "fixed-width",
+                                  "width": "fill_container",
+                                  "content": "Competencia estimada\n8 a 15 empresas",
+                                  "lineHeight": 1.15,
+                                  "fontFamily": "$ra-font",
+                                  "fontSize": 10,
+                                  "fontWeight": "700"
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "FTRkn",
+                                  "name": "Recomendación Renovación de red y cableado estructurado",
+                                  "fill": "$ra-text",
+                                  "textGrowth": "fixed-width",
+                                  "width": "fill_container",
+                                  "content": "Recomendación\nAjusta tu propuesta a las especificaciones.",
+                                  "lineHeight": 1.15,
+                                  "fontFamily": "$ra-font",
+                                  "fontSize": 10,
+                                  "fontWeight": "600"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "zgG2X",
+                          "name": "Etiqueta Media posibilidad",
+                          "fill": "$ra-mustard-soft",
+                          "cornerRadius": 12,
+                          "padding": [
+                            6,
+                            10
+                          ],
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "t3mcbo",
+                              "name": "Texto etiqueta Media posibilidad",
+                              "fill": "#8A5D00",
+                              "content": "Media posibilidad",
+                              "lineHeight": 1.15,
+                              "fontFamily": "$ra-font",
+                              "fontSize": 10,
+                              "fontWeight": "800"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "icon",
+                          "id": "u1uDFP",
+                          "name": "Flecha oportunidad",
+                          "width": 17,
+                          "height": 17,
+                          "icon": "chevron-right",
+                          "library": "lucide",
+                          "fill": "$ra-text"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "KHCti",
+                      "name": "Botón ver todas oportunidades",
+                      "width": "fill_container",
+                      "fill": "$ra-surface",
+                      "cornerRadius": 9,
+                      "gap": 8,
+                      "padding": [
+                        13,
+                        16
+                      ],
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "gZUHP",
+                          "name": "Botón ver todas oportunidades icono",
+                          "width": 16,
+                          "height": 16,
+                          "icon": "arrow-right",
+                          "library": "lucide",
+                          "fill": "$ra-text"
+                        },
+                        {
+                          "type": "text",
+                          "id": "fy8Jp",
+                          "name": "Botón ver todas oportunidades texto",
+                          "fill": "$ra-text",
+                          "content": "Ver todas las oportunidades",
+                          "lineHeight": 1.15,
+                          "fontFamily": "$ra-font",
+                          "fontSize": 12,
+                          "fontWeight": "800"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "dMru5",
+              "name": "Pantalla 4 - Comparar proveedores",
+              "clip": true,
+              "width": "fill_container",
+              "height": "fill_container",
+              "fill": "$ra-surface",
+              "cornerRadius": 12,
+              "stroke": "$ra-border",
+              "strokeWidth": 1,
+              "effect": {
+                "type": "shadow",
+                "shadowType": "outer",
+                "color": "#24401A18",
+                "offset": {
+                  "x": 0,
+                  "y": 4
+                },
+                "blur": 14
+              },
+              "gap": 18,
+              "padding": 14,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "vQvEa",
+                  "name": "Navegación lateral",
+                  "width": 160,
+                  "height": "fill_container",
+                  "fill": "#FFFFFF00",
+                  "layout": "vertical",
+                  "gap": 18,
+                  "padding": [
+                    18,
+                    14
+                  ],
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "R3tRx",
+                      "name": "Logo RadarAI",
+                      "width": "fill_container",
+                      "gap": 8,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "CyHsE",
+                          "name": "Icono RadarAI",
+                          "width": 26,
+                          "height": 26,
+                          "icon": "radar",
+                          "library": "lucide",
+                          "fill": "$ra-green"
+                        },
+                        {
+                          "type": "text",
+                          "id": "bBa7w",
+                          "name": "Marca RadarAI",
+                          "fill": "$ra-text",
+                          "content": "RadarAI",
+                          "lineHeight": 1.15,
+                          "fontFamily": "$ra-font",
+                          "fontSize": 20,
+                          "fontWeight": "800"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "snco9",
+                      "name": "Opciones de navegación",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 8,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "e9qOE",
+                          "name": "Nav Inicio",
+                          "width": "fill_container",
+                          "fill": "#FFFFFF00",
+                          "cornerRadius": 10,
+                          "stroke": "#FFFFFF00",
+                          "strokeWidth": 1,
+                          "gap": 10,
+                          "padding": [
+                            11,
+                            10
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "gNTHn",
+                              "name": "Icono Inicio",
+                              "width": 17,
+                              "height": 17,
+                              "icon": "house",
+                              "library": "lucide",
+                              "fill": "$ra-muted"
+                            },
+                            {
+                              "type": "text",
+                              "id": "Pq8LF",
+                              "name": "Texto Inicio",
+                              "fill": "$ra-muted",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Inicio",
+                              "lineHeight": 1.15,
+                              "fontFamily": "$ra-font",
+                              "fontSize": 11,
+                              "fontWeight": "500"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "yJH0Q",
+                          "name": "Nav Entender gasto",
+                          "width": "fill_container",
+                          "fill": "#FFFFFF00",
+                          "cornerRadius": 10,
+                          "stroke": "#FFFFFF00",
+                          "strokeWidth": 1,
+                          "gap": 10,
+                          "padding": [
+                            11,
+                            10
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "CYmJb",
+                              "name": "Icono Entender gasto",
+                              "width": 17,
+                              "height": 17,
+                              "icon": "clipboard-list",
+                              "library": "lucide",
+                              "fill": "$ra-muted"
+                            },
+                            {
+                              "type": "text",
+                              "id": "R5kan6",
+                              "name": "Texto Entender gasto",
+                              "fill": "$ra-muted",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Entender gasto",
+                              "lineHeight": 1.15,
+                              "fontFamily": "$ra-font",
+                              "fontSize": 11,
+                              "fontWeight": "500"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "XxrmU",
+                          "name": "Nav Encontrar oportunidades",
+                          "width": "fill_container",
+                          "fill": "#FFFFFF00",
+                          "cornerRadius": 10,
+                          "stroke": "#FFFFFF00",
+                          "strokeWidth": 1,
+                          "gap": 10,
+                          "padding": [
+                            11,
+                            10
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "rTObg",
+                              "name": "Icono Encontrar oportunidades",
+                              "width": 17,
+                              "height": 17,
+                              "icon": "network",
+                              "library": "lucide",
+                              "fill": "$ra-muted"
+                            },
+                            {
+                              "type": "text",
+                              "id": "zHXNo",
+                              "name": "Texto Encontrar oportunidades",
+                              "fill": "$ra-muted",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Encontrar oportunidades",
+                              "lineHeight": 1.15,
+                              "fontFamily": "$ra-font",
+                              "fontSize": 11,
+                              "fontWeight": "500"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "oSt5n",
+                          "name": "Nav Comparar proveedores",
+                          "width": "fill_container",
+                          "fill": "$ra-mustard-soft",
+                          "cornerRadius": 10,
+                          "stroke": "$ra-border",
+                          "strokeWidth": 1,
+                          "gap": 10,
+                          "padding": [
+                            11,
+                            10
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "T3NFPh",
+                              "name": "Icono Comparar proveedores",
+                              "width": 17,
+                              "height": 17,
+                              "icon": "scale",
+                              "library": "lucide",
+                              "fill": "$ra-text"
+                            },
+                            {
+                              "type": "text",
+                              "id": "xhGnG",
+                              "name": "Texto Comparar proveedores",
+                              "fill": "$ra-text",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Comparar proveedores",
+                              "lineHeight": 1.15,
+                              "fontFamily": "$ra-font",
+                              "fontSize": 11,
+                              "fontWeight": "750"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "qxyfL",
+                      "name": "Espaciador navegación",
+                      "width": "fill_container",
+                      "height": "fill_container"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "IDwNe",
+                      "name": "Mensaje de confianza",
+                      "width": "fill_container",
+                      "fill": "$ra-surface",
+                      "cornerRadius": 12,
+                      "stroke": "$ra-border",
+                      "strokeWidth": 1,
+                      "gap": 8,
+                      "padding": 12,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "wYaG6",
+                          "name": "Icono datos oficiales",
+                          "width": 20,
+                          "height": 20,
+                          "icon": "shield-check",
+                          "library": "lucide",
+                          "fill": "$ra-green"
+                        },
+                        {
+                          "type": "text",
+                          "id": "B0EEg",
+                          "name": "Datos oficiales texto",
+                          "fill": "$ra-text",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Datos oficiales.\nRespuestas simples.",
+                          "lineHeight": 1.15,
+                          "fontFamily": "$ra-font",
+                          "fontSize": 10,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "syBwG",
+                  "name": "Formulario comparar proveedores",
+                  "width": 270,
+                  "height": "fill_container",
+                  "fill": "$ra-surface",
+                  "cornerRadius": 18,
+                  "stroke": "$ra-border",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "gap": 14,
+                  "padding": 22,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "hjL6x",
+                      "name": "Título comparar",
+                      "fill": "$ra-text",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Comparar proveedores antes de contratar",
+                      "lineHeight": 1.15,
+                      "fontFamily": "$ra-font",
+                      "fontSize": 19,
+                      "fontWeight": "850"
+                    },
+                    {
+                      "type": "text",
+                      "id": "bnlNK",
+                      "name": "Descripción comparar",
+                      "fill": "$ra-muted",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Compara precios, experiencia y riesgos para elegir al mejor proveedor.",
+                      "lineHeight": 1.15,
+                      "fontFamily": "$ra-font",
+                      "fontSize": 11,
+                      "fontWeight": "500"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "j6AJw",
+                      "name": "Campo ¿Qué necesitas contratar?",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 6,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "XcKXZ",
+                          "name": "Etiqueta ¿Qué necesitas contratar?",
+                          "fill": "$ra-muted",
+                          "content": "¿Qué necesitas contratar?",
+                          "lineHeight": 1.15,
+                          "fontFamily": "$ra-font",
+                          "fontSize": 10,
+                          "fontWeight": "650"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "Npl3g",
+                          "name": "Entrada ¿Qué necesitas contratar?",
+                          "width": "fill_container",
+                          "fill": "$ra-surface",
+                          "cornerRadius": 8,
+                          "stroke": "$ra-border",
+                          "strokeWidth": 1,
+                          "gap": 8,
+                          "padding": [
+                            10,
+                            12
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "NwPoe",
+                              "name": "Icono campo ¿Qué necesitas contratar?",
+                              "width": 15,
+                              "height": 15,
+                              "icon": "clipboard",
+                              "library": "lucide",
+                              "fill": "$ra-muted"
+                            },
+                            {
+                              "type": "text",
+                              "id": "bqvum",
+                              "name": "Valor ¿Qué necesitas contratar?",
+                              "fill": "$ra-text",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Mantenimiento de vías",
+                              "lineHeight": 1.15,
+                              "fontFamily": "$ra-font",
+                              "fontSize": 11,
+                              "fontWeight": "500"
+                            },
+                            {
+                              "type": "icon",
+                              "id": "Y20pq",
+                              "name": "Flecha ¿Qué necesitas contratar?",
+                              "width": 14,
+                              "height": 14,
+                              "icon": "chevron-down",
+                              "library": "lucide",
+                              "fill": "$ra-muted"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "V9TIV",
+                      "name": "Campo Departamento",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 6,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "VyJnt",
+                          "name": "Etiqueta Departamento",
+                          "fill": "$ra-muted",
+                          "content": "Departamento",
+                          "lineHeight": 1.15,
+                          "fontFamily": "$ra-font",
+                          "fontSize": 10,
+                          "fontWeight": "650"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "I9zvx6",
+                          "name": "Entrada Departamento",
+                          "width": "fill_container",
+                          "fill": "$ra-surface",
+                          "cornerRadius": 8,
+                          "stroke": "$ra-border",
+                          "strokeWidth": 1,
+                          "gap": 8,
+                          "padding": [
+                            10,
+                            12
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "M0Xph",
+                              "name": "Icono campo Departamento",
+                              "width": 15,
+                              "height": 15,
+                              "icon": "house",
+                              "library": "lucide",
+                              "fill": "$ra-muted"
+                            },
+                            {
+                              "type": "text",
+                              "id": "UueuA",
+                              "name": "Valor Departamento",
+                              "fill": "$ra-text",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Cundinamarca",
+                              "lineHeight": 1.15,
+                              "fontFamily": "$ra-font",
+                              "fontSize": 11,
+                              "fontWeight": "500"
+                            },
+                            {
+                              "type": "icon",
+                              "id": "DQ3U5",
+                              "name": "Flecha Departamento",
+                              "width": 14,
+                              "height": 14,
+                              "icon": "chevron-down",
+                              "library": "lucide",
+                              "fill": "$ra-muted"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "W5Mdm1",
+                      "name": "Campo Municipio",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 6,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "JIfWq",
+                          "name": "Etiqueta Municipio",
+                          "fill": "$ra-muted",
+                          "content": "Municipio",
+                          "lineHeight": 1.15,
+                          "fontFamily": "$ra-font",
+                          "fontSize": 10,
+                          "fontWeight": "650"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "QEt4C",
+                          "name": "Entrada Municipio",
+                          "width": "fill_container",
+                          "fill": "$ra-surface",
+                          "cornerRadius": 8,
+                          "stroke": "$ra-border",
+                          "strokeWidth": 1,
+                          "gap": 8,
+                          "padding": [
+                            10,
+                            12
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "cmIiJ",
+                              "name": "Icono campo Municipio",
+                              "width": 15,
+                              "height": 15,
+                              "icon": "map-pin",
+                              "library": "lucide",
+                              "fill": "$ra-muted"
+                            },
+                            {
+                              "type": "text",
+                              "id": "gc5gA",
+                              "name": "Valor Municipio",
+                              "fill": "$ra-text",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Tocancipá",
+                              "lineHeight": 1.15,
+                              "fontFamily": "$ra-font",
+                              "fontSize": 11,
+                              "fontWeight": "500"
+                            },
+                            {
+                              "type": "icon",
+                              "id": "hI7Xt",
+                              "name": "Flecha Municipio",
+                              "width": 14,
+                              "height": 14,
+                              "icon": "chevron-down",
+                              "library": "lucide",
+                              "fill": "$ra-muted"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "TilSO",
+                      "name": "Campo Período para comparar",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 6,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "di9M9",
+                          "name": "Etiqueta Período para comparar",
+                          "fill": "$ra-muted",
+                          "content": "Período para comparar",
+                          "lineHeight": 1.15,
+                          "fontFamily": "$ra-font",
+                          "fontSize": 10,
+                          "fontWeight": "650"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "hnZP3",
+                          "name": "Entrada Período para comparar",
+                          "width": "fill_container",
+                          "fill": "$ra-surface",
+                          "cornerRadius": 8,
+                          "stroke": "$ra-border",
+                          "strokeWidth": 1,
+                          "gap": 8,
+                          "padding": [
+                            10,
+                            12
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "ysD1l",
+                              "name": "Icono campo Período para comparar",
+                              "width": 15,
+                              "height": 15,
+                              "icon": "calendar",
+                              "library": "lucide",
+                              "fill": "$ra-muted"
+                            },
+                            {
+                              "type": "text",
+                              "id": "jTbhe",
+                              "name": "Valor Período para comparar",
+                              "fill": "$ra-text",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "16/08/2024 - 16/08/2026",
+                              "lineHeight": 1.15,
+                              "fontFamily": "$ra-font",
+                              "fontSize": 11,
+                              "fontWeight": "500"
+                            },
+                            {
+                              "type": "icon",
+                              "id": "dq17m",
+                              "name": "Flecha Período para comparar",
+                              "width": 14,
+                              "height": 14,
+                              "icon": "chevron-down",
+                              "library": "lucide",
+                              "fill": "$ra-muted"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "IQsf3",
+                      "name": "Botón comparar proveedores",
+                      "width": "fill_container",
+                      "fill": "$ra-mustard",
+                      "cornerRadius": 9,
+                      "gap": 8,
+                      "padding": [
+                        13,
+                        16
+                      ],
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "IDiWA",
+                          "name": "Botón comparar proveedores icono",
+                          "width": 16,
+                          "height": 16,
+                          "icon": "scale",
+                          "library": "lucide",
+                          "fill": "$ra-text"
+                        },
+                        {
+                          "type": "text",
+                          "id": "DZYWY",
+                          "name": "Botón comparar proveedores texto",
+                          "fill": "$ra-text",
+                          "content": "Comparar precios y proveedores",
+                          "lineHeight": 1.15,
+                          "fontFamily": "$ra-font",
+                          "fontSize": 12,
+                          "fontWeight": "800"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "l6R2pW",
+                  "name": "Comparación de proveedores",
+                  "width": "fill_container",
+                  "height": "fill_container",
+                  "fill": "$ra-surface",
+                  "cornerRadius": 18,
+                  "stroke": "$ra-border",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "gap": 10,
+                  "padding": 18,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "ZSZY6",
+                      "name": "Título comparación",
+                      "fill": "$ra-text",
+                      "content": "Comparación de proveedores",
+                      "lineHeight": 1.15,
+                      "fontFamily": "$ra-font",
+                      "fontSize": 16,
+                      "fontWeight": "850"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "D9bL2",
+                      "name": "Proveedor Construcampos SAS",
+                      "width": "fill_container",
+                      "fill": "$ra-surface",
+                      "cornerRadius": 12,
+                      "stroke": "$ra-green",
+                      "strokeWidth": 1,
+                      "gap": 12,
+                      "padding": 14,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "e0bDY",
+                          "name": "Icono proveedor Construcampos SAS",
+                          "width": 42,
+                          "height": 42,
+                          "fill": "#F1F3EE",
+                          "cornerRadius": 21,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "XGt4l",
+                              "name": "Icono proveedor Construcampos SAS icono",
+                              "width": 22,
+                              "height": 22,
+                              "icon": "badge-check",
+                              "library": "lucide",
+                              "fill": "$ra-green"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "jluPp",
+                          "name": "Nombre proveedor Construcampos SAS",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 7,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "yLuwV",
+                              "name": "Nombre Construcampos SAS",
+                              "fill": "$ra-text",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Construcampos SAS",
+                              "lineHeight": 1.15,
+                              "fontFamily": "$ra-font",
+                              "fontSize": 13,
+                              "fontWeight": "850"
+                            },
+                            {
+                              "type": "text",
+                              "id": "XSuAd",
+                              "name": "Experiencia Construcampos SAS",
+                              "fill": "$ra-text",
+                              "content": "Experiencia\n● Alta (15 años)",
+                              "lineHeight": 1.15,
+                              "fontFamily": "$ra-font",
+                              "fontSize": 10,
+                              "fontWeight": "650"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "QkPgO",
+                          "name": "Precio riesgo Construcampos SAS",
+                          "width": 150,
+                          "layout": "vertical",
+                          "gap": 7,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "T1ATDX",
+                              "name": "Precio Construcampos SAS",
+                              "fill": "$ra-text",
+                              "content": "Precio de referencia\n$ 1.245 millones",
+                              "lineHeight": 1.15,
+                              "fontFamily": "$ra-font",
+                              "fontSize": 11,
+                              "fontWeight": "850"
+                            },
+                            {
+                              "type": "text",
+                              "id": "aR9bM",
+                              "name": "Riesgo Construcampos SAS",
+                              "fill": "$ra-green",
+                              "content": "Riesgo\n● Bajo",
+                              "lineHeight": 1.15,
+                              "fontFamily": "$ra-font",
+                              "fontSize": 10,
+                              "fontWeight": "650"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "n6vPM",
+                      "name": "Proveedor Vías Andinas Ltda.",
+                      "width": "fill_container",
+                      "fill": "$ra-surface",
+                      "cornerRadius": 12,
+                      "stroke": "$ra-border",
+                      "strokeWidth": 1,
+                      "gap": 12,
+                      "padding": 14,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "HLVVk",
+                          "name": "Icono proveedor Vías Andinas Ltda.",
+                          "width": 42,
+                          "height": 42,
+                          "fill": "#F1F3EE",
+                          "cornerRadius": 21,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "rqLnN",
+                              "name": "Icono proveedor Vías Andinas Ltda. icono",
+                              "width": 22,
+                              "height": 22,
+                              "icon": "route",
+                              "library": "lucide",
+                              "fill": "#D89A00"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "m6VovS",
+                          "name": "Nombre proveedor Vías Andinas Ltda.",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 7,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "MGXS8",
+                              "name": "Nombre Vías Andinas Ltda.",
+                              "fill": "$ra-text",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Vías Andinas Ltda.",
+                              "lineHeight": 1.15,
+                              "fontFamily": "$ra-font",
+                              "fontSize": 13,
+                              "fontWeight": "850"
+                            },
+                            {
+                              "type": "text",
+                              "id": "o3uN0H",
+                              "name": "Experiencia Vías Andinas Ltda.",
+                              "fill": "$ra-text",
+                              "content": "Experiencia\n● Media (8 años)",
+                              "lineHeight": 1.15,
+                              "fontFamily": "$ra-font",
+                              "fontSize": 10,
+                              "fontWeight": "650"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "lrwD9",
+                          "name": "Precio riesgo Vías Andinas Ltda.",
+                          "width": 150,
+                          "layout": "vertical",
+                          "gap": 7,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "Qf9fI",
+                              "name": "Precio Vías Andinas Ltda.",
+                              "fill": "$ra-text",
+                              "content": "Precio de referencia\n$ 1.318 millones",
+                              "lineHeight": 1.15,
+                              "fontFamily": "$ra-font",
+                              "fontSize": 11,
+                              "fontWeight": "850"
+                            },
+                            {
+                              "type": "text",
+                              "id": "exTMm",
+                              "name": "Riesgo Vías Andinas Ltda.",
+                              "fill": "#D89A00",
+                              "content": "Riesgo\n● Medio",
+                              "lineHeight": 1.15,
+                              "fontFamily": "$ra-font",
+                              "fontSize": 10,
+                              "fontWeight": "650"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "ihVK9",
+                      "name": "Proveedor Infraestructura Total SAS",
+                      "width": "fill_container",
+                      "fill": "$ra-surface",
+                      "cornerRadius": 12,
+                      "stroke": "$ra-border",
+                      "strokeWidth": 1,
+                      "gap": 12,
+                      "padding": 14,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "JtYyA",
+                          "name": "Icono proveedor Infraestructura Total SAS",
+                          "width": 42,
+                          "height": 42,
+                          "fill": "#F1F3EE",
+                          "cornerRadius": 21,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "RSsMq",
+                              "name": "Icono proveedor Infraestructura Total SAS icono",
+                              "width": 22,
+                              "height": 22,
+                              "icon": "building-2",
+                              "library": "lucide",
+                              "fill": "#C43D32"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "O9jFQ",
+                          "name": "Nombre proveedor Infraestructura Total SAS",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 7,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "Ezhee",
+                              "name": "Nombre Infraestructura Total SAS",
+                              "fill": "$ra-text",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Infraestructura Total SAS",
+                              "lineHeight": 1.15,
+                              "fontFamily": "$ra-font",
+                              "fontSize": 13,
+                              "fontWeight": "850"
+                            },
+                            {
+                              "type": "text",
+                              "id": "cFV0R",
+                              "name": "Experiencia Infraestructura Total SAS",
+                              "fill": "$ra-text",
+                              "content": "Experiencia\n● Media (6 años)",
+                              "lineHeight": 1.15,
+                              "fontFamily": "$ra-font",
+                              "fontSize": 10,
+                              "fontWeight": "650"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "tULWV",
+                          "name": "Precio riesgo Infraestructura Total SAS",
+                          "width": 150,
+                          "layout": "vertical",
+                          "gap": 7,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "yJrPJ",
+                              "name": "Precio Infraestructura Total SAS",
+                              "fill": "$ra-text",
+                              "content": "Precio de referencia\n$ 1.462 millones",
+                              "lineHeight": 1.15,
+                              "fontFamily": "$ra-font",
+                              "fontSize": 11,
+                              "fontWeight": "850"
+                            },
+                            {
+                              "type": "text",
+                              "id": "YKdIz",
+                              "name": "Riesgo Infraestructura Total SAS",
+                              "fill": "#C43D32",
+                              "content": "Riesgo\n● Alto",
+                              "lineHeight": 1.15,
+                              "fontFamily": "$ra-font",
+                              "fontSize": 10,
+                              "fontWeight": "650"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "fumll",
+                      "name": "Proveedor sugerido",
+                      "width": "fill_container",
+                      "fill": "$ra-green-soft",
+                      "cornerRadius": 12,
+                      "stroke": "#CFE3C4",
+                      "strokeWidth": 1,
+                      "gap": 12,
+                      "padding": 14,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "VPnea",
+                          "name": "Icono proveedor sugerido",
+                          "width": 42,
+                          "height": 42,
+                          "fill": "#D9EBCF",
+                          "cornerRadius": 21,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "q47T7",
+                              "name": "Icono proveedor sugerido icono",
+                              "width": 22,
+                              "height": 22,
+                              "icon": "award",
+                              "library": "lucide",
+                              "fill": "$ra-green"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "N8QSf",
+                          "name": "Texto proveedor sugerido",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 5,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "Lo4tP",
+                              "name": "Título proveedor sugerido",
+                              "fill": "$ra-green",
+                              "content": "Proveedor sugerido",
+                              "lineHeight": 1.15,
+                              "fontFamily": "$ra-font",
+                              "fontSize": 13,
+                              "fontWeight": "850"
+                            },
+                            {
+                              "type": "text",
+                              "id": "oXUpS",
+                              "name": "Descripción proveedor sugerido",
+                              "fill": "$ra-text",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Construcampos SAS ofrece el mejor equilibrio entre precio, experiencia y riesgo para este contrato.",
+                              "lineHeight": 1.15,
+                              "fontFamily": "$ra-font",
+                              "fontSize": 11,
+                              "fontWeight": "600"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "h5Mi0",
+                          "name": "Botón ver detalles proveedor",
+                          "width": "fill_container",
+                          "fill": "$ra-surface",
+                          "cornerRadius": 9,
+                          "gap": 8,
+                          "padding": [
+                            13,
+                            16
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "dhX5l",
+                              "name": "Botón ver detalles proveedor icono",
+                              "width": 16,
+                              "height": 16,
+                              "icon": "arrow-right",
+                              "library": "lucide",
+                              "fill": "$ra-text"
+                            },
+                            {
+                              "type": "text",
+                              "id": "Nf5kY",
+                              "name": "Botón ver detalles proveedor texto",
+                              "fill": "$ra-text",
+                              "content": "Ver detalles",
+                              "lineHeight": 1.15,
+                              "fontFamily": "$ra-font",
+                              "fontSize": 12,
+                              "fontWeight": "800"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "themes": {
+    "Mode": [
+      "Light",
+      "Dark"
+    ]
+  },
+  "variables": {
+    "--sidebar": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#E7E8E5"
+        },
+        {
+          "value": "#18181b",
+          "theme": {
+            "Mode": "Dark"
+          }
+        }
+      ]
+    },
+    "--sidebar-foreground": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#666666"
+        },
+        {
+          "value": "#fafafa",
+          "theme": {
+            "Mode": "Dark"
+          }
+        }
+      ]
+    },
+    "--sidebar-primary": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#18181b"
+        },
+        {
+          "value": "#18181b",
+          "theme": {
+            "Mode": "Dark"
+          }
+        }
+      ]
+    },
+    "--sidebar-primary-foreground": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#fafafa"
+        },
+        {
+          "value": "#fafafa",
+          "theme": {
+            "Mode": "Dark"
+          }
+        }
+      ]
+    },
+    "--sidebar-border": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#CBCCC9"
+        },
+        {
+          "value": "#ffffff1a",
+          "theme": {
+            "Mode": "Dark"
+          }
+        }
+      ]
+    },
+    "--sidebar-accent": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#CBCCC9"
+        },
+        {
+          "value": "#2a2a30",
+          "theme": {
+            "Mode": "Dark"
+          }
+        }
+      ]
+    },
+    "--sidebar-accent-foreground": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#18181b"
+        },
+        {
+          "value": "#fafafa",
+          "theme": {
+            "Mode": "Dark"
+          }
+        }
+      ]
+    },
+    "--sidebar-ring": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#71717a"
+        },
+        {
+          "value": "#71717a",
+          "theme": {
+            "Mode": "Dark"
+          }
+        }
+      ]
+    },
+    "--background": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#F2F3F0"
+        },
+        {
+          "value": "#111111",
+          "theme": {
+            "Mode": "Dark"
+          }
+        }
+      ]
+    },
+    "--foreground": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#111111"
+        },
+        {
+          "value": "#FFFFFF",
+          "theme": {
+            "Mode": "Dark"
+          }
+        }
+      ]
+    },
+    "--card": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#FFFFFF"
+        },
+        {
+          "value": "#1A1A1A",
+          "theme": {
+            "Mode": "Dark"
+          }
+        }
+      ]
+    },
+    "--card-foreground": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#111111"
+        },
+        {
+          "value": "#FFFFFF",
+          "theme": {
+            "Mode": "Dark"
+          }
+        }
+      ]
+    },
+    "--popover": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#FFFFFF"
+        },
+        {
+          "value": "#1A1A1A",
+          "theme": {
+            "Mode": "Dark"
+          }
+        }
+      ]
+    },
+    "--popover-foreground": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#111111"
+        },
+        {
+          "value": "#FFFFFF",
+          "theme": {
+            "Mode": "Dark"
+          }
+        }
+      ]
+    },
+    "--primary": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#FF8400"
+        },
+        {
+          "value": "#FF8400",
+          "theme": {
+            "Mode": "Dark"
+          }
+        }
+      ]
+    },
+    "--primary-foreground": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#111111"
+        },
+        {
+          "value": "#111111",
+          "theme": {
+            "Mode": "Dark"
+          }
+        }
+      ]
+    },
+    "--secondary": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#E7E8E5"
+        },
+        {
+          "value": "#2E2E2E",
+          "theme": {
+            "Mode": "Dark"
+          }
+        }
+      ]
+    },
+    "--secondary-foreground": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#111111"
+        },
+        {
+          "value": "#FFFFFF",
+          "theme": {
+            "Mode": "Dark"
+          }
+        }
+      ]
+    },
+    "--muted": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#F2F3F0"
+        },
+        {
+          "value": "#2E2E2E",
+          "theme": {
+            "Mode": "Dark"
+          }
+        }
+      ]
+    },
+    "--muted-foreground": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#666666"
+        },
+        {
+          "value": "#B8B9B6",
+          "theme": {
+            "Mode": "Dark"
+          }
+        }
+      ]
+    },
+    "--accent": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#F2F3F0"
+        },
+        {
+          "value": "#111111",
+          "theme": {
+            "Mode": "Dark"
+          }
+        }
+      ]
+    },
+    "--accent-foreground": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#111111"
+        },
+        {
+          "value": "#F2F3F0",
+          "theme": {
+            "Mode": "Dark"
+          }
+        }
+      ]
+    },
+    "--destructive": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#D93C15"
+        },
+        {
+          "value": "#FF5C33",
+          "theme": {
+            "Mode": "Dark"
+          }
+        }
+      ]
+    },
+    "--border": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#CBCCC9"
+        },
+        {
+          "value": "#2E2E2E",
+          "theme": {
+            "Mode": "Dark"
+          }
+        }
+      ]
+    },
+    "--input": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#CBCCC9"
+        },
+        {
+          "value": "#2E2E2E",
+          "theme": {
+            "Mode": "Dark"
+          }
+        }
+      ]
+    },
+    "--ring": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#666666"
+        },
+        {
+          "value": "#666666",
+          "theme": {
+            "Mode": "Dark"
+          }
+        }
+      ]
+    },
+    "--white": {
+      "type": "color",
+      "value": "#FFFFFF"
+    },
+    "--black": {
+      "type": "color",
+      "value": "#000000"
+    },
+    "--font-primary": {
+      "type": "string",
+      "value": "JetBrains Mono"
+    },
+    "--font-secondary": {
+      "type": "string",
+      "value": "Geist"
+    },
+    "--radius-none": {
+      "type": "number",
+      "value": 0
+    },
+    "--radius-pill": {
+      "type": "number",
+      "value": 999
+    },
+    "--color-success": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#DFE6E1"
+        },
+        {
+          "value": "#222924",
+          "theme": {
+            "Mode": "Dark"
+          }
+        }
+      ]
+    },
+    "--color-success-foreground": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#004D1A"
+        },
+        {
+          "value": "#B6FFCE",
+          "theme": {
+            "Mode": "Dark"
+          }
+        }
+      ]
+    },
+    "--color-warning": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#E9E3D8"
+        },
+        {
+          "value": "#291C0F",
+          "theme": {
+            "Mode": "Dark"
+          }
+        }
+      ]
+    },
+    "--color-warning-foreground": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#804200"
+        },
+        {
+          "value": "#FF8400",
+          "theme": {
+            "Mode": "Dark"
+          }
+        }
+      ]
+    },
+    "--color-error": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#E5DCDA"
+        },
+        {
+          "value": "#24100B",
+          "theme": {
+            "Mode": "Dark"
+          }
+        }
+      ]
+    },
+    "--color-error-foreground": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#8C1C00"
+        },
+        {
+          "value": "#FF5C33",
+          "theme": {
+            "Mode": "Dark"
+          }
+        }
+      ]
+    },
+    "--color-info": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#DFDFE6"
+        },
+        {
+          "value": "#222229",
+          "theme": {
+            "Mode": "Dark"
+          }
+        }
+      ]
+    },
+    "--color-info-foreground": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#000066"
+        },
+        {
+          "value": "#B2B2FF",
+          "theme": {
+            "Mode": "Dark"
+          }
+        }
+      ]
+    },
+    "--radius-m": {
+      "type": "number",
+      "value": 16
+    },
+    "ra-green": {
+      "type": "color",
+      "value": "#2F7D20"
+    },
+    "ra-green-soft": {
+      "type": "color",
+      "value": "#EAF4E3"
+    },
+    "ra-purple": {
+      "type": "color",
+      "value": "#6F3FA5"
+    },
+    "ra-purple-soft": {
+      "type": "color",
+      "value": "#F1E9FA"
+    },
+    "ra-mustard": {
+      "type": "color",
+      "value": "#F6C742"
+    },
+    "ra-mustard-soft": {
+      "type": "color",
+      "value": "#FFF6D9"
+    },
+    "ra-bg": {
+      "type": "color",
+      "value": "#F7F8F4"
+    },
+    "ra-surface": {
+      "type": "color",
+      "value": "#FFFFFF"
+    },
+    "ra-border": {
+      "type": "color",
+      "value": "#DDE4D8"
+    },
+    "ra-text": {
+      "type": "color",
+      "value": "#15210F"
+    },
+    "ra-muted": {
+      "type": "color",
+      "value": "#667264"
+    },
+    "ra-font": {
+      "type": "string",
+      "value": "Inter"
+    }
+  },
+  "fileToken": "50d591e4-ba66-4760-8147-49d911f976b5"
+}

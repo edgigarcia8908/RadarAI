@@ -1,0 +1,46 @@
+- generic [ref=f9e97]:
+  - complementary [ref=f9e98]:
+    - generic "RadarAI" [ref=f9e99]
+    - navigation "Navegación principal" [ref=f9e105]:
+      - button "Inicio" [ref=f9e106] [cursor=pointer]
+      - button "Entender gasto" [ref=f9e112] [cursor=pointer]
+      - button "Encontrar oportunidades" [ref=f9e117] [cursor=pointer]
+      - button "Comparar proveedores" [ref=f9e122] [cursor=pointer]
+    - generic [ref=f9e126]: Datos oficiales.Respuestassimples.
+  - region [ref=f9e131]:
+    - heading "Entender gasto público" [level=1] [ref=f9e132]
+    - paragraph [ref=f9e133]: Descubre en qué se ha gastado el dinero público y entiende los contratos de tu municipio.
+    - generic [ref=f9e134]:
+      - generic [ref=f9e135]: Departamento
+      - combobox "Departamento" [ref=f9e140]:
+        - option "Cundinamarca" [selected]
+        - option "Antioquia"
+        - option "Valle del Cauca"
+    - generic [ref=f9e141]:
+      - generic [ref=f9e142]: Municipio
+      - combobox "Municipio" [ref=f9e148]:
+        - option "Tocancipá" [selected]
+        - option "Bogotá"
+        - option "Soacha"
+    - generic [ref=f9e149]:
+      - generic [ref=f9e150]: Período
+      - combobox "Período" [ref=f9e155]:
+        - option "Este año" [selected]
+        - option "Último año"
+        - option "Últimos 3 años"
+    - generic [ref=f9e156]:
+      - generic [ref=f9e157]: Pregunta opcional
+      - textbox "Pregunta opcional" [ref=f9e161]:
+        - /placeholder: ¿Qué quieres saber?
+    - button "Analizar municipio" [ref=f9e162] [cursor=pointer]
+  - region [ref=f9e166]:
+    - heading "Resultados para Tocancipá (Este año)" [level=2] [ref=f9e167]
+    - strong [ref=f9e173]: Tocancipá ha contratado $43.320 millones en 312 contratos.
+    - strong [ref=f9e179]: "Lo que más se ha contratado: Vías, Educación y Servicios públicos."
+    - heading "⚠️ Alertas para revisar" [level=3] [ref=f9e180]
+    - button "3 contratos de vías con aumentos altos de precio." [ref=f9e181] [cursor=pointer]
+    - button "2 contratos con pocos competidores habilitados." [ref=f9e188] [cursor=pointer]
+    - button "1 proveedor concentra muchos contratos." [ref=f9e195] [cursor=pointer]
+    - generic [ref=f9e202]:
+      - strong [ref=f9e203]: Revisa los detalles y decide con confianza.
+      - button "Ver detalles" [ref=f9e204] [cursor=pointer]

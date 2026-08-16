@@ -89,3 +89,4 @@ export default function ContextoTerritorialCard({ ctx }: { ctx: ContextoTerritor
     </div>
   );
 }
+import React from 'react';

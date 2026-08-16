@@ -146,3 +146,4 @@ export default function PerfilFuncionario({ nombre }: { nombre: string }) {
     </div>
   );
 }
+import React from 'react';

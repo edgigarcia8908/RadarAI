@@ -43,3 +43,4 @@ export default function BotonUbicacion({ onSugerir }: { onSugerir: (departamento
     </div>
   );
 }
+import React from 'react';

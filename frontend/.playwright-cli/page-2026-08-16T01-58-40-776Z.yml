@@ -1,0 +1,63 @@
+- main "RadarAI" [ref=f10e3]:
+  - generic [ref=f10e4]:
+    - complementary "Navegación principal" [ref=f10e5]:
+      - generic [ref=f10e6]:
+        - generic [ref=f10e7]: ◎
+        - generic [ref=f10e8]: RadarAI
+      - navigation [ref=f10e9]:
+        - button "Inicio" [ref=f10e10] [cursor=pointer]:
+          - generic [ref=f10e11]: ⌂
+          - text: Inicio
+        - button "Entender gasto" [ref=f10e12] [cursor=pointer]:
+          - generic [ref=f10e13]: ☷
+          - text: Entender gasto
+        - button "Encontrar oportunidades" [ref=f10e14] [cursor=pointer]:
+          - generic [ref=f10e15]: ◎
+          - text: Encontrar oportunidades
+        - button "Comparar proveedores" [ref=f10e16] [cursor=pointer]:
+          - generic [ref=f10e17]: ≋
+          - text: Comparar proveedores
+      - generic [ref=f10e19]:
+        - generic [ref=f10e20]: ✓
+        - paragraph [ref=f10e21]: Datos oficiales. Respuestas simples.
+    - region [ref=f10e22]:
+      - generic [ref=f10e23]:
+        - heading "RadarAI te ayuda a entender, competir y decidir sobre plata pública." [level=1] [ref=f10e24]
+        - paragraph [ref=f10e25]: Haz una pregunta o elige una ruta para empezar.
+        - button "¿Qué quieres saber sobre plata pública? ↗" [ref=f10e26] [cursor=pointer]:
+          - generic [ref=f10e27]: ⌕
+          - text: ¿Qué quieres saber sobre plata pública? ↗
+      - generic [ref=f10e28]:
+        - region [ref=f10e29]:
+          - paragraph [ref=f10e30]: Ejemplos para empezar
+          - generic [ref=f10e31]:
+            - button "¿En qué se gastó la alcaldía de Tocancipá este año?" [ref=f10e32] [cursor=pointer]:
+              - generic [ref=f10e33]: ↗
+              - text: ¿En qué se gastó la alcaldía de Tocancipá este año?
+            - button "Tengo una empresa de computadores, ¿qué contratos puedo ganar?" [ref=f10e34] [cursor=pointer]:
+              - generic [ref=f10e35]: ↗
+              - text: Tengo una empresa de computadores, ¿qué contratos puedo ganar?
+            - button "Voy a contratar mantenimiento de colegios, ¿qué proveedor conviene?" [ref=f10e36] [cursor=pointer]:
+              - generic [ref=f10e37]: ↗
+              - text: Voy a contratar mantenimiento de colegios, ¿qué proveedor conviene?
+        - region [ref=f10e38]:
+          - paragraph [ref=f10e39]: Elige una ruta rápida
+          - generic [ref=f10e40]:
+            - button "Entender gasto Mira en qué se ha gastado el dinero público. →" [ref=f10e41] [cursor=pointer]:
+              - generic [ref=f10e42]: ☷
+              - generic [ref=f10e43]:
+                - strong [ref=f10e44]: Entender gasto
+                - generic [ref=f10e45]: Mira en qué se ha gastado el dinero público.
+              - text: →
+            - button "Encontrar oportunidades Descubre contratos que tu empresa puede ganar. →" [ref=f10e46] [cursor=pointer]:
+              - generic [ref=f10e47]: ◎
+              - generic [ref=f10e48]:
+                - strong [ref=f10e49]: Encontrar oportunidades
+                - generic [ref=f10e50]: Descubre contratos que tu empresa puede ganar.
+              - text: →
+            - button "Comparar proveedores Compara precios y elige al proveedor más conveniente. →" [ref=f10e51] [cursor=pointer]:
+              - generic [ref=f10e52]: ≋
+              - generic [ref=f10e53]:
+                - strong [ref=f10e54]: Comparar proveedores
+                - generic [ref=f10e55]: Compara precios y elige al proveedor más conveniente.
+              - text: →

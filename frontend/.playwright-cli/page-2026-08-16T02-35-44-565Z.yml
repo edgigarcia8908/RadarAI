@@ -1,0 +1,20 @@
+- generic [ref=f23e3]:
+  - button "← Volver" [ref=f23e111] [cursor=pointer]
+  - generic [ref=f23e112]:
+    - complementary [ref=f23e113]:
+      - generic "RadarAI" [ref=f23e114]
+      - navigation "Navegación principal" [ref=f23e120]:
+        - button "Inicio" [ref=f23e121] [cursor=pointer]
+        - button "Entender gasto" [ref=f23e127] [cursor=pointer]
+        - button "Encontrar oportunidades" [ref=f23e132] [cursor=pointer]
+        - button "Comparar proveedores" [ref=f23e137] [cursor=pointer]
+        - button "Veedurías" [ref=f23e141] [cursor=pointer]
+        - button "Mapa de riesgo" [ref=f23e146] [cursor=pointer]
+        - button "Ficha territorial" [ref=f23e151] [cursor=pointer]
+      - generic [ref=f23e155]: Datos oficiales.Respuestassimples.
+    - main [ref=f23e160]:
+      - generic [ref=f23e161]:
+        - heading "🔍 Veedurías" [level=1] [ref=f23e162]
+        - paragraph [ref=f23e163]: Investigaciones colectivas sobre contratación pública, organizadas por ciudadanos.
+        - button "+ Nueva veeduría" [ref=f23e164] [cursor=pointer]
+        - paragraph [ref=f23e165]: Todavía no hay veedurías creadas.

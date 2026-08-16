@@ -62,3 +62,4 @@ export default function PresupuestoCard({ p }: { p: EstadoPresupuestal }) {
     </div>
   );
 }
+import React from 'react';

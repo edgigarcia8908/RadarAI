@@ -1,0 +1,7 @@
+- generic [ref=f21e3]:
+  - button "← Volver" [ref=f21e111] [cursor=pointer]
+  - generic [ref=f21e112]:
+    - heading "🔍 Veedurías" [level=1] [ref=f21e113]
+    - paragraph [ref=f21e114]: Investigaciones colectivas sobre contratación pública, organizadas por ciudadanos.
+    - button "+ Nueva veeduría" [ref=f21e115] [cursor=pointer]
+    - paragraph [ref=f21e116]: Todavía no hay veedurías creadas.
