@@ -73,6 +73,18 @@ export default function useHome(): UseHomeReturn {
         ? response.respuesta
         : HOME_RESPONSE_COPY.emptyResponse;
       addMessage('bot', responseText, response.presentacion);
+
+      // Si el mensaje mencionaba otro municipio ("¿y en Zipaquirá?"), el
+      // backend ya respondió sobre ese territorio — sincroniza el selector
+      // para que quede reflejando la realidad en vez de mostrar el
+      // municipio viejo mientras la respuesta ya habla de otro.
+      const territorio = response.territorioUsado;
+      if (territorio?.ciudad && territorio.ciudad !== municipio) {
+        if (territorio.departamento && territorio.departamento !== departamento) {
+          setDepartamentoState(territorio.departamento);
+        }
+        setMunicipio(territorio.ciudad);
+      }
     }).catch((requestError: unknown) => {
       const message = requestError instanceof Error ? requestError.message : 'No pude responder en este momento.';
       addMessage('bot', message);

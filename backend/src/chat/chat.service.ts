@@ -13,6 +13,7 @@ import { departamentoRealSecop } from '../common/departamento-secop';
 import { palabrasConSinonimos } from '../common/sinonimos';
 import { valorPlausible } from '../common/valores';
 import { formatearPesos } from '../common/formatear-pesos';
+import colombiaJson from '../common/colombia.json';
 import {
   Presentation,
   generarPresentacion,
@@ -30,50 +31,46 @@ export interface ChatConsultaInput {
   ciudad?: string;
 }
 
+interface DepartamentoColombia {
+  departamento: string;
+  ciudades: string[];
+}
+const DEPARTAMENTOS_COLOMBIA = colombiaJson as DepartamentoColombia[];
+
 /**
- * Lista de municipios y ciudades principales de Colombia para detección básica en el mensaje del usuario.
- * Se usa normalizado (sin tildes, minúsculas) para matching.
+ * Busca un municipio REAL (los ~1100 de colombia.json, el mismo dataset
+ * DANE que usa todo el resto de la app) dentro de un mensaje libre —
+ * coincidencia por conjunto exacto de tokens (no substring), igual que
+ * `buscarMunicipioEnTexto` del frontend (AnnaMariaChat.jsx). Antes esto
+ * usaba un regex frágil ("en X", "de X"...) contra una lista de ~100
+ * "ciudades principales" a mano — ni Tocancipá estaba ahí. Con esto
+ * cualquier municipio real se detecta, y siempre se busca (no solo cuando
+ * no hay ciudad en contexto) — así "y en otros municipios de
+ * Cundinamarca... ¿y Zipaquirá?" cambia el territorio hablando, sin
+ * depender del selector fijo del frontend.
  */
-const MUNICIPIOS_COLOMBIA: string[] = [
-  'bogota', 'medellin', 'cali', 'barranquilla', 'cartagena', 'cucuta', 'bucaramanga', 'pereira', 'santa marta', 'ibague',
-  'pasto', 'manizales', 'neiva', 'villavicencio', 'armenia', 'popayan', 'valledupar', 'monteria', 'sincelejo', 'riohacha',
-  'quibdo', 'mitu', 'puerto carreno', 'leticia', 'inirida', 'san jose del guaviare', 'florencia', 'yopal', 'tunja', 'sogamoso',
-  'duitama', 'chia', 'zipaquira', 'facatativa', 'mosquera', 'funza', 'madrid', 'soacha', 'girardot', 'melgar', 'espinal',
-  'guaduas', 'honda', 'la mesa', 'vianey', 'villapinzon', 'chiquinquira', 'moniquira', 'san gil', 'socorro', 'barbosa',
-  'bucarasica', 'cucutilla', 'el carmen', 'el tablon', 'el zulia', 'gramalote', 'hacari', 'herran', 'labateca', 'los patios',
-  'lourdes', 'mutiscua', 'ocaña', 'pamplona', 'pamplonita', 'puerto santander', 'ragral', 'salazar', 'san calixto', 'san cayetano',
-  'santiago', 'sardinata', 'silos', 'teorama', 'tibú', 'toledo', 'villa del rosario', 'villa cario', 'aguachica', 'agustin codazzi',
-  'astrea', 'becerril', 'bosconia', 'chimichagua', 'chiriguana', 'curumani', 'el paso', 'gamarra', 'gonzalez', 'la gloria',
-  'la paz', 'manaure balcon del cesar', 'pailitas', 'pelaya', 'pueblo bello', 'rio de oro', 'la jagua de ibirico', 'san alberto',
-  'san diego', 'san martin', 'tamalameque', 'valledupar'
-];
+function extraerMunicipioDelMensaje(mensaje: string): { departamento: string; ciudad: string } | null {
+  const normalizado = normalizar(mensaje || '');
+  const palabras = new Set(normalizado.split(' ').filter(Boolean));
 
-function extraerCiudadDelMensaje(mensaje: string): string | null {
-  const texto = normalizar(mensaje?.toLowerCase() || '');
-  // Patrones comunes: "en X", "de X", "mi municipio es X", "municipio de X", "ciudad de X", "X me interesa"
-  const patrones = [
-    /\ben\s+([a-záéíóúñ\s]+)/gi,
-    /\bde\s+([a-záéíóúñ\s]+)/gi,
-    /mi\s+municipio\s+(?:es|es\s+de)\s+([a-záéíóúñ\s]+)/gi,
-    /municipio\s+de\s+([a-záéíóúñ\s]+)/gi,
-    /ciudad\s+de\s+([a-záéíóúñ\s]+)/gi,
-    /lugar\s+(?:es|de)\s+([a-záéíóúñ\s]+)/gi,
-  ];
-
-  for (const patron of patrones) {
-    const matches = [...texto.matchAll(patron)];
-    for (const match of matches) {
-      const candidato = match[1]?.trim();
-      if (!candidato) continue;
-      // Normalizar candidato y buscar en lista conocida
-      const norm = normalizar(candidato);
-      if (MUNICIPIOS_COLOMBIA.includes(norm)) {
-        // Devolver el nombre original con capitalización básica
-        return candidato.split(' ').map(p => p.charAt(0).toUpperCase() + p.slice(1)).join(' ');
+  let mejor: { departamento: string; ciudad: string; tokens: number } | null = null;
+  for (const { departamento, ciudades } of DEPARTAMENTOS_COLOMBIA) {
+    for (const ciudad of ciudades) {
+      const tokensCiudad = normalizar(ciudad).split(' ').filter(Boolean);
+      // Mínimo 4 letras en total — sin esto, municipios de nombre muy
+      // corto ("Une", "Uré") disparaban falsos positivos con cualquier
+      // mensaje que casualmente contuviera esa palabra.
+      if (ciudad.replace(/\s/g, '').length >= 4 && tokensCiudad.every((t) => palabras.has(t))) {
+        // Si el mensaje matchea varios municipios (nombres cortos que son
+        // también palabras comunes), se queda con el de nombre más largo/
+        // específico — evita falsos positivos tipo "Une" o "La Paz".
+        if (!mejor || tokensCiudad.length > mejor.tokens) {
+          mejor = { departamento, ciudad, tokens: tokensCiudad.length };
+        }
       }
     }
   }
-  return null;
+  return mejor ? { departamento: mejor.departamento, ciudad: mejor.ciudad } : null;
 }
 
 /**
@@ -96,13 +93,24 @@ export class ChatService {
     @Inject(SigepService) private readonly sigep: SigepService,
   ) {}
 
-  async consultar(input: ChatConsultaInput): Promise<{ respuesta: string; requiereTerritorio?: boolean; presentacion?: Presentation }> {
-    // 1. Usar ciudad del contexto de la app (radar state)
+  async consultar(input: ChatConsultaInput): Promise<{ respuesta: string; requiereTerritorio?: boolean; presentacion?: Presentation; territorioUsado?: { departamento: string; ciudad: string } }> {
+    // 1. Usar ciudad del contexto de la app (selector del frontend)
     let ciudad = input.ciudad?.trim();
+    let departamentoInput = input.departamento;
 
-    // 2. Si no hay ciudad en contexto, intentar extraerla del mensaje del usuario
-    if (!ciudad) {
-      ciudad = extraerCiudadDelMensaje(input.mensaje);
+    // 2. SIEMPRE revisar si el mensaje menciona un municipio real — no solo
+    // cuando no hay ciudad en contexto. Antes el selector fijo del
+    // frontend "cerraba" el contexto para siempre: preguntar "¿y en
+    // Zipaquirá?" seguía respondiendo sobre el municipio ya seleccionado,
+    // porque `input.ciudad` nunca llegaba vacío. Si el mensaje nombra un
+    // municipio DISTINTO al del selector, ese gana — es la señal más
+    // reciente y explícita de lo que el usuario quiere.
+    const municipioMencionado = extraerMunicipioDelMensaje(input.mensaje);
+    let territorioCambiadoPorMensaje = false;
+    if (municipioMencionado && normalizar(municipioMencionado.ciudad) !== normalizar(ciudad || '')) {
+      ciudad = municipioMencionado.ciudad;
+      departamentoInput = municipioMencionado.departamento;
+      territorioCambiadoPorMensaje = true;
     }
 
     // 3. Si sigue sin ciudad, preguntar amablemente
@@ -125,7 +133,8 @@ export class ChatService {
       };
     }
 
-    const departamentoReal = departamentoRealSecop(input.departamento, ciudad);
+    const departamentoReal = departamentoRealSecop(departamentoInput, ciudad);
+    const territorioUsado = { departamento: departamentoReal || departamentoInput || '', ciudad };
     const filtro: Record<string, unknown> = { ciudadNormalizado: normalizar(ciudad) };
     if (departamentoReal) filtro.departamentoNormalizado = normalizar(departamentoReal);
 
@@ -133,8 +142,11 @@ export class ChatService {
 
     if (contratos.length === 0) {
       return {
+        territorioUsado,
         presentacion: fallbackSinDatos(ciudad),
-        respuesta: `Todavía no tengo datos sincronizados de ${ciudad}. Ve a "Entender gasto" o "Vigilar mi territorio", elige ${ciudad} y dale sincronizar/analizar — después vuelvo a preguntarte esto y te respondo con cifras reales.`,
+        respuesta: territorioCambiadoPorMensaje
+          ? `Detecté que preguntas por ${ciudad} — pero todavía no tengo datos sincronizados de ahí. Ve a "Entender gasto", elige ${ciudad} y dale sincronizar — después vuelvo a preguntarte esto y te respondo con cifras reales.`
+          : `Todavía no tengo datos sincronizados de ${ciudad}. Ve a "Entender gasto" o "Vigilar mi territorio", elige ${ciudad} y dale sincronizar/analizar — después vuelvo a preguntarte esto y te respondo con cifras reales.`,
       };
     }
 
@@ -152,7 +164,7 @@ export class ChatService {
 
     let presupuestoResumen = '';
     try {
-      const p = await this.cuipo.obtenerPresupuesto({ departamento: input.departamento, ciudad });
+      const p = await this.cuipo.obtenerPresupuesto({ departamento: departamentoInput, ciudad });
       if (!p.mensaje) {
         presupuestoResumen = `Presupuesto apropiado: ${formatearPesos(p.presupuestoApropiado)}, comprometido: ${formatearPesos(p.comprometido)} (${p.porcentajeComprometido?.toFixed(0)}%).`;
       }
@@ -189,10 +201,10 @@ export class ChatService {
     const respuestaPorPersona = await this.buscarRespuestaPorPersona(input.mensaje, contratos);
     const respuestaPorTema = respuestaPorPersona ? null : await this.respuestaPorTema(input.mensaje, contratos, datosReales.territorio, contratos.length);
     if (respuestaPorPersona) {
-      return { respuesta: respuestaPorPersona.texto, presentacion: respuestaPorPersona.presentacion };
+      return { territorioUsado, respuesta: respuestaPorPersona.texto, presentacion: respuestaPorPersona.presentacion };
     }
     if (respuestaPorTema) {
-      return { respuesta: respuestaPorTema.texto, presentacion: respuestaPorTema.presentacion };
+      return { territorioUsado, respuesta: respuestaPorTema.texto, presentacion: respuestaPorTema.presentacion };
     }
 
     // Última capa antes de caer al resumen genérico: si la pregunta trae al
@@ -202,11 +214,11 @@ export class ChatService {
     // tenemos en Mongo (Tocancipá tiene 5254 contratos reales en SECOP,
     // solo 750 sincronizados). En vez de rendirse, se busca en vivo contra
     // Socrata antes de responder — así "busca a Fulano" hace lo que pide.
-    const resultadoEnVivo = await this.respuestaPorBusquedaEnVivo(input.mensaje, input.departamento, ciudad);
-    if (resultadoEnVivo) return { respuesta: resultadoEnVivo.texto, presentacion: resultadoEnVivo.presentacion };
+    const resultadoEnVivo = await this.respuestaPorBusquedaEnVivo(input.mensaje, departamentoInput, ciudad);
+    if (resultadoEnVivo) return { territorioUsado, respuesta: resultadoEnVivo.texto, presentacion: resultadoEnVivo.presentacion };
 
     const resultado = await this.redactar(input.mensaje, datosReales);
-    return { respuesta: resultado.respuesta, presentacion: resultado.presentacion };
+    return { territorioUsado, respuesta: resultado.respuesta, presentacion: resultado.presentacion };
   }
 
   private async respuestaPorBusquedaEnVivo(mensaje: string, departamento: string | undefined, ciudad: string): Promise<{ texto: string; presentacion: Presentation } | null> {
