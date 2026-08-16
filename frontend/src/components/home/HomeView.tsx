@@ -39,7 +39,7 @@ export default function HomeView({ onNavigate }: HomeViewProps) {
   const hayConversacion = mensajes.length > 0;
 
   return (
-    <div className="home-layout">
+    <div className={`home-layout${hayConversacion ? ' home-layout-chatting' : ''}`}>
       <aside className="home-sidebar">
         <div className="home-brand" aria-label="RadarAI">
           <span className="home-brand-mark"><span /><span /><span /></span>
