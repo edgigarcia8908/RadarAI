@@ -42,16 +42,19 @@ export default function FichaTerritorialView() {
   }
 
   return (
-    <div>
-      <h1>📍 Ficha territorial</h1>
-      <p style={{ color: '#555' }}>
-        Todo lo que RadarAI sabe de un municipio, junto: identidad, contratación, presupuesto, regalías, desempeño y
-        alertas de identidad. Consolidado de las fuentes que ya tenemos — nada nuevo, solo en un solo lugar.
-      </p>
+    <div className="territory-view">
+      <div className="territory-header">
+        <div>
+          <span className="view-eyebrow">Perfil municipal</span>
+          <h1>Ficha territorial</h1>
+          <p>Consulta en un solo lugar la identidad, contratación, presupuesto y alertas de un municipio.</p>
+        </div>
+        <span className="territory-source-badge">Datos oficiales</span>
+      </div>
 
-      <div style={{ display: 'grid', gap: 8, marginTop: 24 }}>
-        <label>
-          Departamento{' '}
+      <div className="territory-query-panel">
+        <label className="territory-field">
+          <span>Departamento</span>
           <select
             value={departamento}
             onChange={(e) => {
@@ -66,8 +69,8 @@ export default function FichaTerritorialView() {
             ))}
           </select>
         </label>
-        <label>
-          Ciudad/Municipio{' '}
+        <label className="territory-field">
+          <span>Ciudad/Municipio</span>
           <select value={ciudad} onChange={(e) => setCiudad(e.target.value)}>
             {ciudadesDisponibles.map((c) => (
               <option key={c} value={c}>
@@ -78,26 +81,29 @@ export default function FichaTerritorialView() {
         </label>
       </div>
 
-      <button onClick={handleConsultar} disabled={cargando} style={{ marginTop: 16 }}>
-        {cargando ? 'Consultando…' : 'Ver ficha'}
+      <button className="territory-query-button" onClick={handleConsultar} disabled={cargando} type="button">
+        {cargando ? 'Consultando...' : 'Ver ficha'}
       </button>
 
-      {error && <p style={{ color: 'crimson' }}>{error}</p>}
+      {error && <p className="view-error">{error}</p>}
 
       {ficha && (
-        <div style={{ marginTop: 24, borderTop: '1px solid #ddd', paddingTop: 16 }}>
+        <div className="territory-result">
           {ficha.identidad ? (
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', flexWrap: 'wrap', gap: 8 }}>
-              <h2 style={{ margin: 0 }}>
+            <div className="territory-identity">
+              <div>
+              <span className="view-eyebrow">Territorio seleccionado</span>
+              <h2>
                 {ficha.identidad.nombreMunicipio}, {ficha.identidad.nombreDepartamento}
               </h2>
-              <span style={{ fontFamily: 'monospace', fontSize: 12, color: '#888' }}>DIVIPOLA {ficha.identidad.codigoDivipola}</span>
+              </div>
+              <span className="territory-code">DIVIPOLA {ficha.identidad.codigoDivipola}</span>
             </div>
           ) : (
-            <p style={{ color: '#888' }}>No se pudo resolver la identidad DIVIPOLA de este municipio (dataset sin cobertura o nombre no coincide).</p>
+            <p className="territory-muted">No se pudo resolver la identidad DIVIPOLA de este municipio.</p>
           )}
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 12, marginTop: 16 }}>
+          <div className="territory-metrics">
             <Metrica etiqueta="Contratos sincronizados" valor={ficha.contratacion.totalContratos.toLocaleString('es-CO')} />
             <Metrica etiqueta="Valor total contratado" valor={`$${ficha.contratacion.valorTotal.toLocaleString('es-CO')}`} />
             <Metrica etiqueta="Proveedores únicos" valor={ficha.contratacion.proveedoresUnicos.toLocaleString('es-CO')} />
@@ -108,21 +114,26 @@ export default function FichaTerritorialView() {
             />
           </div>
 
-          <h3 style={{ marginTop: 28 }}>Presupuesto vs. contratación</h3>
-          <PresupuestoCard p={ficha.presupuesto} />
+          <section className="territory-section">
+          <h3>Presupuesto vs. contratación</h3>
+          <div className="territory-legacy-card"><PresupuestoCard p={ficha.presupuesto} /></div>
+          </section>
 
-          <h3 style={{ marginTop: 8 }}>Contexto territorial</h3>
-          <ContextoTerritorialCard
+          <section className="territory-section">
+          <h3>Contexto territorial</h3>
+          <div className="territory-legacy-card"><ContextoTerritorialCard
             ctx={{
               ciudad: ficha.identidad?.nombreMunicipio ?? ciudad,
               desempenoMunicipal: ficha.desempenoMunicipal,
               proyectosRegalias: ficha.proyectosRegalias,
               alerta: ficha.alertaRegalias,
             }}
-          />
+          /></div>
+          </section>
 
-          <h3 style={{ marginTop: 8 }}>Alertas de identidad (SIRI + SIGEP)</h3>
-          <div style={{ border: '1px solid #ddd', borderRadius: 10, padding: 14, fontSize: 13 }}>
+          <section className="territory-section">
+          <h3>Alertas de identidad (SIRI + SIGEP)</h3>
+          <div className="territory-alerts">
             <p style={{ margin: 0 }}>
               Se revisaron <strong>{ficha.alertasIdentidad.nombresRevisados}</strong> nombres distintos (firmantes, ordenadores del gasto,
               supervisores) contra SIRI (sanciones) y SIGEP (cargos de confianza)
@@ -147,6 +158,7 @@ export default function FichaTerritorialView() {
               contrato, en Vigilar mi territorio.
             </p>
           </div>
+          </section>
         </div>
       )}
     </div>
@@ -155,9 +167,9 @@ export default function FichaTerritorialView() {
 
 function Metrica({ etiqueta, valor, alerta }: { etiqueta: string; valor: string; alerta?: boolean }) {
   return (
-    <div style={{ border: '1px solid #ddd', borderRadius: 10, padding: 12 }}>
-      <div style={{ fontSize: 12, color: '#888' }}>{etiqueta}</div>
-      <div style={{ fontSize: 18, fontWeight: 'bold', color: alerta ? '#991b1b' : undefined }}>{valor}</div>
+    <div className={`territory-metric${alerta ? ' territory-metric-alert' : ''}`}>
+      <div>{etiqueta}</div>
+      <strong>{valor}</strong>
     </div>
   );
 }
