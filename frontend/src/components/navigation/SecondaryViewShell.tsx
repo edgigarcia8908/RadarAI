@@ -28,7 +28,10 @@ export default function SecondaryViewShell({ activeTarget, children, onNavigate 
               type="button"
             >
               <HomeIcon name={item.icon} size={19} />
-              <span>{item.label}</span>
+              <span className="home-nav-item-copy">
+                <strong>{item.label}</strong>
+                <small>{item.subtitle}</small>
+              </span>
             </button>
           ))}
         </nav>
