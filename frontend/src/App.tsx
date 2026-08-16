@@ -81,9 +81,13 @@ export default function App() {
 
       {modo === 'home' && <HomeView onNavigate={navigateFromHome} />}
 
-      {modo === 'ciudadano' && <EntenderGastoView onNavigate={navigateFromHome} />}
+      {modo === 'ciudadano' && (
+        <EntenderGastoView onNavigate={navigateFromHome} onTerritorioChange={(d, c) => { setDepartamentoActivo(d); setMunicipioActivo(c); }} />
+      )}
       {modo === 'empresa' && <OportunidadesView onNavigate={navigateFromHome} />}
-      {modo === 'estudio' && <CompararProveedoresView onNavigate={navigateFromHome} />}
+      {modo === 'estudio' && (
+        <CompararProveedoresView onNavigate={navigateFromHome} onTerritorioChange={(d, c) => { setDepartamentoActivo(d); setMunicipioActivo(c); }} />
+      )}
       {modo === 'veedurias' && (
         <SecondaryViewShell activeTarget="veedurias" onNavigate={navigateFromHome}>
           <VeeduriasView abrirId={veeduriaAbierta} onAbierta={() => setVeeduriaAbierta(null)} />

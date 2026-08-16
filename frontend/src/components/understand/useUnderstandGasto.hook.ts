@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { consultar, sincronizar, ConsultaResultado } from '../../api';
+import { consultar, sincronizar, crearVeeduria, ConsultaResultado, Hallazgo } from '../../api';
 import { UNDERSTAND_DEFAULT_FORM } from '../../constants/UNDERSTAND_GASTO';
 import type { UnderstandGastoFormState } from '../../types/understand.types';
 
@@ -20,9 +20,12 @@ export interface UseUnderstandGastoReturn extends UnderstandGastoFormState {
   setPregunta: (value: string) => void;
   handleAnalyze: () => void;
   status: 'idle' | 'loading' | 'success' | 'error';
+  paso: 'sincronizando' | 'analizando' | null;
   error: string;
   resultado: ConsultaResultado | null;
   syncInfo: string;
+  veeduriaCreadaId: string | null;
+  handleCrearVeeduriaDesdeHallazgo: (hallazgo: Hallazgo) => void;
 }
 
 /**
@@ -34,9 +37,11 @@ export interface UseUnderstandGastoReturn extends UnderstandGastoFormState {
 export default function useUnderstandGasto(): UseUnderstandGastoReturn {
   const [form, setForm] = useState<UnderstandGastoFormState>(UNDERSTAND_DEFAULT_FORM);
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [paso, setPaso] = useState<'sincronizando' | 'analizando' | null>(null);
   const [error, setError] = useState('');
   const [resultado, setResultado] = useState<ConsultaResultado | null>(null);
   const [syncInfo, setSyncInfo] = useState('');
+  const [veeduriaCreadaId, setVeeduriaCreadaId] = useState<string | null>(null);
 
   function updateField(field: keyof UnderstandGastoFormState, value: string) {
     setForm((current) => ({ ...current, [field]: value }));
@@ -51,14 +56,34 @@ export default function useUnderstandGasto(): UseUnderstandGastoReturn {
     const pregunta = form.pregunta.trim() || `¿En qué ha gastado ${form.municipio} el dinero público?`;
 
     try {
+      setPaso('sincronizando');
       const r = await sincronizar({ departamento: form.departamento, ciudad: form.municipio, tema, fechaDesde, fechaHasta });
       setSyncInfo(`Traídos de SECOP: ${r.procesos} procesos, ${r.contratos} contratos.`);
+      setPaso('analizando');
       const resultadoConsulta = await consultar({ departamento: form.departamento, ciudad: form.municipio, tema, pregunta, fechaDesde, fechaHasta });
       setResultado(resultadoConsulta);
       setStatus('success');
     } catch (err: any) {
       setStatus('error');
       setError(err.message || 'No se pudo analizar el municipio.');
+    } finally {
+      setPaso(null);
+    }
+  }
+
+  async function handleCrearVeeduriaDesdeHallazgo(hallazgo: Hallazgo) {
+    try {
+      const v = await crearVeeduria({
+        titulo: `${hallazgo.titulo} — ${form.municipio}, ${form.departamento}`,
+        descripcion: hallazgo.detalle,
+        departamento: form.departamento,
+        ciudad: form.municipio,
+        tema: form.pregunta,
+        contratosVinculados: hallazgo.evidencia.map((e) => e.id),
+      });
+      setVeeduriaCreadaId(v._id);
+    } catch (err: any) {
+      setError(err.message || 'No se pudo crear la veeduría.');
     }
   }
 
@@ -70,8 +95,11 @@ export default function useUnderstandGasto(): UseUnderstandGastoReturn {
     setPregunta: (value) => updateField('pregunta', value),
     handleAnalyze,
     status,
+    paso,
     error,
     resultado,
     syncInfo,
+    veeduriaCreadaId,
+    handleCrearVeeduriaDesdeHallazgo,
   };
 }

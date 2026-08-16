@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { HOME_NAV_ITEMS } from '../../constants/HOME';
 import { COMPARE_PERIODS } from '../../constants/COMPARE_PROVIDERS';
 import type { HomeNavigationTarget } from '../../types/home.types';
@@ -17,9 +17,29 @@ function money(v: number | undefined) {
   return `$${Number(v || 0).toLocaleString('es-CO')}`;
 }
 
-function ProviderCard({ nombre, contratos, valorTotal, destacado }: { nombre: string; contratos: number; valorTotal: number; destacado?: boolean }) {
+function ProviderCard({
+  nombre,
+  contratos,
+  valorTotal,
+  destacado,
+  seleccionado,
+  onClick,
+}: {
+  nombre: string;
+  contratos: number;
+  valorTotal: number;
+  destacado?: boolean;
+  seleccionado?: boolean;
+  onClick: () => void;
+}) {
   return (
-    <button className={`provider-card provider-card-${destacado ? 'green' : 'mustard'}`} type="button">
+    <button
+      className={`provider-card provider-card-${destacado ? 'green' : 'mustard'}`}
+      type="button"
+      onClick={onClick}
+      aria-pressed={seleccionado}
+      style={seleccionado ? { outline: '2px solid currentColor' } : undefined}
+    >
       <span className="provider-icon"><HomeIcon name="badge-check" size={22} /></span>
       <span className="provider-main">
         <strong>{nombre}</strong>
@@ -32,7 +52,7 @@ function ProviderCard({ nombre, contratos, valorTotal, destacado }: { nombre: st
   );
 }
 
-export default function CompararProveedoresView({ onNavigate }: CompareProvidersViewProps) {
+export default function CompararProveedoresView({ onNavigate, onTerritorioChange }: CompareProvidersViewProps) {
   const {
     service,
     department,
@@ -51,6 +71,16 @@ export default function CompararProveedoresView({ onNavigate }: CompareProviders
   const municipiosDisponibles = useMemo(
     () => ['Todos', ...(DEPARTAMENTOS.find((d) => d.departamento === department)?.ciudades ?? [])],
     [department],
+  );
+
+  useEffect(() => {
+    onTerritorioChange?.(department, municipality === 'Todos' ? '' : municipality);
+  }, [department, municipality, onTerritorioChange]);
+
+  const [proveedorSeleccionado, setProveedorSeleccionado] = useState<string | null>(null);
+  const contratosDelSeleccionado = useMemo(
+    () => (estudio?.contratosComparables ?? []).filter((c) => c.proveedorAdjudicado === proveedorSeleccionado),
+    [estudio, proveedorSeleccionado],
   );
 
   return (
@@ -150,8 +180,17 @@ export default function CompararProveedoresView({ onNavigate }: CompareProviders
                 {money(estudio.valorMaximo)}
               </strong>
             </div>
+            <p style={{ fontSize: 13, color: '#666', margin: '4px 0 8px' }}>Haz clic en un proveedor para ver sus contratos comparables reales.</p>
             {estudio.proveedoresFrecuentes?.map((p, i) => (
-              <ProviderCard key={p.nombre} nombre={p.nombre} contratos={p.contratos} valorTotal={p.valorTotal} destacado={i === 0} />
+              <ProviderCard
+                key={p.nombre}
+                nombre={p.nombre}
+                contratos={p.contratos}
+                valorTotal={p.valorTotal}
+                destacado={i === 0}
+                seleccionado={proveedorSeleccionado === p.nombre}
+                onClick={() => setProveedorSeleccionado((actual) => (actual === p.nombre ? null : p.nombre))}
+              />
             ))}
             {estudio.proveedoresFrecuentes?.[0] && (
               <div className="suggested-provider">
@@ -163,6 +202,27 @@ export default function CompararProveedoresView({ onNavigate }: CompareProviders
                   </span>
                 </span>
               </div>
+            )}
+
+            {proveedorSeleccionado && contratosDelSeleccionado.length > 0 && (
+              <>
+                <h3>Contratos de {proveedorSeleccionado}</h3>
+                {contratosDelSeleccionado.map((c) => (
+                  <a
+                    key={c.idContrato}
+                    className="understand-alert"
+                    href={c.urlProceso || undefined}
+                    target="_blank"
+                    rel="noreferrer"
+                    style={{ textDecoration: 'none', cursor: c.urlProceso ? 'pointer' : 'default' }}
+                    onClick={(event) => { if (!c.urlProceso) event.preventDefault(); }}
+                  >
+                    <HomeIcon name="briefcase" size={16} />
+                    <span>{c.nombreEntidad} — {money(c.valorDelContrato)}</span>
+                    <HomeIcon name="chevron-right" size={15} />
+                  </a>
+                ))}
+              </>
             )}
           </>
         )}

@@ -15,4 +15,5 @@ export interface ProviderItem {
 
 export interface CompareProvidersViewProps {
   onNavigate: (target: HomeNavigationTarget) => void;
+  onTerritorioChange?: (departamento: string, municipio: string) => void;
 }

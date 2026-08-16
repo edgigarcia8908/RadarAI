@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { HOME_NAV_ITEMS } from '../../constants/HOME';
 import { UNDERSTAND_PERIODS } from '../../constants/UNDERSTAND_GASTO';
 import type { HomeNavigationTarget } from '../../types/home.types';
@@ -13,7 +13,7 @@ interface DeptoColombia {
 }
 const DEPARTAMENTOS = colombia as DeptoColombia[];
 
-export default function EntenderGastoView({ onNavigate }: UnderstandGastoViewProps) {
+export default function EntenderGastoView({ onNavigate, onTerritorioChange }: UnderstandGastoViewProps) {
   const {
     departamento,
     municipio,
@@ -25,15 +25,25 @@ export default function EntenderGastoView({ onNavigate }: UnderstandGastoViewPro
     setPregunta,
     handleAnalyze,
     status,
+    paso,
     error,
     resultado,
     syncInfo,
+    veeduriaCreadaId,
+    handleCrearVeeduriaDesdeHallazgo,
   } = useUnderstandGasto();
 
   const municipiosDisponibles = useMemo(
     () => DEPARTAMENTOS.find((d) => d.departamento === departamento)?.ciudades ?? [],
     [departamento],
   );
+
+  // Anna María (el chat flotante) necesita saber qué territorio está viendo
+  // el usuario para responder con datos reales de esa región — antes esto
+  // no se propagaba nunca y el chat quedaba ciego al territorio activo.
+  useEffect(() => {
+    onTerritorioChange?.(departamento, municipio);
+  }, [departamento, municipio, onTerritorioChange]);
 
   return (
     <div className="understand-page">
@@ -123,7 +133,14 @@ export default function EntenderGastoView({ onNavigate }: UnderstandGastoViewPro
         {!resultado && status !== 'loading' && (
           <p style={{ color: '#666' }}>Elegí un municipio y dale "Analizar municipio" para traer datos reales de SECOP.</p>
         )}
-        {status === 'loading' && <p style={{ color: '#666' }}>Sincronizando y analizando…</p>}
+        {status === 'loading' && (
+          <ul style={{ listStyle: 'none', padding: 0, fontSize: 14, color: '#444' }}>
+            <li>{paso === 'sincronizando' ? '⏳' : '✅'} Trayendo contratos reales de SECOP</li>
+            <li style={{ opacity: paso === 'analizando' || paso === null ? 1 : 0.4 }}>
+              {paso === 'analizando' ? '⏳' : paso === null ? '✅' : '○'} Cruzando alertas y presupuesto
+            </li>
+          </ul>
+        )}
 
         {resultado && (
           <>
@@ -142,12 +159,44 @@ export default function EntenderGastoView({ onNavigate }: UnderstandGastoViewPro
             {resultado.hallazgos.length > 0 && (
               <>
                 <h3>⚠️ Alertas para revisar</h3>
+                <p style={{ fontSize: 13, color: '#666', margin: '4px 0 8px' }}>Haz clic en una alerta para abrir una veeduría y empezar a investigarla.</p>
                 {resultado.hallazgos.map((h) => (
-                  <button className="understand-alert" key={h.titulo} type="button" title={h.detalle}>
+                  <button className="understand-alert" key={h.titulo} type="button" title={h.detalle} onClick={() => handleCrearVeeduriaDesdeHallazgo(h)}>
                     <HomeIcon name="alert" size={16} />
                     <span>{h.titulo} — {h.detalle}</span>
                     <HomeIcon name="chevron-right" size={15} />
                   </button>
+                ))}
+              </>
+            )}
+
+            {veeduriaCreadaId && (
+              <div className="understand-cta">
+                <strong>Veeduría creada.</strong>
+                <button type="button" onClick={() => onNavigate('veedurias')}>
+                  <span>Ver veedurías</span>
+                  <HomeIcon name="arrow-up-right" size={16} />
+                </button>
+              </div>
+            )}
+
+            {resultado.evidenciaContratos.length > 0 && (
+              <>
+                <h3>Contratos ({resultado.evidenciaContratos.length})</h3>
+                {resultado.evidenciaContratos.slice(0, 15).map((c) => (
+                  <a
+                    key={c.idContrato}
+                    className="understand-alert"
+                    href={c.urlProceso || undefined}
+                    target="_blank"
+                    rel="noreferrer"
+                    style={{ textDecoration: 'none', cursor: c.urlProceso ? 'pointer' : 'default' }}
+                    onClick={(event) => { if (!c.urlProceso) event.preventDefault(); }}
+                  >
+                    <HomeIcon name="briefcase" size={16} />
+                    <span>{c.nombreEntidad} — {c.proveedorAdjudicado} — ${c.valorDelContrato.toLocaleString('es-CO')}</span>
+                    <HomeIcon name="chevron-right" size={15} />
+                  </a>
                 ))}
               </>
             )}
