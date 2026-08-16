@@ -2066,14 +2066,16 @@ body {
   height: 64px;
   border: 1px solid var(--primary);
   border-radius: 999px;
-  background: var(--primary-soft);
-  color: #151f00;
+  background: var(--primary);
+  color: var(--surface);
   box-shadow: var(--shadow-strong);
-  transition: transform 160ms ease;
+  transition: transform 160ms ease, background 160ms ease, border-color 160ms ease;
 }
 
 .chat-fab:hover {
   transform: translateY(-2px);
+  background: var(--primary-hover);
+  border-color: var(--primary-hover);
 }
 
 .chat-panel {

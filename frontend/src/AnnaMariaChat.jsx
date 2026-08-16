@@ -3,9 +3,12 @@ import { useEffect, useRef, useState } from 'react';
 import { radarService } from './services/radar.service';
 
 const SUGERENCIAS = [
-  '¿Qué se está ejecutando en mi municipio?',
-  '¿Cómo funciona la contratación pública?',
-  '¿Qué es SECOP II?',
+  '¿En qué se gasta mi municipio el presupuesto este año?',
+  '¿Qué contratos firmó mi alcaldía en los últimos 6 meses?',
+  '¿Hay alertas de corrupción en mi departamento?',
+  '¿Cuánto dinero de regalías llegó a mi municipio y en qué se invirtió?',
+  '¿Qué obras públicas están paralizadas en mi territorio?',
+  '¿Qué proveedores ganan más contratos en mi región?',
 ];
 
 /**
