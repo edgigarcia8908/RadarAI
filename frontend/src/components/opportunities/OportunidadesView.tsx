@@ -103,6 +103,7 @@ export default function OportunidadesView({ onNavigate, onTerritorioChange }: Op
               className={`home-nav-item${item.target === 'empresa' ? ' opportunities-nav-active' : ''}`}
               key={item.id}
               onClick={() => onNavigate(item.target as HomeNavigationTarget)}
+              title={item.description}
               type="button"
             >
               <HomeIcon name={item.icon} size={19} />

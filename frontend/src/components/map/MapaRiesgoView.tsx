@@ -38,6 +38,7 @@ export default function MapaRiesgoView({ onNavigate }: MapRiskViewProps) {
               className={`home-nav-item${item.target === 'mapa' ? ' map-nav-active' : ''}`}
               key={item.id}
               onClick={() => onNavigate(item.target as HomeNavigationTarget)}
+              title={item.description}
               type="button"
             >
               <HomeIcon name={item.icon} size={19} />

@@ -40,6 +40,7 @@ export default function HomeView({ onNavigate }: HomeViewProps) {
               className={`home-nav-item${item.id === 'home' ? ' home-nav-item-active' : ''}`}
               key={item.id}
               onClick={() => onNavigate(item.target)}
+              title={item.description}
               type="button"
             >
               <HomeIcon name={item.icon} size={19} />

@@ -28,6 +28,8 @@ export type HomeNavigationTarget = 'empresa' | 'estudio' | 'veedurias' | 'mapa' 
 export interface HomeNavItem {
   id: string;
   label: string;
+  /** Tooltip corto — qué hace ESPECÍFICAMENTE esta vista, para no confundirla con otra parecida (ej. "Perfil de persona" vs "Comparar proveedores"). */
+  description: string;
   icon: HomeIconName;
   target: HomeNavigationTarget;
 }

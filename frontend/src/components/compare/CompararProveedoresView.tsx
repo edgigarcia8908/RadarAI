@@ -97,6 +97,7 @@ export default function CompararProveedoresView({ onNavigate, onTerritorioChange
               className={`home-nav-item${item.target === 'estudio' ? ' compare-nav-active' : ''}`}
               key={item.id}
               onClick={() => onNavigate(item.target as HomeNavigationTarget)}
+              title={item.description}
               type="button"
             >
               <HomeIcon name={item.icon} size={19} />

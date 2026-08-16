@@ -24,6 +24,7 @@ export default function SecondaryViewShell({ activeTarget, children, onNavigate 
               className={`home-nav-item${item.target === activeTarget ? ' secondary-nav-active' : ''}`}
               key={item.id}
               onClick={() => onNavigate(item.target)}
+              title={item.description}
               type="button"
             >
               <HomeIcon name={item.icon} size={19} />
