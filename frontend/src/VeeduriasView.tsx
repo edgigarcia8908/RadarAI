@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   agregarComentario,
   consultar,
@@ -6,6 +6,7 @@ import {
   listarVeedurias,
   marcarChecklist,
   obtenerEvidenciaDetalle,
+  obtenerFichaTerritorial,
   obtenerVeeduria,
   preguntarSobreDocumentos,
   sincronizar,
@@ -13,13 +14,168 @@ import {
   verificarSiri,
   verificarSigep,
   vincularEvidencia,
+  ConsultaResultado,
   EvidenciaDetalle,
+  FichaTerritorial,
+  Hallazgo,
   SancionSiri,
   PuestoSensible,
   Veeduria,
 } from './api';
 import type { ContratoInfo } from './contratoUtils';
 import ContratoCard from './ContratoCard';
+import colombia from './colombia.json';
+
+interface DeptoColombia {
+  departamento: string;
+  ciudades: string[];
+}
+const DEPARTAMENTOS = colombia as DeptoColombia[];
+
+function money(v: number | undefined | null) {
+  return `$${Number(v || 0).toLocaleString('es-CO')}`;
+}
+
+/**
+ * Punto de entrada de Veedurías, ANTES de crear nada: elegí un territorio y
+ * mirá qué está pasando ahí (resumen de contratación + alertas reales
+ * detectadas — concentración de proveedores, contratos con objeto casi
+ * idéntico, brecha de ejecución en regalías). Cada alerta se puede abrir
+ * directo como veeduría, con la evidencia ya vinculada — antes crear una
+ * veeduría era un formulario en blanco que exigía saber de antemano qué
+ * ibas a investigar; ahora la lógica es al revés: abrís veeduría SOBRE algo
+ * que ya se detectó.
+ */
+function ExploradorTerritorio({ onVeeduriaCreada }: { onVeeduriaCreada: (id: string) => void }) {
+  const [departamento, setDepartamento] = useState('Cundinamarca');
+  const [ciudad, setCiudad] = useState('Tocancipá');
+  const [resultado, setResultado] = useState<ConsultaResultado | null>(null);
+  const [ficha, setFicha] = useState<FichaTerritorial | null>(null);
+  const [cargando, setCargando] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [abriendoHallazgo, setAbriendoHallazgo] = useState<string | null>(null);
+
+  const municipiosDisponibles = useMemo(
+    () => DEPARTAMENTOS.find((d) => d.departamento === departamento)?.ciudades ?? [],
+    [departamento],
+  );
+
+  async function handleAnalizar() {
+    setCargando(true);
+    setError(null);
+    setResultado(null);
+    setFicha(null);
+    try {
+      await sincronizar({ departamento, ciudad });
+      const [r, f] = await Promise.all([
+        consultar({ departamento, ciudad, tema: '', pregunta: `¿Qué está pasando en ${ciudad}?` }),
+        obtenerFichaTerritorial(departamento, ciudad).catch(() => null),
+      ]);
+      setResultado(r);
+      setFicha(f);
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setCargando(false);
+    }
+  }
+
+  async function handleAbrirVeeduria(h: Hallazgo) {
+    setAbriendoHallazgo(h.titulo);
+    try {
+      const v = await crearVeeduria({
+        titulo: h.titulo,
+        descripcion: h.detalle,
+        departamento,
+        ciudad,
+        tema: h.tipo,
+      });
+      // Vincula de una vez la evidencia que ya detectó el hallazgo — abrir
+      // una veeduría "sobre algo" debe traer esa evidencia puesta, no
+      // arrancar en cero otra vez a buscarla.
+      await Promise.all(h.evidencia.map((ev) => vincularEvidencia(v._id, { contratoId: ev.id }).catch(() => null)));
+      onVeeduriaCreada(v._id);
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setAbriendoHallazgo(null);
+    }
+  }
+
+  return (
+    <div className="territory-explorer">
+      <h2>Explorar un territorio</h2>
+      <p>Elige dónde mirar — te mostramos un resumen y las alertas reales que ya detectamos ahí, para abrir una veeduría directo sobre lo que encontremos.</p>
+
+      <div className="territory-explorer-form">
+        <label>
+          Departamento
+          <select
+            value={departamento}
+            onChange={(e) => {
+              setDepartamento(e.target.value);
+              setCiudad(DEPARTAMENTOS.find((d) => d.departamento === e.target.value)?.ciudades[0] ?? '');
+            }}
+          >
+            {DEPARTAMENTOS.map((d) => <option key={d.departamento}>{d.departamento}</option>)}
+          </select>
+        </label>
+        <label>
+          Municipio
+          <select value={ciudad} onChange={(e) => setCiudad(e.target.value)}>
+            {municipiosDisponibles.map((c) => <option key={c}>{c}</option>)}
+          </select>
+        </label>
+        <button className="oversight-primary-button" disabled={cargando} onClick={handleAnalizar} type="button">
+          {cargando ? 'Analizando…' : 'Analizar territorio'}
+        </button>
+      </div>
+
+      {error && <p className="view-error">{error}</p>}
+
+      {resultado && (
+        <div className="territory-explorer-results">
+          <div className="territory-explorer-summary">
+            <div><span>Contratos</span><strong>{resultado.resumen.totalContratos}</strong></div>
+            <div><span>Valor total</span><strong>{money(resultado.resumen.valorTotalContratado)}</strong></div>
+            <div><span>Proveedores</span><strong>{resultado.resumen.proveedoresUnicos}</strong></div>
+            {ficha?.presupuesto && !ficha.presupuesto.mensaje && (
+              <div><span>% presupuesto comprometido</span><strong>{ficha.presupuesto.porcentajeComprometido != null ? `${Math.round(ficha.presupuesto.porcentajeComprometido)}%` : '—'}</strong></div>
+            )}
+            {ficha?.desempenoMunicipal.puntaje != null && (
+              <div><span>Desempeño municipal (DNP)</span><strong>{ficha.desempenoMunicipal.puntaje.toFixed(0)}/100</strong></div>
+            )}
+          </div>
+
+          {ficha?.alertaRegalias && (
+            <div className="territory-alert territory-alert-warning">⚠️ {ficha.alertaRegalias}</div>
+          )}
+
+          <h3>Alertas detectadas ({resultado.hallazgos.length})</h3>
+          {resultado.hallazgos.length === 0 && (
+            <p style={{ color: '#888' }}>No se detectaron patrones de concentración ni contratos casi idénticos en lo ya sincronizado.</p>
+          )}
+          {resultado.hallazgos.map((h) => (
+            <div className={`territory-alert territory-alert-${h.severidad === 'ALTA' ? 'critical' : 'warning'}`} key={h.titulo}>
+              <div>
+                <strong>{h.titulo}</strong>
+                <p>{h.detalle}</p>
+              </div>
+              <button
+                className="oversight-secondary-button"
+                disabled={abriendoHallazgo === h.titulo}
+                onClick={() => handleAbrirVeeduria(h)}
+                type="button"
+              >
+                {abriendoHallazgo === h.titulo ? 'Abriendo…' : 'Abrir veeduría sobre esto'}
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
 
 function ListaVeedurias({ onAbrir, onNueva }: { onAbrir: (id: string) => void; onNueva: () => void }) {
   const [veedurias, setVeedurias] = useState<Veeduria[] | null>(null);
@@ -39,16 +195,19 @@ function ListaVeedurias({ onAbrir, onNueva }: { onAbrir: (id: string) => void; o
           <h1>Veedurías</h1>
           <p>Organiza investigaciones colectivas y sigue las evidencias de la contratación pública.</p>
         </div>
-        <button className="oversight-primary-button" onClick={onNueva} type="button">+ Nueva veeduría</button>
+        <button className="oversight-primary-button" onClick={onNueva} type="button">+ Nueva veeduría en blanco</button>
       </div>
 
+      <ExploradorTerritorio onVeeduriaCreada={onAbrir} />
+
+      <h2 className="oversight-list-title">Tus veedurías</h2>
       {error && <p style={{ color: 'crimson' }}>{error}</p>}
       {!veedurias && !error && <p className="view-loading">Cargando...</p>}
       {veedurias && veedurias.length === 0 && (
         <div className="oversight-empty-state">
           <span className="oversight-empty-icon">+</span>
           <strong>Aún no hay veedurías creadas</strong>
-          <span>Crea una investigación para reunir hallazgos, documentos y comentarios en un solo lugar.</span>
+          <span>Analiza un territorio arriba y abre una veeduría sobre lo que se detecte, o crea una en blanco.</span>
           <button className="oversight-secondary-button" onClick={onNueva} type="button">Crear la primera veeduría</button>
         </div>
       )}

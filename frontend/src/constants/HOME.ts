@@ -10,6 +10,14 @@ export const HOME_NAV_ITEMS: HomeNavItem[] = [
     target: 'home',
   },
   {
+    id: 'oversight',
+    label: 'Veedurías',
+    subtitle: 'Alertas detectadas por territorio',
+    description: 'Elige un territorio, mira las alertas reales que detectamos ahí (concentración de proveedores, contratos casi idénticos) y abre una veeduría sobre lo que encuentres.',
+    icon: 'shield',
+    target: 'veedurias',
+  },
+  {
     id: 'opportunities',
     label: 'Encontrar oportunidades',
     subtitle: 'Procesos abiertos para tu empresa',
@@ -24,14 +32,6 @@ export const HOME_NAV_ITEMS: HomeNavItem[] = [
     description: 'Contratos YA CERRADOS de un tipo de servicio — precios reales para decidir con quién contratar.',
     icon: 'scales',
     target: 'estudio',
-  },
-  {
-    id: 'oversight',
-    label: 'Veedurías',
-    subtitle: 'Seguimiento a un contrato puntual',
-    description: 'Haz seguimiento colaborativo a un contrato o proceso puntual con evidencia y comentarios.',
-    icon: 'shield',
-    target: 'veedurias',
   },
   {
     id: 'person-profile',
