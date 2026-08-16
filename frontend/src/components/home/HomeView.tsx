@@ -71,7 +71,7 @@ export default function HomeView({ onNavigate }: HomeViewProps) {
         <DataSourcesBadge />
       </aside>
 
-      <main className={`home-main${hayConversacion ? ' home-main-chatting' : ''}`}>
+      <main className="home-main">
         <section className="home-content" aria-labelledby="home-title">
           <h1 id="home-title">RadarAI te ayuda a entender,<br />competir y decidir sobre<br />plata pública.</h1>
           <p className="home-subtitle">Haz una pregunta y conversa con RadarAI.</p>

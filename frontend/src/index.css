@@ -3566,44 +3566,66 @@ body {
     padding-bottom: 0;
   }
 
-  /* Modo "conversación activa" en móvil — antes toda la página (héroe +
-     mensajes + selector + composer) era un solo scroll largo, así que
-     mandar una pregunta nueva dejaba la respuesta fuera de vista y se
-     sentía como un formulario, no un chat. Ahora: héroe se colapsa, los
-     mensajes son su propia zona con scroll, y el composer queda fijo abajo
-     — mismo patrón que WhatsApp/cualquier chat nativo. */
-  .home-main-chatting {
+  /* Modo "conversación activa" en móvil — antes toda la página (sidebar +
+     héroe + mensajes + selector + composer) era un solo scroll largo de
+     document, así que mandar una pregunta nueva dejaba la respuesta y el
+     composer fuera de vista y se sentía como un formulario, no un chat.
+     Ahora TODO el layout (no solo .home-main) se fija a 100vh — el sidebar
+     ya está colapsado a una barra angosta (ver reglas de arriba), así que
+     lo que sobra se lo lleva el área de mensajes con su propio scroll, y
+     el composer queda siempre visible abajo — mismo patrón que
+     WhatsApp/cualquier chat nativo. Antes esto solo se aplicaba a
+     `.home-main`, pero el sidebar sigue ocupando espacio ARRIBA de él en
+     móvil (el layout se apila, no queda lado a lado) — un `height: 100vh`
+     solo en `.home-main` se pasaba de la pantalla y el composer terminaba
+     fuera de vista, justo lo que se reportó. */
+  .home-layout-chatting {
     display: flex;
     flex-direction: column;
     height: 100vh;
     overflow: hidden;
+  }
+
+  .home-layout-chatting .home-sidebar {
+    flex: 0 0 auto;
+    height: auto;
+    min-height: 0;
+  }
+
+  .home-layout-chatting .home-main {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    height: auto;
+    min-height: 0;
+    overflow: hidden;
     padding: 14px 14px 10px;
   }
 
-  .home-main-chatting .home-content {
+  .home-layout-chatting .home-content {
     display: flex;
     flex-direction: column;
     height: 100%;
     min-height: 0;
   }
 
-  .home-main-chatting .home-content h1,
-  .home-main-chatting .home-subtitle {
+  .home-layout-chatting .home-content h1,
+  .home-layout-chatting .home-subtitle {
     display: none;
   }
 
-  .home-main-chatting .home-chat-response {
+  .home-layout-chatting .home-chat-response {
     flex: 1 1 auto;
     min-height: 0;
     margin: 0 0 10px;
     overflow-y: auto;
   }
 
-  .home-main-chatting .home-chat-shell {
+  .home-layout-chatting .home-chat-shell {
     flex: 0 0 auto;
   }
 
-  .home-main-chatting .home-chat-context {
+  .home-layout-chatting .home-chat-context {
     display: flex;
     grid-template-columns: none;
     gap: 6px;
@@ -3611,11 +3633,11 @@ body {
     padding-bottom: 6px;
   }
 
-  .home-main-chatting .home-chat-context-title {
+  .home-layout-chatting .home-chat-context-title {
     display: none;
   }
 
-  .home-main-chatting .home-select {
+  .home-layout-chatting .home-select {
     flex: 0 0 auto;
   }
 
