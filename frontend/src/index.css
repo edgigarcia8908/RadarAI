@@ -109,31 +109,11 @@ body {
   line-height: 1;
 }
 
-.home-brand-mark {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 2px;
-  width: 26px;
-  height: 26px;
-  border: 2px solid #2c8d2b;
-  border-radius: 50%;
-}
-
-.home-brand-mark span {
-  display: block;
-  width: 2px;
-  height: 10px;
-  border-radius: 2px;
-  background: #2c8d2b;
-}
-
-.home-brand-mark span:first-child {
-  height: 14px;
-}
-
-.home-brand-mark span:last-child {
-  height: 7px;
+.home-brand-logo {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  border-radius: 6px;
 }
 
 .home-nav {
@@ -1164,9 +1144,9 @@ body {
   font-size: 20px;
 }
 
-.understand-sidebar .home-brand-mark {
-  width: 26px;
-  height: 26px;
+.understand-sidebar .home-brand-logo {
+  width: 32px;
+  height: 32px;
 }
 
 .understand-sidebar .home-nav {

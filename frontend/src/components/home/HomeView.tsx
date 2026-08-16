@@ -42,7 +42,7 @@ export default function HomeView({ onNavigate }: HomeViewProps) {
     <div className="home-layout">
       <aside className="home-sidebar">
         <div className="home-brand" aria-label="RadarAI">
-          <span className="home-brand-mark"><span /><span /><span /></span>
+          <img src="/logo.png" alt="RadarAI logo" className="home-brand-logo" />
           <span>RadarAI</span>
         </div>
 

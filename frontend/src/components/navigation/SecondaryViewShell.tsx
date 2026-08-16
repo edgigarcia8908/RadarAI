@@ -15,7 +15,7 @@ export default function SecondaryViewShell({ activeTarget, children, onNavigate 
     <div className="secondary-page">
       <aside className="secondary-sidebar">
         <div className="home-brand" aria-label="RadarAI">
-          <span className="home-brand-mark"><span /><span /><span /></span>
+          <img src="/logo.png" alt="RadarAI logo" className="home-brand-logo" />
           <span>RadarAI</span>
         </div>
         <nav className="home-nav" aria-label="Navegación principal">
