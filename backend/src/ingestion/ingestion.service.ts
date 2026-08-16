@@ -19,6 +19,7 @@ export interface FiltroTerritorio {
   /** 'YYYY-MM-DD'. Sin esto, Socrata devuelve por defecto lo más reciente por fecha, pero puede incluir contratos de años viejos si hay poco volumen reciente en el territorio — mejor filtrar explícito. */
   fechaDesde?: string;
   fechaHasta?: string;
+  /** Tope por sync — antes 500, subido a 2000 (Socrata lo soporta sin problema): un municipio con volumen alto de contratación se quedaba corto con solo 500 por corrida. Sigue siendo un tope, no trae TODO el histórico (ver README, punto 1 de "qué falta": cron/backfill completo). */
   limit?: number;
 }
 
@@ -69,7 +70,7 @@ export class IngestionService {
       // estricto para lenguaje libre de un ciudadano. El filtro real por
       // tema lo hace `CivicIntelService` contra `textoNormalizado` en Mongo,
       // que sí matchea por OR de palabras.
-      limit: filtro.limit ?? 500,
+      limit: filtro.limit ?? 2000,
       order: 'fecha_de_publicacion_del DESC',
     });
 
@@ -119,7 +120,7 @@ export class IngestionService {
   async sincronizarContratos(filtro: FiltroTerritorio) {
     const rows = await this.contratosClient.fetchRows({
       where: this.construirWhere(filtro, 'departamento', 'ciudad', 'fecha_de_firma'),
-      limit: filtro.limit ?? 500,
+      limit: filtro.limit ?? 2000,
       order: 'fecha_de_firma DESC',
     });
 
