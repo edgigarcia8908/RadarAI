@@ -8,6 +8,16 @@ import { completar } from '../lib/llm';
 import { normalizar } from '../common/normalizar';
 import { departamentoRealSecop } from '../common/departamento-secop';
 import { palabrasConSinonimos } from '../common/sinonimos';
+import {
+  Presentation,
+  generarPresentacion,
+  fallbackResumen,
+  fallbackPersona,
+  fallbackTema,
+  fallbackBusquedaEnVivo,
+  fallbackSinDatos,
+  fallbackSaludo,
+} from './build-presentation';
 
 export interface ChatConsultaInput {
   mensaje: string;
@@ -86,7 +96,7 @@ export class ChatService {
     @Inject(IngestionService) private readonly ingestion: IngestionService,
   ) {}
 
-  async consultar(input: ChatConsultaInput): Promise<{ respuesta: string; requiereTerritorio?: boolean }> {
+  async consultar(input: ChatConsultaInput): Promise<{ respuesta: string; requiereTerritorio?: boolean; presentacion?: Presentation }> {
     // 1. Usar ciudad del contexto de la app (radar state)
     let ciudad = input.ciudad?.trim();
 
@@ -106,6 +116,7 @@ export class ChatService {
         // (no depende de LLM): funciona por matching de texto en el
         // frontend contra colombia.json.
         requiereTerritorio: true,
+        presentacion: fallbackSaludo(esSaludo),
         respuesta: esSaludo
           ? `¡Hola! 👋 Soy Anna María, tu asistente cívica en RadarAI.
 
@@ -122,6 +133,7 @@ export class ChatService {
 
     if (contratos.length === 0) {
       return {
+        presentacion: fallbackSinDatos(ciudad),
         respuesta: `Todavía no tengo datos sincronizados de ${ciudad}. Ve a "Entender gasto" o "Vigilar mi territorio", elige ${ciudad} y dale sincronizar/analizar — después vuelvo a preguntarte esto y te respondo con cifras reales.`,
       };
     }
@@ -174,10 +186,13 @@ export class ChatService {
     // persona real de la muestra, responde eso directamente — determinístico,
     // no depende de que haya API key de LLM configurada (no la hay por
     // defecto en este repo).
-    const respuestaPorPersona = this.buscarRespuestaPorPersona(input.mensaje, contratos);
-    const respuestaPorTema = respuestaPorPersona ? null : this.respuestaPorTema(input.mensaje, contratos, datosReales.territorio, contratos.length);
-    if (respuestaPorPersona || respuestaPorTema) {
-      return { respuesta: respuestaPorPersona ?? respuestaPorTema! };
+    const respuestaPorPersona = await this.buscarRespuestaPorPersona(input.mensaje, contratos);
+    const respuestaPorTema = respuestaPorPersona ? null : await this.respuestaPorTema(input.mensaje, contratos, datosReales.territorio, contratos.length);
+    if (respuestaPorPersona) {
+      return { respuesta: respuestaPorPersona.texto, presentacion: respuestaPorPersona.presentacion };
+    }
+    if (respuestaPorTema) {
+      return { respuesta: respuestaPorTema.texto, presentacion: respuestaPorTema.presentacion };
     }
 
     // Última capa antes de caer al resumen genérico: si la pregunta trae al
@@ -187,14 +202,19 @@ export class ChatService {
     // tenemos en Mongo (Tocancipá tiene 5254 contratos reales en SECOP,
     // solo 750 sincronizados). En vez de rendirse, se busca en vivo contra
     // Socrata antes de responder — así "busca a Fulano" hace lo que pide.
-    const respuestaEnVivo = await this.respuestaPorBusquedaEnVivo(input.mensaje, input.departamento, ciudad);
-    if (respuestaEnVivo) return { respuesta: respuestaEnVivo };
+    const resultadoEnVivo = await this.respuestaPorBusquedaEnVivo(input.mensaje, input.departamento, ciudad);
+    if (resultadoEnVivo) return { respuesta: resultadoEnVivo.texto, presentacion: resultadoEnVivo.presentacion };
 
     const respuesta = await this.redactar(input.mensaje, datosReales);
-    return { respuesta };
+    const presentacion = await generarPresentacion(
+      input.mensaje,
+      datosReales,
+      `Resumen general de contratación de ${datosReales.territorio}`,
+    ) ?? fallbackResumen(datosReales);
+    return { respuesta, presentacion };
   }
 
-  private async respuestaPorBusquedaEnVivo(mensaje: string, departamento: string | undefined, ciudad: string): Promise<string | null> {
+  private async respuestaPorBusquedaEnVivo(mensaje: string, departamento: string | undefined, ciudad: string): Promise<{ texto: string; presentacion: Presentation } | null> {
     // Ojo: NO alcanza con tomar las primeras palabras de 4+ letras de la
     // pregunta — en "cuántos contratos tuvo Giovanny García" esas son
     // "cuantos contratos tuvo", puro ruido interrogativo, no el nombre real
@@ -235,7 +255,22 @@ export class ChatService {
         .map((r) => `${String(r.nombre_entidad || '').slice(0, 30).padEnd(30)} $${(Number(r.valor_del_contrato) || 0).toLocaleString('es-CO')}`)
         .join('\n');
 
-      return `No lo tenía en lo ya sincronizado, así que busqué directo en SECOP: encontré ${rows.length} contrato(s) relacionados por un total de $${valorTotal.toLocaleString('es-CO')}, en: ${entidades.join(', ')}.\n\n${detalle}\n\n(Búsqueda en vivo, no coincidencia exacta por cédula — confirma que es lo que buscabas. Si querés que quede disponible para consultas más rápidas la próxima vez, sincroniza este territorio.)`;
+      const texto = `No lo tenía en lo ya sincronizado, así que busqué directo en SECOP: encontré ${rows.length} contrato(s) relacionados por un total de $${valorTotal.toLocaleString('es-CO')}, en: ${entidades.join(', ')}.\n\n${detalle}\n\n(Búsqueda en vivo, no coincidencia exacta por cédula — confirma que es lo que buscabas. Si querés que quede disponible para consultas más rápidas la próxima vez, sincroniza este territorio.)`;
+      const datosVivo = {
+        totalRows: rows.length,
+        valorTotal,
+        entidades,
+        detalle: rows.slice(0, 5).map((r) => ({
+          entidad: String(r.nombre_entidad || 'Sin entidad'),
+          valor: Number(r.valor_del_contrato) || 0,
+        })),
+      };
+      const presentacion = await generarPresentacion(
+        mensaje,
+        datosVivo,
+        'Búsqueda en vivo contra SECOP — datos que no estaban sincronizados localmente',
+      ) ?? fallbackBusquedaEnVivo(datosVivo);
+      return { texto, presentacion };
     } catch (err) {
       this.logger.warn(`Búsqueda en vivo en SECOP falló: ${(err as Error).message}`);
       return null;
@@ -248,7 +283,7 @@ export class ChatService {
    * mantenimiento de vías?" devolvían el total del municipio entero,
    * ignorando "vías" por completo (confirmado con datos reales).
    */
-  private respuestaPorTema(mensaje: string, contratos: Contrato[], territorio: string, totalTerritorio: number): string | null {
+  private async respuestaPorTema(mensaje: string, contratos: Contrato[], territorio: string, totalTerritorio: number): Promise<{ texto: string; presentacion: Presentation } | null> {
     const palabras = palabrasConSinonimos(mensaje);
     if (!palabras.length) return null;
     const regex = new RegExp(palabras.join('|'), 'i');
@@ -257,10 +292,23 @@ export class ChatService {
 
     const valorTema = filtrados.reduce((s, c) => s + (c.valorDelContrato || 0), 0);
     const proveedoresTema = new Set(filtrados.map((c) => c.nitProveedor || c.proveedorAdjudicado)).size;
-    return `Sobre eso específicamente, en ${territorio} encontré ${filtrados.length} contrato(s) relacionados por un total de $${valorTema.toLocaleString('es-CO')}, con ${proveedoresTema} proveedor(es) — de los ${totalTerritorio} contratos totales del territorio.`;
+    const texto = `Sobre eso específicamente, en ${territorio} encontré ${filtrados.length} contrato(s) relacionados por un total de $${valorTema.toLocaleString('es-CO')}, con ${proveedoresTema} proveedor(es) — de los ${totalTerritorio} contratos totales del territorio.`;
+    const datosTema = {
+      territorio,
+      totalFiltrados: filtrados.length,
+      totalTerritorio,
+      valorTema,
+      proveedoresTema,
+    };
+    const presentacion = await generarPresentacion(
+      mensaje,
+      datosTema,
+      `Filtrado por tema dentro de ${territorio}`,
+    ) ?? fallbackTema(datosTema);
+    return { texto, presentacion };
   }
 
-  private buscarRespuestaPorPersona(mensaje: string, contratos: Contrato[]): string | null {
+  private async buscarRespuestaPorPersona(mensaje: string, contratos: Contrato[]): Promise<{ texto: string; presentacion: Presentation } | null> {
     const tokensPregunta = new Set(normalizar(mensaje).split(' ').filter((t) => t.length >= 4));
     if (tokensPregunta.size < 2) return null;
 
@@ -270,12 +318,6 @@ export class ChatService {
         const tokensNombre = new Set(normalizar(nombre).split(' ').filter((t) => t.length >= 4));
         if (tokensNombre.size === 0) continue;
         const compartidos = [...tokensPregunta].filter((t) => tokensNombre.has(t)).length;
-        // Antes exigía >=3 coincidencias siempre — imposible de cumplir con
-        // un nombre de 2 palabras ("Giovanny García" nunca puede compartir
-        // más de 2 tokens con la pregunta, sin importar qué tan bien
-        // escrita esté). Ahora exige TODOS los tokens del nombre (mínimo 2)
-        // — sigue siendo estricto para evitar falsos positivos por un solo
-        // apellido común, pero ya no descarta nombres cortos por diseño.
         if (compartidos >= Math.min(3, tokensNombre.size) && compartidos >= 2) return true;
       }
       return false;
@@ -289,7 +331,22 @@ export class ChatService {
       .map((c) => `${c.nombreEntidad.slice(0, 30).padEnd(30)} $${c.valorDelContrato.toLocaleString('es-CO')}`)
       .join('\n');
 
-    return `Encontré ${coincidencias.length} contrato(s) donde esa persona aparece como firmante, ordenador del gasto o supervisor, por un total de $${valorTotal.toLocaleString('es-CO')}, en: ${entidades.join(', ')}.\n\n${detalle}\n\n(Coincidencia por nombre, no por cédula — confirma que es la misma persona antes de sacar conclusiones.)`;
+    const texto = `Encontré ${coincidencias.length} contrato(s) donde esa persona aparece como firmante, ordenador del gasto o supervisor, por un total de $${valorTotal.toLocaleString('es-CO')}, en: ${entidades.join(', ')}.\n\n${detalle}\n\n(Coincidencia por nombre, no por cédula — confirma que es la misma persona antes de sacar conclusiones.)`;
+    const datosPersona = {
+      totalContratos: coincidencias.length,
+      valorTotal,
+      entidades,
+      detalle: coincidencias.slice(0, 10).map((c) => ({
+        entidad: c.nombreEntidad,
+        valor: c.valorDelContrato,
+      })),
+    };
+    const presentacion = await generarPresentacion(
+      mensaje,
+      datosPersona,
+      'Búsqueda por persona — contratos donde aparece como firmante/ordenador/supervisor',
+    ) ?? fallbackPersona(datosPersona);
+    return { texto, presentacion };
   }
 
   private async redactar(mensaje: string, datos: ReturnType<never> | any): Promise<string> {
