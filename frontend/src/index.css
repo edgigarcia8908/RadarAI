@@ -2946,18 +2946,28 @@ body {
 /* ------------------------------------------------------------------ */
 
 :root {
+  /* Primary - Neon Lime (brand, primary actions, FAB) */
+  --radar-primary: #d4ff70;
+  --radar-primary-dark: #3b5100;
+  --radar-primary-soft: #f3ffdf;
+  --radar-primary-line: #cfe3a0;
+
+  /* Secondary - Olive (cards, borders, supporting elements) */
   --radar-olive: #4d6700;
   --radar-olive-dark: #3b5100;
   --radar-olive-ink: #3f5900;
   --radar-olive-soft: #f3ffdf;
   --radar-olive-line: #cfe3a0;
-  --radar-lime: #d4ff70;
+
+  /* Semaphore */
   --radar-ok: #2c8d2b;
   --radar-ok-soft: #eff9e9;
   --radar-warn: #b98a00;
   --radar-warn-soft: #fff2d5;
   --radar-danger: #c43d32;
   --radar-danger-soft: #fee9e7;
+
+  /* Neutral */
   --radar-surface: #f9f9f9;
   --radar-surface-map: #eef0e8;
   --radar-text: #1a1a1a;
@@ -2968,6 +2978,20 @@ body {
   --radar-radius-lg: 16px;
   --radar-font: "Hanken Grotesk", "Inter", ui-sans-serif, system-ui,
     -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Chat token aliases (map to primary) */
+:root {
+  --primary: var(--radar-primary);
+  --primary-hover: var(--radar-primary-dark);
+  --primary-soft: var(--radar-primary-soft);
+  --surface: var(--radar-surface);
+  --line: var(--radar-border);
+  --line-strong: var(--radar-olive-line);
+  --surface-muted: var(--radar-olive-soft);
+  --text: var(--radar-text);
+  --text-muted: var(--radar-text-soft);
+  --shadow-strong: 0 8px 24px rgba(26, 26, 26, 0.12);
 }
 
 /* Base */
@@ -2984,8 +3008,8 @@ select {
 }
 
 button {
-  background: var(--radar-olive);
-  color: #ffffff;
+  background: var(--radar-primary);
+  color: var(--radar-primary-dark);
 }
 
 input,
@@ -3012,11 +3036,11 @@ select {
 
 /* Brand */
 .home-brand-mark {
-  border-color: var(--radar-olive);
+  border-color: var(--radar-primary);
 }
 
 .home-brand-mark span {
-  background: var(--radar-olive);
+  background: var(--radar-primary);
 }
 
 /* Home nav */
@@ -3031,12 +3055,12 @@ select {
 }
 
 .home-nav-item-active {
-  background: var(--radar-lime);
-  color: var(--radar-olive-ink);
+  background: var(--radar-primary);
+  color: var(--radar-primary-dark);
 }
 
 .home-nav-item-active svg {
-  color: var(--radar-olive-dark);
+  color: var(--radar-primary-dark);
 }
 
 /* Home trust note */
@@ -3076,13 +3100,14 @@ select {
 }
 
 .home-submit {
-  background: var(--radar-olive);
-  color: #ffffff;
+  background: var(--radar-primary);
+  color: var(--radar-primary-dark);
 }
 
 .home-submit:hover,
 .home-submit:focus-visible {
-  background: var(--radar-olive-dark);
+  background: var(--radar-primary-dark);
+  color: var(--radar-primary);
 }
 
 /* Home tones / chips */
@@ -3121,12 +3146,14 @@ select {
 }
 
 .understand-analyze-button {
-  background: var(--radar-olive);
+  background: var(--radar-primary);
+  color: var(--radar-primary-dark);
 }
 
 .understand-analyze-button:hover,
 .understand-analyze-button:focus-visible {
-  background: var(--radar-olive-dark);
+  background: var(--radar-primary-dark);
+  color: var(--radar-primary);
 }
 
 .understand-result-summary {
@@ -3149,13 +3176,14 @@ select {
 }
 
 .understand-cta button {
-  background: var(--radar-olive);
-  color: #ffffff;
+  background: var(--radar-primary);
+  color: var(--radar-primary-dark);
 }
 
 .understand-cta button:hover,
 .understand-cta button:focus-visible {
-  background: var(--radar-olive-dark);
+  background: var(--radar-primary-dark);
+  color: var(--radar-primary);
 }
 
 /* Opportunities (purple accent preserved) */
@@ -3207,18 +3235,19 @@ select {
 }
 
 .suggested-icon {
-  background: var(--radar-lime);
-  color: var(--radar-olive-ink);
+  background: var(--radar-primary);
+  color: var(--radar-primary-dark);
 }
 
 .suggested-provider button {
-  background: var(--radar-olive);
-  color: #ffffff;
+  background: var(--radar-primary);
+  color: var(--radar-primary-dark);
 }
 
 .suggested-provider button:hover,
 .suggested-provider button:focus-visible {
-  background: var(--radar-olive-dark);
+  background: var(--radar-primary-dark);
+  color: var(--radar-primary);
 }
 
 /* Map */
@@ -3270,8 +3299,8 @@ select {
 }
 
 .map-nav-active {
-  background: var(--radar-lime);
-  color: var(--radar-olive-ink);
+  background: var(--radar-primary);
+  color: var(--radar-primary-dark);
 }
 
 /* Secondary */
@@ -3286,8 +3315,8 @@ select {
 }
 
 .secondary-nav-active {
-  background: var(--radar-lime);
-  color: var(--radar-olive-ink);
+  background: var(--radar-primary);
+  color: var(--radar-primary-dark);
 }
 
 /* Opportunities */
@@ -3305,17 +3334,18 @@ select {
 }
 
 .opportunities-location-active .opportunities-toggle {
-  background: var(--radar-olive);
+  background: var(--radar-primary);
 }
 
 .opportunities-search-button {
-  background: var(--radar-olive);
-  color: #ffffff;
+  background: var(--radar-primary);
+  color: var(--radar-primary-dark);
 }
 
 .opportunities-search-button:hover,
 .opportunities-search-button:focus-visible {
-  background: var(--radar-olive-dark);
+  background: var(--radar-primary-dark);
+  color: var(--radar-primary);
 }
 
 .opportunity-card {
@@ -3326,8 +3356,8 @@ select {
 
 .opportunity-card:hover,
 .opportunity-card:focus-visible {
-  border-color: var(--radar-olive-line);
-  box-shadow: 0 4px 12px rgba(77, 103, 0, 0.08);
+  border-color: var(--radar-primary-line);
+  box-shadow: 0 4px 12px rgba(212, 255, 112, 0.15);
 }
 
 .opportunity-icon {
@@ -3350,18 +3380,19 @@ select {
 
 /* Compare */
 .compare-nav-active {
-  background: var(--radar-lime);
-  color: var(--radar-olive-ink);
+  background: var(--radar-primary);
+  color: var(--radar-primary-dark);
 }
 
 .compare-button {
-  background: var(--radar-olive);
-  color: #ffffff;
+  background: var(--radar-primary);
+  color: var(--radar-primary-dark);
 }
 
 .compare-button:hover,
 .compare-button:focus-visible {
-  background: var(--radar-olive-dark);
+  background: var(--radar-primary-dark);
+  color: var(--radar-primary);
 }
 
 /* Mobile polish */
@@ -3382,6 +3413,7 @@ select {
     width: 44px;
     height: 44px;
   }
+}
 
 /* ---------- Chat Anna María ---------- */
 
@@ -3443,11 +3475,11 @@ select {
 
 .chat-header strong {
   font-size: 18px;
-  color: #151f00;
+  color: var(--radar-primary-dark);
 }
 
 .chat-header span {
-  color: #151f00;
+  color: var(--radar-primary-dark);
   font-size: 13px;
 }
 
@@ -3513,7 +3545,7 @@ select {
   border-radius: 12px;
   border-bottom-right-radius: 4px;
   background: var(--primary-soft);
-  color: #151f00;
+  color: var(--radar-primary-dark);
   white-space: pre-wrap;
   overflow-wrap: anywhere;
 }
