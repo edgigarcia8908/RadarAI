@@ -9,6 +9,7 @@ import OportunidadesView from './components/opportunities/OportunidadesView';
 import CompararProveedoresView from './components/compare/CompararProveedoresView';
 import MapaRiesgoView from './components/map/MapaRiesgoView';
 import SecondaryViewShell from './components/navigation/SecondaryViewShell';
+import AnnaMariaChat from './AnnaMariaChat';
 import type { HomeNavigationTarget } from './types/home.types';
 
 type Modo = 'home' | 'ciudadano' | 'empresa' | 'veedurias' | 'mapa' | 'estudio' | 'ficha';
@@ -17,6 +18,9 @@ export default function App() {
   const [modo, setModo] = useState<Modo>('home');
   // Cuando CiudadanoView crea una veeduría desde un hallazgo, salta directo a su detalle.
   const [veeduriaAbierta, setVeeduriaAbierta] = useState<string | null>(null);
+  // Contexto territorial activo para que Anna María responda con datos reales de la región.
+  const [departamentoActivo, setDepartamentoActivo] = useState<string>('');
+  const [municipioActivo, setMunicipioActivo] = useState<string>('');
 
   function irAVeeduria(id: string) {
     setVeeduriaAbierta(id);
@@ -29,6 +33,12 @@ export default function App() {
 
   return (
     <div className={modo === 'home' ? 'app-shell app-shell-home' : modo === 'ciudadano' ? 'app-shell app-shell-understand' : modo === 'empresa' ? 'app-shell app-shell-opportunities' : modo === 'estudio' ? 'app-shell app-shell-compare' : modo === 'mapa' ? 'app-shell app-shell-map' : 'app-shell app-shell-legacy'}>
+      <AnnaMariaChat
+        radar={{
+          department: departamentoActivo,
+          municipality: municipioActivo,
+        }}
+      />
       {modo !== 'home' && modo !== 'ciudadano' && modo !== 'empresa' && modo !== 'estudio' && (
         <button
           onClick={() => {
