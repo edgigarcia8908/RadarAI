@@ -15,4 +15,5 @@ export interface OpportunityItem {
 
 export interface OpportunitiesViewProps {
   onNavigate: (target: HomeNavigationTarget) => void;
+  crumbLabel?: string;
 }

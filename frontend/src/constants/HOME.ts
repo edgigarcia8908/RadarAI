@@ -8,6 +8,9 @@ export const HOME_NAV_ITEMS: HomeNavItem[] = [
   { id: 'oversight', label: 'Veedurías', icon: 'shield', target: 'veedurias' },
   { id: 'risk-map', label: 'Mapa de riesgo', icon: 'map', target: 'mapa' },
   { id: 'territorial-sheet', label: 'Ficha territorial', icon: 'building-2', target: 'ficha' },
+  { id: 'contractor-tracking', label: 'Seguimiento de contratistas', icon: 'route', target: 'seguimiento' },
+  { id: 'whistleblower', label: 'Denuncias', icon: 'alert', target: 'denuncias' },
+  { id: 'business-match', label: 'Match empresarial', icon: 'network', target: 'match' },
 ];
 
 export const HOME_EXAMPLES: HomeExample[] = [
@@ -31,6 +34,13 @@ export const HOME_EXAMPLES: HomeExample[] = [
     icon: 'people',
     tone: 'yellow',
     target: 'estudio',
+  },
+  {
+    id: 'csv-alert',
+    label: 'Me llegó un documento con sobrecostos, ¿qué hago?',
+    icon: 'alert',
+    tone: 'yellow',
+    target: 'denuncias',
   },
 ];
 
@@ -58,6 +68,30 @@ export const HOME_ROUTES: HomeRoute[] = [
     icon: 'scales',
     tone: 'yellow',
     target: 'estudio',
+  },
+  {
+    id: 'contractor-tracking',
+    title: 'Seguimiento de contratistas',
+    description: 'Sigue contratos en ejecución y detecta sobrecostos por proveedor.',
+    icon: 'route',
+    tone: 'green',
+    target: 'seguimiento',
+  },
+  {
+    id: 'whistleblower',
+    title: 'Denuncias',
+    description: 'Carga un documento y encuentra alertas contra SECOP.',
+    icon: 'alert',
+    tone: 'yellow',
+    target: 'denuncias',
+  },
+  {
+    id: 'business-match',
+    title: 'Match empresarial',
+    description: 'Encuentra contratos hechos a la medida de tu empresa.',
+    icon: 'network',
+    tone: 'lilac',
+    target: 'match',
   },
 ];
 

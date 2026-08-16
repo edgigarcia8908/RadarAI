@@ -3,6 +3,7 @@ import { obtenerFichaTerritorial, FichaTerritorial } from './api';
 import colombia from './colombia.json';
 import PresupuestoCard from './PresupuestoCard';
 import ContextoTerritorialCard from './ContextoTerritorialCard';
+import Breadcrumbs from './components/navigation/Breadcrumbs';
 
 interface DeptoColombia {
   departamento: string;
@@ -17,7 +18,7 @@ const DEPARTAMENTOS = colombia as DeptoColombia[];
  * contratación, presupuesto (CUIPO), regalías (SGR), desempeño (MDM) y un
  * resumen de las alertas de identidad (SIRI/SIGEP) de un municipio.
  */
-export default function FichaTerritorialView() {
+export default function FichaTerritorialView({ onHome }: { onHome?: () => void }) {
   const [departamento, setDepartamento] = useState('Cundinamarca');
   const [ciudad, setCiudad] = useState('Tocancipá');
   const ciudadesDisponibles = useMemo(
@@ -43,8 +44,9 @@ export default function FichaTerritorialView() {
 
   return (
     <div>
-      <h1>📍 Ficha territorial</h1>
-      <p style={{ color: '#555' }}>
+      <Breadcrumbs items={[{ label: 'Inicio', onClick: onHome! }, { label: 'Ficha territorial' }]} />
+      <h1 className="view-title">📍 Ficha territorial</h1>
+      <p className="view-subtitle">
         Todo lo que RadarAI sabe de un municipio, junto: identidad, contratación, presupuesto, regalías, desempeño y
         alertas de identidad. Consolidado de las fuentes que ya tenemos — nada nuevo, solo en un solo lugar.
       </p>

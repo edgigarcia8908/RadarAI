@@ -8,10 +8,12 @@ import EntenderGastoView from './components/understand/EntenderGastoView';
 import OportunidadesView from './components/opportunities/OportunidadesView';
 import CompararProveedoresView from './components/compare/CompararProveedoresView';
 import MapaRiesgoView from './components/map/MapaRiesgoView';
+import SeguimientoContratistasView from './SeguimientoContratistasView';
+import DenunciasView from './components/denuncias/DenunciasView';
 import SecondaryViewShell from './components/navigation/SecondaryViewShell';
 import type { HomeNavigationTarget } from './types/home.types';
 
-type Modo = 'home' | 'ciudadano' | 'empresa' | 'veedurias' | 'mapa' | 'estudio' | 'ficha';
+type Modo = 'home' | 'ciudadano' | 'empresa' | 'veedurias' | 'mapa' | 'estudio' | 'ficha' | 'seguimiento' | 'denuncias' | 'match';
 
 export default function App() {
   const [modo, setModo] = useState<Modo>('home');
@@ -27,20 +29,13 @@ export default function App() {
     setModo(target);
   }
 
-  return (
-    <div className={modo === 'home' ? 'app-shell app-shell-home' : modo === 'ciudadano' ? 'app-shell app-shell-understand' : modo === 'empresa' ? 'app-shell app-shell-opportunities' : modo === 'estudio' ? 'app-shell app-shell-compare' : modo === 'mapa' ? 'app-shell app-shell-map' : 'app-shell app-shell-legacy'}>
-      {modo !== 'home' && modo !== 'ciudadano' && modo !== 'empresa' && modo !== 'estudio' && (
-        <button
-          onClick={() => {
-            setModo('home');
-            setVeeduriaAbierta(null);
-          }}
-          style={{ marginBottom: 16, background: 'transparent', color: '#1a2b6d', border: '1px solid #1a2b6d' }}
-        >
-          ← Volver
-        </button>
-      )}
+  function irHome() {
+    setModo('home');
+    setVeeduriaAbierta(null);
+  }
 
+  return (
+    <div className={modo === 'home' ? 'app-shell app-shell-home' : modo === 'ciudadano' ? 'app-shell app-shell-understand' : (modo === 'empresa' || modo === 'match') ? 'app-shell app-shell-opportunities' : modo === 'estudio' ? 'app-shell app-shell-compare' : modo === 'mapa' ? 'app-shell app-shell-map' : 'app-shell app-shell-legacy'}>
       {false && modo === 'home' && (
         <div style={{ textAlign: 'center', marginTop: 60 }}>
           <h1>🛰️ RADAR</h1>
@@ -73,16 +68,31 @@ export default function App() {
 
       {modo === 'ciudadano' && <EntenderGastoView onNavigate={navigateFromHome} />}
       {modo === 'empresa' && <OportunidadesView onNavigate={navigateFromHome} />}
+      {modo === 'match' && <OportunidadesView onNavigate={navigateFromHome} crumbLabel="Match empresarial" />}
       {modo === 'estudio' && <CompararProveedoresView onNavigate={navigateFromHome} />}
       {modo === 'veedurias' && (
         <SecondaryViewShell activeTarget="veedurias" onNavigate={navigateFromHome}>
-          <VeeduriasView abrirId={veeduriaAbierta} onAbierta={() => setVeeduriaAbierta(null)} />
+          <VeeduriasView
+            abrirId={veeduriaAbierta}
+            onAbierta={() => setVeeduriaAbierta(null)}
+            onHome={irHome}
+          />
         </SecondaryViewShell>
       )}
       {modo === 'mapa' && <MapaRiesgoView onNavigate={navigateFromHome} />}
       {modo === 'ficha' && (
         <SecondaryViewShell activeTarget="ficha" onNavigate={navigateFromHome}>
-          <FichaTerritorialView />
+          <FichaTerritorialView onHome={irHome} />
+        </SecondaryViewShell>
+      )}
+      {modo === 'seguimiento' && (
+        <SecondaryViewShell activeTarget="seguimiento" onNavigate={navigateFromHome}>
+          <SeguimientoContratistasView onHome={irHome} />
+        </SecondaryViewShell>
+      )}
+      {modo === 'denuncias' && (
+        <SecondaryViewShell activeTarget="denuncias" onNavigate={navigateFromHome}>
+          <DenunciasView onHome={irHome} />
         </SecondaryViewShell>
       )}
     </div>

@@ -403,3 +403,111 @@ export function generarEstudioMercado(input: {
     body: JSON.stringify(input),
   }).then(manejar);
 }
+
+export interface ResumenSeguimiento {
+  totalContratos: number;
+  valorTotal: number;
+  proveedoresUnicos: number;
+  enEjecucion: number;
+  liquidados: number;
+  conProrroga: number;
+  conSobrecosto: number;
+  sobrecostoTotal: number;
+}
+
+export interface ContratoSeguimiento {
+  id: string;
+  objeto: string;
+  entidad: string;
+  ciudad: string;
+  departamento: string;
+  estado: string;
+  tipo: string;
+  fechaFirma: string | null;
+  fechaInicio: string | null;
+  fechaFin: string | null;
+  valorDelContrato: number;
+  valorPagado: number;
+  sobrecosto: boolean;
+  montoSobrecosto: number;
+  veedor: string;
+  responsable: string;
+  prorrogas: number;
+  puedeSerProrrogado: boolean;
+  liquidado: boolean;
+  origenDeLosRecursos: string;
+  urlProceso: string;
+}
+
+export interface PerfilContratista {
+  nit: string;
+  nombre: string;
+  resumen: {
+    totalContratos: number;
+    valorTotal: number;
+    sobrecostoTotal: number;
+    entidades: number;
+    municipios: number;
+  };
+  contratos: ContratoSeguimiento[];
+}
+
+export interface RankingContratista {
+  nit: string;
+  nombre: string;
+  contratos: number;
+  valorTotal: number;
+  entidades: number;
+  municipios: number;
+}
+
+export function obtenerResumenSeguimiento(): Promise<ResumenSeguimiento> {
+  return fetch('/api/seguimiento/resumen').then(manejar);
+}
+
+export function obtenerPerfilContratista(nit: string): Promise<PerfilContratista> {
+  return fetch(`/api/seguimiento/contratista/${encodeURIComponent(nit)}`).then(manejar);
+}
+
+export function obtenerRankingContratistas(limit = 20): Promise<RankingContratista[]> {
+  return fetch(`/api/seguimiento/ranking?limit=${limit}`).then(manejar);
+}
+
+export type SeveridadAlerta = 'ALTA' | 'MEDIA' | 'INFO';
+export type EstadoAlerta = 'ABIERTA' | 'REVISADA';
+
+export interface Alerta {
+  _id: string;
+  proveedor: string;
+  nitProveedor: string;
+  contratos: number;
+  valorTotal: number;
+  sobrecostoTotal: number;
+  motivo: string;
+  severidad: SeveridadAlerta;
+  estado: EstadoAlerta;
+  fuenteArchivo: string;
+  createdAt: string;
+}
+
+export interface ResultadoCarga {
+  procesados: number;
+  sinCoincidencia: string[];
+  alertas: Alerta[];
+}
+
+export function cargarAlertasCsv(file: File, fuente?: string): Promise<ResultadoCarga> {
+  const form = new FormData();
+  form.append('file', file);
+  if (fuente) form.append('fuente', fuente);
+  return fetch('/api/alertas/carga', { method: 'POST', body: form }).then(manejar);
+}
+
+export function listarAlertas(estado?: EstadoAlerta): Promise<Alerta[]> {
+  const params = estado ? `?estado=${estado}` : '';
+  return fetch(`/api/alertas${params}`).then(manejar);
+}
+
+export function marcarAlertaRevisada(id: string): Promise<Alerta> {
+  return fetch(`/api/alertas/${id}/revisar`, { method: 'POST' }).then(manejar);
+}

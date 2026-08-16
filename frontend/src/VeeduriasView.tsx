@@ -16,8 +16,9 @@ import {
   Veeduria,
 } from './api';
 import ContratoCard from './ContratoCard';
+import Breadcrumbs from './components/navigation/Breadcrumbs';
 
-function ListaVeedurias({ onAbrir, onNueva }: { onAbrir: (id: string) => void; onNueva: () => void }) {
+function ListaVeedurias({ onAbrir, onNueva, onHome }: { onAbrir: (id: string) => void; onNueva: () => void; onHome: () => void }) {
   const [veedurias, setVeedurias] = useState<Veeduria[] | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -29,8 +30,9 @@ function ListaVeedurias({ onAbrir, onNueva }: { onAbrir: (id: string) => void; o
 
   return (
     <div>
-      <h1>🔍 Veedurías</h1>
-      <p style={{ color: '#555' }}>Investigaciones colectivas sobre contratación pública, organizadas por ciudadanos.</p>
+      <Breadcrumbs items={[{ label: 'Inicio', onClick: onHome }, { label: 'Veedurías' }]} />
+      <h1 className="view-title">🔍 Veedurías</h1>
+      <p className="view-subtitle">Investigaciones colectivas sobre contratación pública, organizadas por ciudadanos.</p>
       <button onClick={onNueva} style={{ marginTop: 12 }}>+ Nueva veeduría</button>
 
       {error && <p style={{ color: 'crimson' }}>{error}</p>}
@@ -58,7 +60,7 @@ function ListaVeedurias({ onAbrir, onNueva }: { onAbrir: (id: string) => void; o
   );
 }
 
-function NuevaVeeduria({ onCreada, onCancelar }: { onCreada: (id: string) => void; onCancelar: () => void }) {
+function NuevaVeeduria({ onCreada, onCancelar, onHome }: { onCreada: (id: string) => void; onCancelar: () => void; onHome: () => void }) {
   const [titulo, setTitulo] = useState('');
   const [descripcion, setDescripcion] = useState('');
   const [departamento, setDepartamento] = useState('');
@@ -82,6 +84,7 @@ function NuevaVeeduria({ onCreada, onCancelar }: { onCreada: (id: string) => voi
 
   return (
     <div>
+      <Breadcrumbs items={[{ label: 'Inicio', onClick: onHome }, { label: 'Veedurías', onClick: onCancelar }, { label: 'Nueva veeduría' }]} />
       <h1>+ Nueva veeduría</h1>
       <div style={{ display: 'grid', gap: 8, marginTop: 16 }}>
         <label>Título <input value={titulo} onChange={(e) => setTitulo(e.target.value)} style={{ width: '100%' }} /></label>
@@ -92,14 +95,14 @@ function NuevaVeeduria({ onCreada, onCancelar }: { onCreada: (id: string) => voi
       </div>
       <div style={{ display: 'flex', gap: 8, marginTop: 16 }}>
         <button onClick={handleCrear} disabled={cargando || !titulo.trim()}>{cargando ? 'Creando…' : 'Crear veeduría'}</button>
-        <button onClick={onCancelar} style={{ background: 'transparent', color: '#1a2b6d', border: '1px solid #1a2b6d' }}>Cancelar</button>
+        <button onClick={onCancelar} style={{ background: 'transparent', color: 'var(--radar-olive)', border: '1px solid var(--radar-olive)' }}>Cancelar</button>
       </div>
       {error && <p style={{ color: 'crimson' }}>{error}</p>}
     </div>
   );
 }
 
-function DetalleVeeduria({ id, onVolver }: { id: string; onVolver: () => void }) {
+function DetalleVeeduria({ id, onVolver, onHome }: { id: string; onVolver: () => void; onHome: () => void }) {
   const [v, setV] = useState<Veeduria | null>(null);
   const [evidencia, setEvidencia] = useState<EvidenciaDetalle | null>(null);
   const [sanciones, setSanciones] = useState<Record<string, SancionSiri[]>>({});
@@ -171,9 +174,13 @@ function DetalleVeeduria({ id, onVolver }: { id: string; onVolver: () => void })
 
   return (
     <div>
-      <button onClick={onVolver} style={{ marginBottom: 12, background: 'transparent', color: '#1a2b6d', border: '1px solid #1a2b6d' }}>
-        ← Todas las veedurías
-      </button>
+      <Breadcrumbs
+        items={[
+          { label: 'Inicio', onClick: onHome },
+          { label: 'Veedurías', onClick: onVolver },
+          { label: v.titulo },
+        ]}
+      />
       <h1>{v.titulo}</h1>
       <p style={{ color: '#555' }}>{v.descripcion}</p>
       <p style={{ fontSize: 14, color: '#888' }}>
@@ -252,7 +259,7 @@ function DetalleVeeduria({ id, onVolver }: { id: string; onVolver: () => void })
   );
 }
 
-export default function VeeduriasView({ abrirId, onAbierta }: { abrirId?: string | null; onAbierta?: () => void } = {}) {
+export default function VeeduriasView({ abrirId, onAbierta, onHome }: { abrirId?: string | null; onAbierta?: () => void; onHome?: () => void } = {}) {
   const [vista, setVista] = useState<{ modo: 'lista' } | { modo: 'nueva' } | { modo: 'detalle'; id: string }>(
     abrirId ? { modo: 'detalle', id: abrirId } : { modo: 'lista' },
   );
@@ -266,11 +273,11 @@ export default function VeeduriasView({ abrirId, onAbierta }: { abrirId?: string
   }, [abrirId]);
 
   if (vista.modo === 'nueva') {
-    return <NuevaVeeduria onCreada={(id) => setVista({ modo: 'detalle', id })} onCancelar={() => setVista({ modo: 'lista' })} />;
+    return <NuevaVeeduria onCreada={(id) => setVista({ modo: 'detalle', id })} onCancelar={() => setVista({ modo: 'lista' })} onHome={onHome!} />;
   }
   if (vista.modo === 'detalle') {
-    return <DetalleVeeduria id={vista.id} onVolver={() => setVista({ modo: 'lista' })} />;
+    return <DetalleVeeduria id={vista.id} onVolver={() => setVista({ modo: 'lista' })} onHome={onHome!} />;
   }
-  return <ListaVeedurias onAbrir={(id) => setVista({ modo: 'detalle', id })} onNueva={() => setVista({ modo: 'nueva' })} />;
+  return <ListaVeedurias onAbrir={(id) => setVista({ modo: 'detalle', id })} onNueva={() => setVista({ modo: 'nueva' })} onHome={onHome!} />;
 }
 import React from 'react';

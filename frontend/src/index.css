@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap");
+
 body {
   background: #fafafa;
   color: #111;
@@ -9,7 +11,7 @@ input, textarea, button {
   border: 1px solid #ccc;
 }
 button {
-  background: #1a2b6d;
+  background: var(--radar-olive);
   color: white;
   border: none;
   cursor: pointer;
@@ -295,7 +297,7 @@ body {
 }
 
 .home-tone-lilac {
-  background: #f0e6fb;
+  background: var(--radar-warn-soft);
 }
 
 .home-tone-yellow {
@@ -317,17 +319,17 @@ body {
   min-height: 87px;
   gap: 10px;
   padding: 10px 13px;
-  border: 1px solid #dce5d9;
+  border: 1px solid var(--radar-border);
   border-radius: 12px;
   background: #ffffff;
-  color: #1d2a1d;
+  color: var(--radar-text);
   text-align: left;
 }
 
 .home-route:hover,
 .home-route:focus-visible {
-  border-color: #b6caae;
-  box-shadow: 0 3px 10px rgba(44, 79, 42, 0.08);
+  border-color: var(--radar-olive-line);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   outline: 0;
 }
 
@@ -351,13 +353,13 @@ body {
 }
 
 .home-route-copy strong {
-  color: #1d2a1d;
+  color: var(--radar-text);
   font-size: 12px;
   font-weight: 750;
 }
 
 .home-route-copy span {
-  color: #253125;
+  color: var(--radar-text-soft);
   font-size: 10px;
 }
 
@@ -577,13 +579,13 @@ body {
 }
 
 .understand-result-icon-green {
-  background: #d9ebcf;
-  color: #2c8d2b;
+  background: var(--radar-ok-soft);
+  color: var(--radar-ok);
 }
 
 .understand-result-icon-teal {
-  background: #e6f6f3;
-  color: #2d817b;
+  background: var(--radar-warn-soft);
+  color: var(--radar-warn);
 }
 
 .understand-results h3 {
@@ -599,10 +601,10 @@ body {
   min-height: 38px;
   gap: 10px;
   padding: 11px 12px;
-  border: 1px solid #dfe8dc;
+  border: 1px solid var(--radar-border);
   border-radius: 10px;
   background: #ffffff;
-  color: #2f392e;
+  color: var(--radar-text);
   font-size: 11px;
   font-weight: 650;
   text-align: left;
@@ -610,7 +612,7 @@ body {
 
 .understand-alert svg:first-child {
   flex: 0 0 16px;
-  color: #f2a51d;
+  color: var(--radar-warn);
 }
 
 .understand-alert span {
@@ -619,7 +621,7 @@ body {
 
 .understand-alert svg:last-child {
   flex: 0 0 15px;
-  color: #687367;
+  color: var(--radar-text-mute);
 }
 
 .understand-cta {
@@ -980,6 +982,42 @@ body {
   color: #1d2a1d;
   font-size: 12px;
   font-weight: 800;
+}
+
+.opportunity-radar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 16px;
+  border: 1px solid #dfe8dc;
+  border-radius: 14px;
+  background: #fbfffa;
+  text-align: center;
+}
+
+.opportunity-radar h2 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 850;
+  line-height: 1.15;
+}
+
+.opportunity-radar-plot {
+  width: 260px;
+  max-width: 100%;
+  height: auto;
+}
+
+.opportunity-radar-score {
+  margin: 0;
+  color: #4a5548;
+  font-size: 11px;
+}
+
+.opportunity-radar-score strong {
+  color: #6c944f;
+  font-size: 15px;
 }
 
 .compare-page {
@@ -1650,9 +1688,54 @@ body {
   background: #ffffff;
 }
 
-.secondary-content > h1 {
+.secondary-content > h1,
+.secondary-content .view-title {
   margin-top: 0;
-  color: #1c281b;
+  color: var(--radar-text);
+}
+
+.view-title {
+  margin-bottom: 8px;
+  font-size: 26px;
+  line-height: 1.25;
+}
+
+.view-subtitle {
+  margin: 0 0 20px;
+  max-width: 680px;
+  color: var(--radar-text-soft);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.view-breadcrumbs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 14px;
+  font-size: 12px;
+}
+
+.view-breadcrumbs-link {
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--radar-olive);
+  font: inherit;
+  cursor: pointer;
+}
+
+.view-breadcrumbs-link:hover {
+  text-decoration: underline;
+}
+
+.view-breadcrumbs-actual {
+  color: var(--radar-text);
+}
+
+.view-breadcrumbs-sep {
+  color: var(--radar-text-soft);
 }
 
 @media (max-width: 900px) {
@@ -2031,5 +2114,450 @@ body {
 
   .map-canvas-wrap {
     min-height: 430px;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* RadarAI x Portal Transparencia - Stitch design layer                */
+/* Global tokens plus targeted overrides. Olive identity everywhere;   */
+/* amber / red are kept only as semaphore chips per view.              */
+/* ------------------------------------------------------------------ */
+
+:root {
+  --radar-olive: #4d6700;
+  --radar-olive-dark: #3b5100;
+  --radar-olive-ink: #3f5900;
+  --radar-olive-soft: #f3ffdf;
+  --radar-olive-line: #cfe3a0;
+  --radar-lime: #d4ff70;
+  --radar-ok: #2c8d2b;
+  --radar-ok-soft: #eff9e9;
+  --radar-warn: #b98a00;
+  --radar-warn-soft: #fff2d5;
+  --radar-danger: #c43d32;
+  --radar-danger-soft: #fee9e7;
+  --radar-surface: #f9f9f9;
+  --radar-surface-map: #eef0e8;
+  --radar-text: #1a1a1a;
+  --radar-text-soft: #666666;
+  --radar-text-mute: #8a8a8a;
+  --radar-border: #e5e5e5;
+  --radar-radius: 8px;
+  --radar-radius-lg: 16px;
+  --radar-font: "Hanken Grotesk", "Inter", ui-sans-serif, system-ui,
+    -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Base */
+body {
+  font-family: var(--radar-font);
+  color: var(--radar-text);
+}
+
+button,
+input,
+textarea,
+select {
+  font-family: var(--radar-font);
+}
+
+button {
+  background: var(--radar-olive);
+  color: #ffffff;
+}
+
+input,
+textarea,
+select {
+  border-color: var(--radar-border);
+  border-radius: var(--radar-radius);
+}
+
+/* Surfaces */
+.home-layout,
+.understand-page,
+.opportunities-page,
+.compare-page,
+.map-page,
+.secondary-page,
+.app-shell-home,
+.app-shell-understand,
+.app-shell-opportunities,
+.app-shell-compare,
+.app-shell-map {
+  background: var(--radar-surface);
+}
+
+/* Brand */
+.home-brand-mark {
+  border-color: var(--radar-olive);
+}
+
+.home-brand-mark span {
+  background: var(--radar-olive);
+}
+
+/* Home nav */
+.home-nav-item {
+  color: var(--radar-text-soft);
+}
+
+.home-nav-item:hover,
+.home-nav-item:focus-visible {
+  background: var(--radar-olive-soft);
+  color: var(--radar-text);
+}
+
+.home-nav-item-active {
+  background: var(--radar-lime);
+  color: var(--radar-olive-ink);
+}
+
+.home-nav-item-active svg {
+  color: var(--radar-olive-dark);
+}
+
+/* Home trust note */
+.home-trust-note {
+  border-color: var(--radar-olive-line);
+  color: var(--radar-olive);
+}
+
+.home-trust-note span {
+  color: var(--radar-text);
+}
+
+/* Home content */
+.home-content h1 {
+  color: var(--radar-text);
+}
+
+.home-subtitle,
+.home-section-label {
+  color: var(--radar-text-soft);
+}
+
+/* Home prompt form */
+.home-prompt-form {
+  border-color: var(--radar-border);
+  background: #ffffff;
+  box-shadow: 0 12px 24px rgba(26, 26, 26, 0.08);
+  color: var(--radar-olive);
+}
+
+.home-prompt-form input {
+  color: var(--radar-text);
+}
+
+.home-prompt-form input::placeholder {
+  color: var(--radar-text-mute);
+}
+
+.home-submit {
+  background: var(--radar-olive);
+  color: #ffffff;
+}
+
+.home-submit:hover,
+.home-submit:focus-visible {
+  background: var(--radar-olive-dark);
+}
+
+/* Home tones / chips */
+.home-tone-green {
+  background: var(--radar-olive-soft);
+}
+
+.home-example:hover,
+.home-example:focus-visible {
+  outline-color: var(--radar-olive-line);
+}
+
+/* Home routes */
+.home-route {
+  border-color: var(--radar-border);
+}
+
+.home-route:hover,
+.home-route:focus-visible {
+  border-color: var(--radar-olive-line);
+}
+
+/* Understand */
+.understand-form-panel,
+.understand-results,
+.understand-sidebar,
+.understand-results-list,
+.understand-alert,
+.understand-metrics {
+  border-color: var(--radar-border);
+}
+
+.understand-input-wrap,
+.understand-select-wrap {
+  border-color: var(--radar-border);
+}
+
+.understand-analyze-button {
+  background: var(--radar-olive);
+}
+
+.understand-analyze-button:hover,
+.understand-analyze-button:focus-visible {
+  background: var(--radar-olive-dark);
+}
+
+.understand-result-summary {
+  border-color: var(--radar-olive-line);
+  background: var(--radar-olive-soft);
+}
+
+.understand-result-summary-white {
+  border-color: var(--radar-border);
+}
+
+.understand-result-icon-green {
+  background: #e9f9c8;
+  color: var(--radar-olive);
+}
+
+.understand-cta {
+  border-color: var(--radar-olive-line);
+  background: var(--radar-olive-soft);
+}
+
+.understand-cta button {
+  background: var(--radar-olive);
+  color: #ffffff;
+}
+
+.understand-cta button:hover,
+.understand-cta button:focus-visible {
+  background: var(--radar-olive-dark);
+}
+
+/* Opportunities (purple accent preserved) */
+.opportunities-sidebar,
+.opportunities-form,
+.opportunities-results,
+.opportunities-location,
+.opportunities-nav-controls {
+  border-color: var(--radar-border);
+}
+
+.opportunities-nav-item:hover,
+.opportunities-nav-item:focus-visible {
+  background: var(--radar-olive-soft);
+}
+
+/* Compare (yellow accent preserved) */
+.compare-sidebar,
+.compare-form,
+.compare-results,
+.compare-metrics {
+  border-color: var(--radar-border);
+}
+
+.provider-icon {
+  background: #f2f2f2;
+  color: var(--radar-olive);
+}
+
+.provider-card {
+  border-color: var(--radar-border);
+}
+
+.provider-card-green {
+  border-color: var(--radar-olive);
+}
+
+.provider-card-green .provider-metrics span {
+  color: var(--radar-olive);
+}
+
+.suggested-provider {
+  border-color: var(--radar-olive-line);
+  background: var(--radar-olive-soft);
+}
+
+.suggested-copy strong {
+  color: var(--radar-olive);
+}
+
+.suggested-icon {
+  background: var(--radar-lime);
+  color: var(--radar-olive-ink);
+}
+
+.suggested-provider button {
+  background: var(--radar-olive);
+  color: #ffffff;
+}
+
+.suggested-provider button:hover,
+.suggested-provider button:focus-visible {
+  background: var(--radar-olive-dark);
+}
+
+/* Map */
+.map-sidebar,
+.map-control-panel,
+.map-results,
+.map-canvas-wrap,
+.map-stat,
+.map-legend {
+  border-color: var(--radar-border);
+}
+
+.map-canvas-wrap {
+  background: var(--radar-surface-map);
+}
+
+.map-eyebrow {
+  color: var(--radar-olive);
+}
+
+.map-info-note {
+  border-color: var(--radar-olive-line);
+  background: var(--radar-olive-soft);
+  color: var(--radar-olive);
+}
+
+.map-info-note span {
+  color: var(--radar-text-soft);
+}
+
+.map-data-badge {
+  background: var(--radar-olive-soft);
+  color: var(--radar-olive);
+}
+
+.map-empty-state,
+.map-loading-state {
+  border-color: var(--radar-olive-line);
+}
+
+.map-empty-state svg,
+.map-loading-state svg {
+  color: var(--radar-olive);
+}
+
+.map-nav-item:hover,
+.map-nav-item:focus-visible {
+  background: var(--radar-olive-soft);
+}
+
+.map-nav-active {
+  background: var(--radar-lime);
+  color: var(--radar-olive-ink);
+}
+
+/* Secondary */
+.secondary-sidebar,
+.secondary-content {
+  border-color: var(--radar-border);
+}
+
+.secondary-nav-item:hover,
+.secondary-nav-item:focus-visible {
+  background: var(--radar-olive-soft);
+}
+
+.secondary-nav-active {
+  background: var(--radar-lime);
+  color: var(--radar-olive-ink);
+}
+
+/* Opportunities */
+.opportunities-location {
+  background: var(--radar-surface);
+  color: var(--radar-olive);
+}
+
+.opportunities-location > span:nth-child(2) {
+  color: var(--radar-text);
+}
+
+.opportunities-toggle {
+  background: var(--radar-text-mute);
+}
+
+.opportunities-location-active .opportunities-toggle {
+  background: var(--radar-olive);
+}
+
+.opportunities-search-button {
+  background: var(--radar-olive);
+  color: #ffffff;
+}
+
+.opportunities-search-button:hover,
+.opportunities-search-button:focus-visible {
+  background: var(--radar-olive-dark);
+}
+
+.opportunity-card {
+  border-color: var(--radar-border);
+  background: var(--radar-surface);
+  color: var(--radar-text);
+}
+
+.opportunity-card:hover,
+.opportunity-card:focus-visible {
+  border-color: var(--radar-olive-line);
+  box-shadow: 0 4px 12px rgba(77, 103, 0, 0.08);
+}
+
+.opportunity-icon {
+  background: var(--radar-olive-soft);
+  color: var(--radar-olive);
+}
+
+.opportunity-data > strong {
+  color: var(--radar-text);
+}
+
+.opportunity-details {
+  color: var(--radar-text);
+}
+
+.opportunity-priority {
+  background: var(--radar-border);
+  color: var(--radar-text-soft);
+}
+
+/* Compare */
+.compare-nav-active {
+  background: var(--radar-lime);
+  color: var(--radar-olive-ink);
+}
+
+.compare-button {
+  background: var(--radar-olive);
+  color: #ffffff;
+}
+
+.compare-button:hover,
+.compare-button:focus-visible {
+  background: var(--radar-olive-dark);
+}
+
+/* Mobile polish */
+@media (max-width: 480px) {
+  .home-prompt-form {
+    flex-wrap: wrap;
+    min-height: auto;
+    padding: 12px;
+  }
+
+  .home-prompt-form input {
+    height: 40px;
+    font-size: 16px;
+  }
+
+  .home-submit {
+    flex-basis: 44px;
+    width: 44px;
+    height: 44px;
   }
 }

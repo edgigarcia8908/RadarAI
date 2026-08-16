@@ -40,7 +40,7 @@ export default function PerfilFuncionario({ nombre }: { nombre: string }) {
 
   return (
     <div style={{ marginTop: 4 }}>
-      <button onClick={toggle} style={{ fontSize: 12, padding: '2px 8px', background: 'transparent', color: '#1a2b6d', border: '1px solid #1a2b6d' }}>
+      <button onClick={toggle} style={{ fontSize: 12, padding: '2px 8px', background: 'transparent', color: 'var(--radar-olive)', border: '1px solid var(--radar-olive)' }}>
         {abierto ? '▲' : '🔍'} Ver historial de {nombre} en otros municipios
       </button>
 
@@ -93,7 +93,7 @@ export default function PerfilFuncionario({ nombre }: { nombre: string }) {
 
               <button
                 onClick={() => setVerDetalle((v) => !v)}
-                style={{ fontSize: 12, padding: '2px 8px', background: 'transparent', color: '#1a2b6d', border: '1px solid #1a2b6d' }}
+                style={{ fontSize: 12, padding: '2px 8px', background: 'transparent', color: 'var(--radar-olive)', border: '1px solid var(--radar-olive)' }}
               >
                 {verDetalle ? '▲ Ocultar' : '▼ Profundizar:'} lista completa de contratos
               </button>

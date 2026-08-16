@@ -18,7 +18,7 @@ function hoy(): string {
   return new Date().toISOString().slice(0, 10);
 }
 
-const PRIORIDAD_COLOR: Record<string, string> = { ALTA: '#e6f7e6', MEDIA: '#fff8e6', BAJA: '#f4f4f4' };
+const PRIORIDAD_COLOR: Record<string, string> = { ALTA: '#eff9e9', MEDIA: '#fff2d5', BAJA: '#f4f4f4' };
 const PRIORIDAD_EMOJI: Record<string, string> = { ALTA: '🔥', MEDIA: '🟡', BAJA: '⚪' };
 
 export default function EmpresaView() {

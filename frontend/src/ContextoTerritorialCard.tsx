@@ -74,7 +74,7 @@ export default function ContextoTerritorialCard({ ctx }: { ctx: ContextoTerritor
             </table>
           </div>
           {proyectosOrdenados.length > 5 && (
-            <button onClick={() => setVerTodos((v) => !v)} style={{ fontSize: 12, marginTop: 6, padding: '2px 8px', background: 'transparent', color: '#1a2b6d', border: '1px solid #1a2b6d' }}>
+            <button onClick={() => setVerTodos((v) => !v)} style={{ fontSize: 12, marginTop: 6, padding: '2px 8px', background: 'transparent', color: 'var(--radar-olive)', border: '1px solid var(--radar-olive)' }}>
               {verTodos ? '▲ Ver menos' : `▼ Ver los ${proyectosOrdenados.length} proyectos`}
             </button>
           )}

@@ -24,7 +24,7 @@ export type HomeIconName =
   | 'wallet'
   | 'alert';
 
-export type HomeNavigationTarget = 'ciudadano' | 'empresa' | 'estudio' | 'veedurias' | 'mapa' | 'ficha' | 'home';
+export type HomeNavigationTarget = 'ciudadano' | 'empresa' | 'estudio' | 'veedurias' | 'mapa' | 'ficha' | 'seguimiento' | 'denuncias' | 'match' | 'home';
 
 export interface HomeNavItem {
   id: string;

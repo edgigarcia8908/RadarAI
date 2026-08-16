@@ -14,6 +14,8 @@ import { SigepModule } from './sigep/sigep.module';
 import { TerritorioModule } from './territorio/territorio.module';
 import { DivipolaModule } from './divipola/divipola.module';
 import { FichaTerritorialModule } from './ficha-territorial/ficha-territorial.module';
+import { SeguimientoModule } from './seguimiento/seguimiento.module';
+import { AlertasModule } from './alertas/alertas.module';
 
 @Module({
   imports: [
@@ -32,6 +34,8 @@ import { FichaTerritorialModule } from './ficha-territorial/ficha-territorial.mo
     TerritorioModule,
     DivipolaModule,
     FichaTerritorialModule,
+    SeguimientoModule,
+    AlertasModule,
   ],
 })
 export class AppModule {}
