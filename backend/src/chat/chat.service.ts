@@ -72,13 +72,11 @@ function extraerCiudadDelMensaje(mensaje: string): string | null {
 }
 
 /**
- * Backend real de "Anna María" — el commit original (`45a5b1f`) registró
- * este módulo en app.module.ts pero nunca subió los archivos. En vez de
- * esperar, se implementa reusando lo que ya existe: el Contrato ya
- * sincronizado en Mongo (mismo patrón que CivicIntelService) + CuipoService
- * para presupuesto + completar() para redactar en lenguaje natural. Sin
- * ANTHROPIC_API_KEY/OPENAI_API_KEY, cae a una plantilla determinística con
- * los mismos números reales — nunca inventa cifras.
+ * Backend de "Anna María": reusa el Contrato ya sincronizado en Mongo
+ * (mismo patrón que CivicIntelService) + CuipoService para presupuesto +
+ * completar() para redactar en lenguaje natural. Sin ninguna API key de
+ * LLM configurada, cae a una plantilla determinística con los mismos
+ * números reales — nunca inventa cifras.
  */
 @Injectable()
 export class ChatService {

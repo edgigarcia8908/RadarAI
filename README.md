@@ -56,7 +56,7 @@ suma entre periodos. Verificado con datos reales: Tocancipá, Cundinamarca,
 corte 01/03/2026 — presupuesto apropiado $1.886.692.503.333, comprometido
 $2.055.589.772.662 (109%, alerta automática).
 
-Se muestra en `CiudadanoView` como panel "Presupuesto vs. contratación"
+Se muestra en `HomeView` (chat unificado) como panel "Presupuesto vs. contratación"
 junto a los resultados de cada consulta — si CUIPO no tiene reportes para
 esa entidad (nombre no coincide, o no reporta), no rompe el flujo, solo
 muestra un mensaje.
@@ -74,7 +74,7 @@ que **nunca se afirma identidad**, solo "coincidencia de nombre a
 verificar" (se exige que 3+ palabras del nombre buscado, de 4+ caracteres,
 aparezcan en el registro SIRI, para evitar falsos positivos por un solo
 apellido común). Se llama automáticamente al cargar resultados en
-`CiudadanoView` y `VeeduriasView`, mostrando una alerta roja en
+`HomeView` (chat unificado) y `VeeduriasView`, mostrando una alerta roja en
 `ContratoCard` cuando hay coincidencia. Verificado con datos reales del
 dataset (nombre de prueba con sanción real de 2005).
 
@@ -135,7 +135,7 @@ Nota de matching: el dataset SGR guarda nombres de municipio SIN tildes
 filtro SoQL (mismo tipo de problema que Bogotá/Cundinamarca, cada fuente
 tiene su propia convención de texto).
 
-Se muestra junto al presupuesto CUIPO en `CiudadanoView` como panel
+Se muestra junto al presupuesto CUIPO en `HomeView` (chat unificado) como panel
 "Contexto territorial" (`ContextoTerritorialCard.tsx`).
 
 ## Identidad territorial + Ficha Territorial (`src/divipola/`, `src/ficha-territorial/`)
@@ -154,7 +154,7 @@ bug con la próxima fuente.
 
 **Ficha Territorial** (`GET /api/ficha-territorial?departamento=&ciudad=`,
 vista `FichaTerritorialView.tsx`): consolida en una sola pantalla lo que
-hoy vive repartido entre Vigilar mi territorio, Estudio de mercado y Mapa
+hoy vive repartido entre Encontrar oportunidades, Estudio de mercado y Mapa
 de riesgo — identidad DIVIPOLA, resumen de contratación, presupuesto
 CUIPO, regalías SGR con su brecha, desempeño MDM, y un resumen de alertas
 SIRI/SIGEP. No agrega ninguna fuente nueva, solo reusa los servicios ya
@@ -168,7 +168,7 @@ saturaba la conexión (verificado: 517 nombres reales hicieron fallar
 *todas* las consultas). Se limitó a una muestra de 40 nombres, mostrando
 siempre cuántos se revisaron sobre el total real — la ficha es un
 resumen, no pretende ser exhaustiva; el detalle completo con disclaimer
-sigue disponible por contrato en Vigilar mi territorio.
+sigue disponible por contrato vía el chat de Inicio.
 
 ## Repo 100% autocontenido — cero servicios que no puedes desplegar tú
 
@@ -277,9 +277,9 @@ cp backend/.env.example backend/.env   # completar MONGO_URI (Mongo propio de Ra
 npm run dev                             # backend :4500 + frontend :5490
 ```
 
-En el navegador (`http://localhost:5490`): elige territorio + tema, dale
-"Sincronizar datos de SECOP" (trae datos reales, puede tardar unos segundos),
-después "Preguntar".
+En el navegador (`http://localhost:5490`): elige departamento/municipio y
+escribe una pregunta en el chat de Inicio — sincroniza SECOP para ese
+territorio automáticamente y responde con datos reales.
 
 ## Cómo funciona la ingesta hoy — preguntas frecuentes
 

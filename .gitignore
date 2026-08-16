@@ -9,3 +9,7 @@ tsconfig.tsbuildinfo
 # producción/pruebas locales, no código. En el VPS conviene moverlo fuera
 # del clon del repo (ver deploy.sh) para que sobreviva a un "git pull".
 backend/uploads/
+
+# Capturas de sesión de playwright-cli (logs de consola, snapshots de
+# página) — artefactos de depuración local, no algo para versionar.
+.playwright-cli/
