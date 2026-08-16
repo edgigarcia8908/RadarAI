@@ -1,6 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { SocrataClient, soqlString, toNumber } from '../ingestion/socrata.client';
 import { normalizar } from '../common/normalizar';
+import { formatearPesos } from '../common/formatear-pesos';
 import { completar } from '../lib/llm';
 import { PreguntaActualidadDto } from './dto/pregunta-actualidad.dto';
 
@@ -221,10 +222,10 @@ export class SituacionService {
         ? 'se detectan procesos en riesgo y proyectos estancados — conviene seguimiento de veeduría.'
         : 'sin señales críticas con los datos disponibles.';
       const partes = [
-        `📢 Reporte de Situación Cívico de ${departamento}: ${radiografia.totalProcesos} procesos por $${radiografia.presupuestoTotal.toLocaleString('es-CO')} en total.`,
+        `📢 Reporte de Situación Cívico de ${departamento}: ${radiografia.totalProcesos} procesos por ${formatearPesos(radiografia.presupuestoTotal)} en total.`,
       ];
-      if (foco) partes.push(`📍 ${foco.ciudad} es el principal foco de ejecución con ${foco.procesosActivos} procesos activos por $${foco.presupuesto.toLocaleString('es-CO')}.`);
-      if (estancado) partes.push(`📍 ${estancado.ciudad} acumula ${estancado.procesosPlaneacion} procesos en planeación por $${estancado.presupuesto.toLocaleString('es-CO')}.`);
+      if (foco) partes.push(`📍 ${foco.ciudad} es el principal foco de ejecución con ${foco.procesosActivos} procesos activos por ${formatearPesos(foco.presupuesto)}.`);
+      if (estancado) partes.push(`📍 ${estancado.ciudad} acumula ${estancado.procesosPlaneacion} procesos en planeación por ${formatearPesos(estancado.presupuesto)}.`);
       if (enRiesgo) partes.push(`📍 ${enRiesgo.ciudad} presenta ${enRiesgo.procesosParados} procesos parados.`);
       partes.push(`🛡️ Veredicto: ${veredicto}`);
       return partes.join(' ');

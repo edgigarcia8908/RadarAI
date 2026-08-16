@@ -13,6 +13,7 @@
  */
 
 import { completar } from '../lib/llm';
+import { formatearPesos } from '../common/formatear-pesos';
 
 // ─── Tipos (espejo del frontend home.types.ts) ─────────────────────────────
 
@@ -145,7 +146,7 @@ Genera el JSON de presentación visual. Analiza los datos, encuentra lo más rel
 // para que no se vea texto crudo.
 
 function fmt(valor: number): string {
-  return `$${valor.toLocaleString('es-CO')}`;
+  return formatearPesos(valor);
 }
 
 export interface DatosResumen {

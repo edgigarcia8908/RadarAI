@@ -8,6 +8,7 @@ import { completar } from '../lib/llm';
 import { normalizar } from '../common/normalizar';
 import { departamentoRealSecop } from '../common/departamento-secop';
 import { palabrasConSinonimos } from '../common/sinonimos';
+import { formatearPesos } from '../common/formatear-pesos';
 import {
   Presentation,
   generarPresentacion,
@@ -146,7 +147,7 @@ export class ChatService {
     try {
       const p = await this.cuipo.obtenerPresupuesto({ departamento: input.departamento, ciudad });
       if (!p.mensaje) {
-        presupuestoResumen = `Presupuesto apropiado: $${p.presupuestoApropiado.toLocaleString('es-CO')}, comprometido: $${p.comprometido.toLocaleString('es-CO')} (${p.porcentajeComprometido?.toFixed(0)}%).`;
+        presupuestoResumen = `Presupuesto apropiado: ${formatearPesos(p.presupuestoApropiado)}, comprometido: ${formatearPesos(p.comprometido)} (${p.porcentajeComprometido?.toFixed(0)}%).`;
       }
     } catch {
       // CUIPO es un extra — si falla, el chat sigue con lo de SECOP.
@@ -202,12 +203,6 @@ export class ChatService {
   }
 
   private async respuestaPorBusquedaEnVivo(mensaje: string, departamento: string | undefined, ciudad: string): Promise<{ texto: string; presentacion: Presentation } | null> {
-    // Ojo: NO alcanza con tomar las primeras palabras de 4+ letras de la
-    // pregunta — en "cuántos contratos tuvo Giovanny García" esas son
-    // "cuantos contratos tuvo", puro ruido interrogativo, no el nombre real
-    // (confirmado a mano: eso buscado en SECOP da 0 resultados aunque
-    // "giovanny garcia" sí existe). Se descartan las palabras genéricas de
-    // pregunta/verbo antes de elegir qué mandar a buscar.
     const palabrasGenericas = new Set([
       'cuantos', 'cuanto', 'cuantas', 'cuanta', 'contratos', 'contrato', 'tuvo', 'tiene', 'tienen', 'tenido',
       'gastado', 'gasto', 'gastó', 'dime', 'busca', 'buscar', 'buscalo', 'buscarlos', 'sobre', 'para', 'este',
@@ -215,12 +210,6 @@ export class ChatService {
       'información', 'poder', 'puedes', 'podrias', 'podrías', 'favor', 'dame', 'municipio', 'ciudad', 'departamento',
       'territorio', 'total', 'valor',
     ]);
-    // El nombre del territorio (ciudad/departamento) también hay que
-    // excluirlo: ya se filtra aparte vía `ciudad`/`departamento` en el
-    // where — si se cuela como uno de los tokens de búsqueda, exige que
-    // "tocancipa" aparezca en el mismo campo que "giovanny"/"garcia", cosa
-    // que nunca pasa (el nombre de la persona y el de la ciudad rara vez
-    // conviven en el mismo campo de texto) y la búsqueda falla siempre.
     const tokensTerritorio = new Set(
       [...(ciudad ? normalizar(ciudad).split(' ') : []), ...(departamento ? normalizar(departamento).split(' ') : [])],
     );
@@ -237,21 +226,27 @@ export class ChatService {
 
       const valorTotal = rows.reduce((s, r) => s + (Number(r.valor_del_contrato) || 0), 0);
       const entidades = [...new Set(rows.map((r) => r.nombre_entidad).filter(Boolean))];
-      const detalle = rows
-        .slice(0, 5)
-        .map((r) => `${String(r.nombre_entidad || '').slice(0, 30).padEnd(30)} $${(Number(r.valor_del_contrato) || 0).toLocaleString('es-CO')}`)
-        .join('\n');
-
-      const texto = `No lo tenía en lo ya sincronizado, así que busqué directo en SECOP: encontré ${rows.length} contrato(s) relacionados por un total de $${valorTotal.toLocaleString('es-CO')}, en: ${entidades.join(', ')}.\n\n${detalle}\n\n(Búsqueda en vivo, no coincidencia exacta por cédula — confirma que es lo que buscabas. Si querés que quede disponible para consultas más rápidas la próxima vez, sincroniza este territorio.)`;
       const datosVivo = {
         totalRows: rows.length,
         valorTotal,
         entidades,
         detalle: rows.slice(0, 5).map((r) => ({
           entidad: String(r.nombre_entidad || 'Sin entidad'),
+          objeto: String(r.objeto_del_contrato || r.descripcion_del_proceso || '').slice(0, 80),
           valor: Number(r.valor_del_contrato) || 0,
         })),
       };
+
+      // Intentar redactar con LLM — texto hardcodeado solo como fallback
+      const textoFallback = `No lo tenía en lo ya sincronizado, así que busqué directo en SECOP: encontré ${rows.length} contrato(s) relacionados por un total de ${formatearPesos(valorTotal)}, en: ${entidades.join(', ')}.\n\n${datosVivo.detalle.map((d) => `${d.entidad.slice(0, 30).padEnd(30)} ${formatearPesos(d.valor)}`).join('\n')}\n\n(Búsqueda en vivo, no coincidencia exacta por cédula — confirma que es lo que buscabas.)`;
+
+      const texto = await this.redactarTexto(
+        mensaje,
+        datosVivo,
+        'El usuario preguntó por algo que no estaba en los datos sincronizados localmente. Se buscó en vivo contra SECOP y se encontraron estos resultados. Responde de forma natural explicando qué encontraste, menciona que fue búsqueda en vivo, y aclara que es coincidencia por nombre (no por cédula).',
+        textoFallback,
+      );
+
       const presentacion = await generarPresentacion(
         mensaje,
         datosVivo,
@@ -279,14 +274,35 @@ export class ChatService {
 
     const valorTema = filtrados.reduce((s, c) => s + (c.valorDelContrato || 0), 0);
     const proveedoresTema = new Set(filtrados.map((c) => c.nitProveedor || c.proveedorAdjudicado)).size;
-    const texto = `Sobre eso específicamente, en ${territorio} encontré ${filtrados.length} contrato(s) relacionados por un total de $${valorTema.toLocaleString('es-CO')}, con ${proveedoresTema} proveedor(es) — de los ${totalTerritorio} contratos totales del territorio.`;
+    const topProveedores = [...filtrados.reduce((m, c) => {
+      const key = c.nitProveedor || c.proveedorAdjudicado;
+      if (!key) return m;
+      if (!m.has(key)) m.set(key, { nombre: c.proveedorAdjudicado, valor: 0, contratos: 0 });
+      const e = m.get(key)!;
+      e.valor += c.valorDelContrato || 0;
+      e.contratos++;
+      return m;
+    }, new Map<string, { nombre: string; valor: number; contratos: number }>()).values()]
+      .sort((a, b) => b.valor - a.valor).slice(0, 5);
+
     const datosTema = {
       territorio,
       totalFiltrados: filtrados.length,
       totalTerritorio,
       valorTema,
       proveedoresTema,
+      topProveedores,
     };
+
+    const textoFallback = `Sobre eso específicamente, en ${territorio} encontré ${filtrados.length} contrato(s) relacionados por un total de ${formatearPesos(valorTema)}, con ${proveedoresTema} proveedor(es) — de los ${totalTerritorio} contratos totales del territorio.`;
+
+    const texto = await this.redactarTexto(
+      mensaje,
+      datosTema,
+      `El usuario preguntó sobre un tema específico dentro de ${territorio}. Se filtraron los contratos cuyo objeto/texto coincide con las palabras de la pregunta. Responde de forma natural resaltando qué proporción del total del territorio representa este tema, si hay concentración en proveedores, y cualquier dato relevante.`,
+      textoFallback,
+    );
+
     const presentacion = await generarPresentacion(
       mensaje,
       datosTema,
@@ -313,12 +329,8 @@ export class ChatService {
 
     const valorTotal = coincidencias.reduce((s, c) => s + (c.valorDelContrato || 0), 0);
     const entidades = [...new Set(coincidencias.map((c) => c.nombreEntidad))];
-    const detalle = coincidencias
-      .slice(0, 5)
-      .map((c) => `${c.nombreEntidad.slice(0, 30).padEnd(30)} $${c.valorDelContrato.toLocaleString('es-CO')}`)
-      .join('\n');
 
-    const texto = `Encontré ${coincidencias.length} contrato(s) donde esa persona aparece como firmante, ordenador del gasto o supervisor, por un total de $${valorTotal.toLocaleString('es-CO')}, en: ${entidades.join(', ')}.\n\n${detalle}\n\n(Coincidencia por nombre, no por cédula — confirma que es la misma persona antes de sacar conclusiones.)`;
+    // Datos ricos para el LLM — los contratos reales con detalle
     const datosPersona = {
       totalContratos: coincidencias.length,
       valorTotal,
@@ -327,7 +339,26 @@ export class ChatService {
         entidad: c.nombreEntidad,
         valor: c.valorDelContrato,
       })),
+      contratos: coincidencias.slice(0, 15).map((c) => ({
+        entidad: c.nombreEntidad,
+        objeto: (c.objetoDelContrato || '').slice(0, 120),
+        valor: c.valorDelContrato,
+        proveedor: c.proveedorAdjudicado,
+        rol: c.nombreOrdenadorDelGasto && normalizar(c.nombreOrdenadorDelGasto).split(' ').filter(t => t.length >= 4).some(t => tokensPregunta.has(t)) ? 'ordenador del gasto'
+          : c.nombreSupervisor && normalizar(c.nombreSupervisor).split(' ').filter(t => t.length >= 4).some(t => tokensPregunta.has(t)) ? 'supervisor'
+          : 'representante legal',
+      })),
     };
+
+    const textoFallback = `Encontré ${coincidencias.length} contrato(s) donde esa persona aparece como firmante, ordenador del gasto o supervisor, por un total de ${formatearPesos(valorTotal)}, en: ${entidades.join(', ')}.\n\n${coincidencias.slice(0, 5).map((c) => `${c.nombreEntidad.slice(0, 30).padEnd(30)} ${formatearPesos(c.valorDelContrato)}`).join('\n')}\n\n(Coincidencia por nombre, no por cédula — confirma que es la misma persona antes de sacar conclusiones.)`;
+
+    const texto = await this.redactarTexto(
+      mensaje,
+      datosPersona,
+      'El usuario preguntó por una persona específica. Se buscaron contratos donde esa persona aparece como firmante, ordenador del gasto o supervisor. Analiza los datos: ¿en cuántas entidades aparece? ¿qué roles tiene? ¿hay concentración de valor en pocos contratos? Responde de forma natural, resalta patrones interesantes. IMPORTANTE: aclara siempre que es coincidencia por nombre (SECOP no trae cédula), no una identificación verificada.',
+      textoFallback,
+    );
+
     const presentacion = await generarPresentacion(
       mensaje,
       datosPersona,
@@ -336,15 +367,43 @@ export class ChatService {
     return { texto, presentacion };
   }
 
+  /**
+   * Helper: pasa datos reales al LLM para que redacte una respuesta conversacional.
+   * Si no hay LLM configurado o falla, retorna el textoFallback (determinístico).
+   * NUNCA inventa datos — solo analiza/redacta los que se le pasan.
+   */
+  private async redactarTexto(pregunta: string, datos: Record<string, unknown>, instruccionContextual: string, textoFallback: string): Promise<string> {
+    try {
+      const raw = await completar({
+        system: `Eres Anna María, la asistente cívica experta de RadarAI. Analizas datos REALES de contratación pública colombiana.
+
+REGLAS INQUEBRANTABLES:
+- SOLO puedes mencionar datos que están en el JSON que recibes. NUNCA inventes cifras, nombres, entidades o hechos.
+- Si un dato no está en los datos proporcionados, NO lo menciones.
+- Tono cercano, directo, en español colombiano. 2-4 frases máximo.
+- Abreviar cifras grandes: >= 1 billón → "$1,89 B", >= 1 millón → "$187 M".
+- Responde SOLO texto plano (la respuesta conversacional), sin JSON, sin markdown.
+
+CONTEXTO DE ESTA CONSULTA:
+${instruccionContextual}`,
+        prompt: `Pregunta del ciudadano: "${pregunta}"\n\nDatos reales de la base de datos: ${JSON.stringify(datos)}`,
+        maxTokens: 300,
+      });
+      return raw?.trim() || textoFallback;
+    } catch {
+      return textoFallback;
+    }
+  }
+
   private async redactar(mensaje: string, datos: ReturnType<never> | any): Promise<{ respuesta: string; presentacion: Presentation }> {
     const fallback = (): { respuesta: string; presentacion: Presentation } => {
       const lineas = [
-        `En ${datos.territorio} encontré ${datos.totalContratos} contratos por $${datos.valorTotalContratado.toLocaleString('es-CO')}, con ${datos.proveedoresUnicos} proveedores distintos.`,
+        `En ${datos.territorio} encontré ${datos.totalContratos} contratos por ${formatearPesos(datos.valorTotalContratado)}, con ${datos.proveedoresUnicos} proveedores distintos.`,
       ];
       if (datos.topProveedores.length) {
         lineas.push('', 'Proveedores con más valor adjudicado:');
         for (const p of datos.topProveedores) {
-          lineas.push(`- ${p.nombre}: $${p.valor.toLocaleString('es-CO')} (${Math.round(p.porcentaje)}%)`);
+          lineas.push(`- ${p.nombre}: ${formatearPesos(p.valor)} (${Math.round(p.porcentaje)}%)`);
         }
       }
       if (datos.presupuesto) lineas.push('', datos.presupuesto);
@@ -386,7 +445,13 @@ NOTICE — alertas o disclaimers importantes:
 TEXT — párrafos explicativos:
 { "id": "único", "type": "text", "title": "...", "paragraphs": ["..."], "bullets": ["..."] }
 
-PRINCIPIO CLAVE: Piensa como diseñador UX. La info debe verse BONITA e INTUITIVA. Un ciudadano que no sabe nada de contratación debe entender al instante qué está pasando. Si hay un proveedor con >50% del valor, eso es una alerta visual roja. Si hay concentración, el título debe decirlo directo. Nunca muestres datos crudos — siempre organízalos visualmente.`,
+PRINCIPIO CLAVE: Piensa como diseñador UX. La info debe verse BONITA e INTUITIVA. Un ciudadano que no sabe nada de contratación debe entender al instante qué está pasando. Si hay un proveedor con >50% del valor, eso es una alerta visual roja. Si hay concentración, el título debe decirlo directo. Nunca muestres datos crudos — siempre organízalos visualmente.
+
+FORMATEO DE CIFRAS: Los valores en pesos colombianos son enormes. SIEMPRE abreviar para legibilidad:
+- >= 1 billón (1.000.000.000.000): usar "B" → "$1,89 B"
+- >= 1 millón (1.000.000): usar "M" → "$187 M", "$1.886 M"
+- < 1 millón: formato normal → "$950.000"
+Nunca muestres cifras crudas de 10+ dígitos como "$1.886.692.503.333". Siempre abreviar.`,
         prompt: `Pregunta del ciudadano: "${mensaje}"\n\nDatos reales: ${JSON.stringify(datos)}`,
         maxTokens: 900,
       });
