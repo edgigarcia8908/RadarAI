@@ -1,0 +1,36 @@
+- main [ref=f17e64]:
+  - generic [ref=f17e65]:
+    - paragraph [ref=f17e66]: RadarAI
+    - heading "Pregúntale a RadarAI sobre plata pública." [level=1] [ref=f17e67]
+    - paragraph [ref=f17e68]: Escribe una pregunta normal. RadarAI traduce contratos, presupuestos y alertas en una respuesta que cualquiera pueda entender.
+  - region "Pregunta principal" [ref=f17e69]:
+    - tablist "Tipo de usuario" [ref=f17e70]:
+      - button "Investigar gasto público" [ref=f17e71] [cursor=pointer]
+      - button "Buscar contratos para mi empresa" [ref=f17e72] [cursor=pointer]
+      - button "Comparar proveedores" [ref=f17e73] [cursor=pointer]
+    - generic [ref=f17e74]: ¿Qué quieres saber?
+    - textbox "¿Qué quieres saber?" [ref=f17e75]: ¿En qué se está gastando la plata pública de mi municipio?
+    - generic [ref=f17e76]:
+      - button "Analizar con RadarAI" [ref=f17e77] [cursor=pointer]
+      - generic [ref=f17e78]: No necesitas saber de bases de datos, contratos ni siglas oficiales.
+  - generic [ref=f17e79]:
+    - paragraph [ref=f17e80]: Prueba con una de estas preguntas
+    - generic [ref=f17e81]:
+      - button "¿En qué se gastó la alcaldía la plata este año?" [ref=f17e82] [cursor=pointer]
+      - button "¿Qué empresas han recibido más contratos en mi municipio?" [ref=f17e83] [cursor=pointer]
+      - button "Tengo una empresa de tecnología. ¿Qué contratos puedo ganar?" [ref=f17e84] [cursor=pointer]
+      - button "Voy a contratar mantenimiento de colegios. ¿Qué proveedor conviene?" [ref=f17e85] [cursor=pointer]
+  - generic [ref=f17e86]:
+    - generic [ref=f17e87]:
+      - paragraph [ref=f17e88]: Cómo debería responderte
+      - heading "Primero la respuesta. Luego la evidencia." [level=2] [ref=f17e89]
+    - generic [ref=f17e90]:
+      - article [ref=f17e91]:
+        - strong [ref=f17e92]: 1. Resumen claro
+        - generic [ref=f17e93]: Qué está pasando con la plata, el contrato o la empresa.
+      - article [ref=f17e94]:
+        - strong [ref=f17e95]: 2. Señales de cuidado
+        - generic [ref=f17e96]: Concentración, precios raros, retrasos o coincidencias que vale la pena revisar.
+      - article [ref=f17e97]:
+        - strong [ref=f17e98]: 3. Evidencia oficial
+        - generic [ref=f17e99]: De dónde sale cada dato, para que puedas verificarlo.

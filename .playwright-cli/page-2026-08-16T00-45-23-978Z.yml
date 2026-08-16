@@ -1,0 +1,56 @@
+- generic [ref=f12e3]:
+  - button "Volver al inicio" [ref=f12e80] [cursor=pointer]
+  - generic [ref=f12e81]:
+    - heading "💼 Encontrar oportunidades" [level=1] [ref=f12e82]
+    - paragraph [ref=f12e83]: Encuentra oportunidades de contratación pública compatibles con lo que vende tu empresa.
+    - generic [ref=f12e84]:
+      - generic [ref=f12e85]:
+        - text: Nombre de tu empresa
+        - textbox "Nombre de tu empresa" [ref=f12e86]
+      - generic [ref=f12e87]:
+        - text: ¿Qué vende tu empresa? (lenguaje libre, sin necesidad de saber códigos técnicos)
+        - textbox "¿Qué vende tu empresa? (lenguaje libre, sin necesidad de saber códigos técnicos)" [ref=f12e88]: Vendemos computadores empresariales, servidores y soluciones de infraestructura tecnológica.
+      - button "📍 Usar mi ubicación" [ref=f12e90] [cursor=pointer]
+      - generic [ref=f12e91]:
+        - text: Departamento donde quieres operar
+        - combobox "Departamento donde quieres operar" [ref=f12e92]:
+          - option "Amazonas"
+          - option "Antioquia"
+          - option "Arauca"
+          - option "Atlántico"
+          - option "Bolívar"
+          - option "Boyacá"
+          - option "Caldas"
+          - option "Caquetá"
+          - option "Casanare"
+          - option "Cauca"
+          - option "Cesar"
+          - option "Chocó"
+          - option "Cundinamarca" [selected]
+          - option "Córdoba"
+          - option "Guainía"
+          - option "Guaviare"
+          - option "Huila"
+          - option "La Guajira"
+          - option "Magdalena"
+          - option "Meta"
+          - option "Nariño"
+          - option "Norte de Santander"
+          - option "Putumayo"
+          - option "Quindío"
+          - option "Risaralda"
+          - option "San Andrés y Providencia"
+          - option "Santander"
+          - option "Sucre"
+          - option "Tolima"
+          - option "Valle del Cauca"
+          - option "Vaupés"
+          - option "Vichada"
+      - generic [ref=f12e93]:
+        - generic [ref=f12e94]:
+          - text: Desde
+          - textbox "Desde" [ref=f12e95]: 2025-08-16
+        - generic [ref=f12e96]:
+          - text: Hasta
+          - textbox "Hasta" [ref=f12e97]: 2026-08-16
+    - button "Buscar oportunidades" [disabled] [ref=f12e99]

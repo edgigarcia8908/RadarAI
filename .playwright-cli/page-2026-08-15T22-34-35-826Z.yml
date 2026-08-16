@@ -1,0 +1,54 @@
+- generic [ref=f2e3]:
+  - banner [ref=f2e4]:
+    - button "RadarAI Transparencia" [ref=f2e5] [cursor=pointer]:
+      - generic [ref=f2e6]: ▥
+    - navigation "Principal" [ref=f2e8]:
+      - button "Inicio" [ref=f2e9] [cursor=pointer]
+      - button "Ciudadania" [ref=f2e10] [cursor=pointer]
+      - button "Empresas" [active] [ref=f2e11] [cursor=pointer]
+      - button "Veedurias" [ref=f2e12] [cursor=pointer]
+      - button "Mapa de riesgo" [ref=f2e13] [cursor=pointer]
+      - button "Estudio de mercado" [ref=f2e14] [cursor=pointer]
+    - generic "Acciones rapidas" [ref=f2e15]:
+      - button "Notificaciones" [ref=f2e16] [cursor=pointer]: ⌂
+      - button "Configuracion" [ref=f2e17] [cursor=pointer]: ⚙
+      - button "Acceso" [ref=f2e18] [cursor=pointer]
+  - main [ref=f2e19]:
+    - generic [ref=f2e188]:
+      - generic [ref=f2e189]:
+        - generic [ref=f2e190]:
+          - paragraph [ref=f2e191]: Inicio / Empresas
+          - heading "Encontrar oportunidades" [level=1] [ref=f2e192]
+          - paragraph [ref=f2e193]: Cruza el perfil comercial de una empresa con procesos abiertos y compatibilidad por territorio.
+        - button "Volver al inicio" [ref=f2e194] [cursor=pointer]
+      - generic [ref=f2e195]:
+        - article [ref=f2e196]:
+          - paragraph [ref=f2e197]: Compatibilidad comercial
+          - heading "Oportunidades abiertas para proveedores locales" [level=2] [ref=f2e198]
+          - table "Oportunidades empresariales" [ref=f2e199]:
+            - row "Proceso Entidad Valor Compatibilidad" [ref=f2e200]:
+              - generic [ref=f2e201]: Proceso
+              - generic [ref=f2e202]: Entidad
+              - generic [ref=f2e203]: Valor
+              - generic [ref=f2e204]: Compatibilidad
+            - row "TI-082 Alcaldia de Tocancipa $980M 86%" [ref=f2e205]:
+              - generic [ref=f2e206]: TI-082
+              - generic [ref=f2e207]: Alcaldia de Tocancipa
+              - generic [ref=f2e208]: $980M
+              - generic [ref=f2e209]: 86%
+            - row "OB-114 Gobernacion de Cundinamarca $2.4B 64%" [ref=f2e211]:
+              - generic [ref=f2e212]: OB-114
+              - generic [ref=f2e213]: Gobernacion de Cundinamarca
+              - generic [ref=f2e214]: $2.4B
+              - generic [ref=f2e215]: 64%
+        - complementary [ref=f2e217]:
+          - paragraph [ref=f2e218]: Perfil detectado
+          - heading "Infraestructura tecnologica" [level=3] [ref=f2e219]
+          - paragraph [ref=f2e220]: Computadores empresariales, servidores y soporte operativo.
+  - contentinfo [ref=f2e181]:
+    - strong [ref=f2e182]: RadarAI Transparencia
+    - generic [ref=f2e183]: Mapa del sitio
+    - generic [ref=f2e184]: Contacto
+    - generic [ref=f2e185]: Politica de datos
+    - generic [ref=f2e186]: Accesibilidad
+    - generic [ref=f2e187]: © 2026 Portal de Transparencia Fiscal.

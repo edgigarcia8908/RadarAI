@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo [Codex Hook] Session started: MCP is strictly prohibited. Use playwright-cli for browser automation.",
+            "statusMessage": "Initializing session & checking rules..."
+          }
+        ]
+      }
+    ]
+  }
+}

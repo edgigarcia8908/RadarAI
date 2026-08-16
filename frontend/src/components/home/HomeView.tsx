@@ -2,6 +2,7 @@ import React from 'react';
 import { HOME_EXAMPLES, HOME_NAV_ITEMS, HOME_PROMPT_PLACEHOLDER } from '../../constants/HOME';
 import { UNDERSTAND_DEPARTMENTS, UNDERSTAND_PERIODS } from '../../constants/UNDERSTAND_GASTO';
 import type { HomeViewProps } from '../../types/home.types';
+import HomeChatMessage from './HomeChatMessage';
 import HomeIcon from './HomeIcon';
 import HomeSelect from './HomeSelect';
 import useHome from './useHome.hook';
@@ -61,9 +62,7 @@ export default function HomeView({ onNavigate }: HomeViewProps) {
               <span className="home-chat-response-label">Respuesta de RadarAI</span>
               <div className="home-inline-messages">
                 {mensajes.map((mensaje) => (
-                  <div className={`home-inline-message home-inline-message-${mensaje.role}`} key={mensaje.id}>
-                    {mensaje.text}
-                  </div>
+                  <HomeChatMessage key={mensaje.id} message={mensaje} />
                 ))}
                 {isLoading && <div className="home-inline-typing">RadarAI está pensando…</div>}
               </div>

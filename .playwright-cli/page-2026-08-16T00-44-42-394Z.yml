@@ -1,0 +1,33 @@
+- main [ref=f10e100]:
+  - generic [ref=f10e101]:
+    - paragraph [ref=f10e102]: Contratacion publica en lenguaje claro
+    - heading "RadarAI te ayuda a entender, competir y decidir sobre dinero publico." [level=1] [ref=f10e103]
+    - paragraph [ref=f10e104]: Elige que tipo de usuario eres. La app traduce datos oficiales en respuestas utiles, sin obligarte a entender siglas ni bases de datos del gobierno.
+  - region "Perfiles de usuario" [ref=f10e105]:
+    - button "Ciudadano, periodista o lider publico Investigar gasto publico Mira cuanto ha gastado un municipio, en que contratos, con que empresas y que alertas aparecen. Empezar por municipio" [ref=f10e106] [cursor=pointer]:
+      - generic [ref=f10e107]: Ciudadano, periodista o lider publico
+      - strong [ref=f10e108]: Investigar gasto publico
+      - generic [ref=f10e109]: Mira cuanto ha gastado un municipio, en que contratos, con que empresas y que alertas aparecen.
+      - emphasis [ref=f10e110]: Empezar por municipio
+    - button "Empresa Encontrar contratos que puedes ganar Describe que vendes y revisa oportunidades de licitacion compatibles con tu empresa. Buscar oportunidades" [ref=f10e111] [cursor=pointer]:
+      - generic [ref=f10e112]: Empresa
+      - strong [ref=f10e113]: Encontrar contratos que puedes ganar
+      - generic [ref=f10e114]: Describe que vendes y revisa oportunidades de licitacion compatibles con tu empresa.
+      - emphasis [ref=f10e115]: Buscar oportunidades
+    - button "Gobierno Comparar antes de contratar Revisa precios de referencia, proveedores frecuentes y contratos parecidos antes de adjudicar. Comparar proveedores" [ref=f10e116] [cursor=pointer]:
+      - generic [ref=f10e117]: Gobierno
+      - strong [ref=f10e118]: Comparar antes de contratar
+      - generic [ref=f10e119]: Revisa precios de referencia, proveedores frecuentes y contratos parecidos antes de adjudicar.
+      - emphasis [ref=f10e120]: Comparar proveedores
+  - generic [ref=f10e121]:
+    - heading "Que muestra RadarAI" [level=2] [ref=f10e122]
+    - generic [ref=f10e123]:
+      - article [ref=f10e124]:
+        - strong [ref=f10e125]: Dinero publico
+        - generic [ref=f10e126]: Presupuesto, contratos y pagos explicados en pesos.
+      - article [ref=f10e127]:
+        - strong [ref=f10e128]: Empresas y proveedores
+        - generic [ref=f10e129]: Quien recibe contratos, cuanto concentra y que historial tiene.
+      - article [ref=f10e130]:
+        - strong [ref=f10e131]: Alertas entendibles
+        - generic [ref=f10e132]: Concentracion, posibles retrasos, sanciones o coincidencias que deben verificarse.

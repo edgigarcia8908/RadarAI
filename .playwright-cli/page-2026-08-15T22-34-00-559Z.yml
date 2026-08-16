@@ -1,0 +1,187 @@
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - button "RadarAI Transparencia" [ref=e5] [cursor=pointer]:
+      - generic [ref=e6]: ▥
+    - navigation "Principal" [ref=e8]:
+      - button "Inicio" [ref=e9] [cursor=pointer]
+      - button "Ciudadania" [ref=e10] [cursor=pointer]
+      - button "Empresas" [ref=e11] [cursor=pointer]
+      - button "Veedurias" [ref=e12] [cursor=pointer]
+      - button "Mapa de riesgo" [ref=e13] [cursor=pointer]
+      - button "Estudio de mercado" [ref=e14] [cursor=pointer]
+    - generic "Acciones rapidas" [ref=e15]:
+      - button "Notificaciones" [ref=e16] [cursor=pointer]: ⌂
+      - button "Configuracion" [ref=e17] [cursor=pointer]: ⚙
+      - button "Acceso" [ref=e18] [cursor=pointer]
+  - main [ref=e19]:
+    - generic [ref=e20]:
+      - generic [ref=e21]:
+        - paragraph [ref=e22]: Inteligencia publica y de mercado
+        - heading "Que quieres investigar?" [level=1] [ref=e23]
+        - paragraph [ref=e24]: Explora presupuesto, contratos, proyectos publicos y alertas territoriales desde una sola consola.
+        - generic [ref=e25]:
+          - generic [ref=e26]: Buscar en contratos, proyectos y datos abiertos
+          - generic [ref=e27]:
+            - generic [ref=e28]: ⌕
+            - textbox "Buscar en contratos, proyectos y datos abiertos" [ref=e29]:
+              - /placeholder: Que paso con el dinero destinado a los damnificados?
+              - text: Proximas ayudas en Quibdo, Choco
+          - generic [ref=e30]:
+            - generic [ref=e31]:
+              - generic [ref=e32]: Departamento
+              - combobox "Departamento" [ref=e33]:
+                - option "Cundinamarca" [selected]
+                - option "Antioquia"
+                - option "Valle del Cauca"
+                - option "Cauca"
+                - option "Choco"
+                - option "Santander"
+                - option "Atlantico"
+            - generic [ref=e34]:
+              - generic [ref=e35]: Municipio
+              - combobox "Municipio" [ref=e36]:
+                - option "Todos" [selected]
+                - option "Bogota D.C."
+                - option "Tocancipa"
+                - option "Medellin"
+                - option "Cali"
+                - option "Quibdo"
+                - option "Bucaramanga"
+            - button "Buscar" [ref=e37] [cursor=pointer]:
+              - generic [ref=e38]: ⌕
+              - text: Buscar
+        - generic [ref=e39]:
+          - paragraph [ref=e40]: "Ejemplos de busqueda:"
+          - generic [ref=e41]:
+            - button "Cuanto se ha invertido en vivienda?" [ref=e42] [cursor=pointer]:
+              - generic [ref=e43]: →
+              - text: Cuanto se ha invertido en vivienda?
+            - button "Quien recibio los contratos de reconstruccion?" [ref=e44] [cursor=pointer]:
+              - generic [ref=e45]: →
+              - text: Quien recibio los contratos de reconstruccion?
+            - button "Que proyectos tienen alertas?" [ref=e46] [cursor=pointer]:
+              - generic [ref=e47]: →
+              - text: Que proyectos tienen alertas?
+      - generic [ref=e48]:
+        - paragraph [ref=e49]: Contexto de busqueda activo
+        - generic [ref=e50]:
+          - generic [ref=e51]: "Tema: Proximas ayudas en Quibdo, Choco"
+          - generic [ref=e52]: /
+          - generic [ref=e53]: "Departamento: Cundinamarca"
+          - generic [ref=e54]: /
+          - generic [ref=e55]: "Municipio: Todos"
+          - button "Cambiar filtros" [ref=e56] [cursor=pointer]
+      - region "Resumen operativo" [ref=e57]:
+        - article [ref=e58]:
+          - generic [ref=e59]:
+            - generic [ref=e60]: Contratos analizados
+            - generic [ref=e61]: □
+          - generic [ref=e62]: "18.420"
+          - generic [ref=e63]: +12% este mes
+        - article [ref=e66]:
+          - generic [ref=e67]:
+            - generic [ref=e68]: Hallazgos de riesgo
+            - generic [ref=e69]: □
+          - generic [ref=e70]: "127"
+          - generic [ref=e71]: 38 requieren accion
+        - article [ref=e74]:
+          - generic [ref=e75]:
+            - generic [ref=e76]: Veedurias activas
+            - generic [ref=e77]: □
+          - generic [ref=e78]: "24"
+          - generic [ref=e79]: 17 en tiempo
+      - generic [ref=e82]:
+        - generic [ref=e83]:
+          - paragraph [ref=e84]: Producto RadarAI
+          - heading "Flujos principales" [level=2] [ref=e85]
+        - generic [ref=e86]:
+          - button "Ciudadania Vigilar mi territorio Consulta contratos publicos por tema, departamento y municipio para detectar patrones relevantes. $42.8B COP revisados" [ref=e87] [cursor=pointer]:
+            - generic [ref=e88]: Ciudadania
+            - strong [ref=e89]: Vigilar mi territorio
+            - generic [ref=e90]: Consulta contratos publicos por tema, departamento y municipio para detectar patrones relevantes.
+            - emphasis [ref=e91]: $42.8B COP revisados
+          - button "Empresas Encontrar oportunidades Cruza el perfil comercial de una empresa con procesos abiertos y compatibilidad por territorio. 312 oportunidades" [ref=e92] [cursor=pointer]:
+            - generic [ref=e93]: Empresas
+            - strong [ref=e94]: Encontrar oportunidades
+            - generic [ref=e95]: Cruza el perfil comercial de una empresa con procesos abiertos y compatibilidad por territorio.
+            - emphasis [ref=e96]: 312 oportunidades
+          - button "Control social Gestionar veedurias Organiza hallazgos, comentarios, checklist de investigacion y documentos de soporte. 89 evidencias" [ref=e97] [cursor=pointer]:
+            - generic [ref=e98]: Control social
+            - strong [ref=e99]: Gestionar veedurias
+            - generic [ref=e100]: Organiza hallazgos, comentarios, checklist de investigacion y documentos de soporte.
+            - emphasis [ref=e101]: 89 evidencias
+          - button "Datos abiertos Mapa de riesgo Visualiza concentracion de proveedores y municipios con senales de seguimiento prioritario. 41 municipios" [ref=e102] [cursor=pointer]:
+            - generic [ref=e103]: Datos abiertos
+            - strong [ref=e104]: Mapa de riesgo
+            - generic [ref=e105]: Visualiza concentracion de proveedores y municipios con senales de seguimiento prioritario.
+            - emphasis [ref=e106]: 41 municipios
+          - button "Gestion publica Estudio de mercado Compara precios, proveedores frecuentes y contratos cerrados para estimar valores de referencia. 1.246 comparables" [ref=e107] [cursor=pointer]:
+            - generic [ref=e108]: Gestion publica
+            - strong [ref=e109]: Estudio de mercado
+            - generic [ref=e110]: Compara precios, proveedores frecuentes y contratos cerrados para estimar valores de referencia.
+            - emphasis [ref=e111]: 1.246 comparables
+      - generic [ref=e112]:
+        - article [ref=e113]:
+          - generic [ref=e114]:
+            - heading "Ultimas solicitudes ciudadanas" [level=2] [ref=e115]
+            - button "Ver todas" [ref=e116] [cursor=pointer]
+          - table "Ultimas solicitudes" [ref=e117]:
+            - row "ID Asunto Prioridad Estado" [ref=e118]:
+              - generic [ref=e119]: ID
+              - generic [ref=e120]: Asunto
+              - generic [ref=e121]: Prioridad
+              - generic [ref=e122]: Estado
+            - row "TR-294 Contratos de pavimentacion sector norte Alta En revision" [ref=e123]:
+              - generic [ref=e124]: TR-294
+              - generic [ref=e125]: Contratos de pavimentacion sector norte
+              - generic [ref=e126]: Alta
+              - generic [ref=e128]: En revision
+            - row "TR-293 Presupuesto asignado a colegios rurales Media Resuelto" [ref=e130]:
+              - generic [ref=e131]: TR-293
+              - generic [ref=e132]: Presupuesto asignado a colegios rurales
+              - generic [ref=e133]: Media
+              - generic [ref=e135]: Resuelto
+            - row "TR-292 Licitacion de recoleccion de residuos Baja Nuevo" [ref=e137]:
+              - generic [ref=e138]: TR-292
+              - generic [ref=e139]: Licitacion de recoleccion de residuos
+              - generic [ref=e140]: Baja
+              - generic [ref=e142]: Nuevo
+        - complementary [ref=e144]:
+          - article [ref=e145]:
+            - heading "Alertas criticas" [level=2] [ref=e146]
+            - generic [ref=e147]:
+              - strong [ref=e148]: Sobrecosto detectado
+              - paragraph [ref=e149]: Contrato OP-2023-45 supera el 15% del presupuesto inicial.
+            - generic [ref=e150]:
+              - strong [ref=e151]: Retraso en obra
+              - paragraph [ref=e152]: Construccion puente sur presenta 30 dias de demora segun cronograma.
+          - article [ref=e153]:
+            - heading "Cronograma de pagos" [level=2] [ref=e154]
+            - table "Cronograma de pagos" [ref=e157]:
+              - row "Hito Fecha Monto Estado" [ref=e158]:
+                - generic [ref=e159]: Hito
+                - generic [ref=e160]: Fecha
+                - generic [ref=e161]: Monto
+                - generic [ref=e162]: Estado
+              - row "Fase previa Q4 2024 $450M Pagado" [ref=e163]:
+                - generic [ref=e164]: Fase previa
+                - generic [ref=e165]: Q4 2024
+                - generic [ref=e166]: $450M
+                - generic [ref=e167]: Pagado
+              - row "Disenos detalle Q2 2025 $820M Pagado" [ref=e169]:
+                - generic [ref=e170]: Disenos detalle
+                - generic [ref=e171]: Q2 2025
+                - generic [ref=e172]: $820M
+                - generic [ref=e173]: Pagado
+              - row "Obras principales En curso $5.2B En ejecucion" [ref=e175]:
+                - generic [ref=e176]: Obras principales
+                - generic [ref=e177]: En curso
+                - generic [ref=e178]: $5.2B
+                - generic [ref=e179]: En ejecucion
+  - contentinfo [ref=e181]:
+    - strong [ref=e182]: RadarAI Transparencia
+    - generic [ref=e183]: Mapa del sitio
+    - generic [ref=e184]: Contacto
+    - generic [ref=e185]: Politica de datos
+    - generic [ref=e186]: Accesibilidad
+    - generic [ref=e187]: © 2026 Portal de Transparencia Fiscal.

@@ -1,0 +1,6 @@
+# Project-scoped Codex CLI configuration
+# MCP is strictly forbidden in this repository; use playwright-cli instead.
+
+[features]
+hooks = true
+codex_hooks = true

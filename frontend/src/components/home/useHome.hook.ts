@@ -1,9 +1,10 @@
 import type { FormEvent } from 'react';
 import { useState } from 'react';
 import colombia from '../../colombia.json';
-import { UNDERSTAND_DEFAULT_FORM } from '../../constants/UNDERSTAND_GASTO';
 import { radarService } from '../../services/radar.service';
-import type { HomeChatMessage } from '../../types/home.types';
+import { HOME_RESPONSE_COPY } from '../../constants/HOME_RESPONSE';
+import { UNDERSTAND_DEFAULT_FORM } from '../../constants/UNDERSTAND_GASTO';
+import type { HomeChatMessage, HomeResponsePresentation } from '../../types/home.types';
 
 export interface UseHomeReturn {
   departamento: string;
@@ -37,8 +38,15 @@ export default function useHome(): UseHomeReturn {
   const [isLoading, setIsLoading] = useState(false);
   const municipiosDisponibles = DEPARTAMENTOS.find((item) => item.departamento === departamento)?.ciudades ?? [];
 
-  function addMessage(role: HomeChatMessage['role'], text: string) {
-    setMensajes((current) => [...current, { id: `${role}-${current.length}`, role, text }]);
+  function addMessage(
+    role: HomeChatMessage['role'],
+    text: string,
+    presentation?: HomeResponsePresentation,
+  ) {
+    setMensajes((current) => [
+      ...current,
+      { id: `${role}-${current.length}`, role, text, presentation },
+    ]);
   }
 
   function handlePromptSubmit(event: FormEvent<HTMLFormElement>) {
@@ -56,7 +64,10 @@ export default function useHome(): UseHomeReturn {
       ciudad: municipio,
       periodo,
     }).then((response) => {
-      addMessage('bot', response.respuesta);
+      const responseText = typeof response.respuesta === 'string' && response.respuesta.trim()
+        ? response.respuesta
+        : HOME_RESPONSE_COPY.emptyResponse;
+      addMessage('bot', responseText, response.presentacion);
     }).catch((requestError: unknown) => {
       const message = requestError instanceof Error ? requestError.message : 'No pude responder en este momento.';
       addMessage('bot', message);
