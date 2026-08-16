@@ -7,7 +7,6 @@ export type HomeIconName =
   | 'building-2'
   | 'calendar'
   | 'chevron-right'
-  | 'clipboard'
   | 'home'
   | 'map'
   | 'monitor'
@@ -24,7 +23,7 @@ export type HomeIconName =
   | 'wallet'
   | 'alert';
 
-export type HomeNavigationTarget = 'ciudadano' | 'empresa' | 'estudio' | 'veedurias' | 'mapa' | 'ficha' | 'home';
+export type HomeNavigationTarget = 'empresa' | 'estudio' | 'veedurias' | 'mapa' | 'ficha' | 'home';
 
 export interface HomeNavItem {
   id: string;
