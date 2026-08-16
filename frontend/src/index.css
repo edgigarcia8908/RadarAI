@@ -82,9 +82,9 @@ body {
 
 .home-layout {
   display: flex;
-  min-height: 100vh;
+  height: 100vh;
   width: 100%;
-  overflow: visible;
+  overflow: hidden;
   background: #ffffff;
   color: #1d2a1d;
 }
@@ -93,7 +93,8 @@ body {
   display: flex;
   flex: 0 0 190px;
   flex-direction: column;
-  min-height: 100vh;
+  height: 100vh;
+  overflow-y: auto;
   padding: 38px 16px 20px 36px;
   border-right: 1px solid #e4ebe1;
 }
@@ -194,7 +195,9 @@ body {
 .home-main {
   flex: 1 1 auto;
   min-width: 0;
-  padding: 70px 40px 42px 44px;
+  padding: 70px 40px 20px 44px;
+  overflow-y: auto;
+  height: 100vh;
 }
 
 .home-content {
@@ -853,7 +856,9 @@ body {
 }
 
 .home-chat-shell {
-  position: static;
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
   display: grid;
   margin-top: 17px;
   overflow: visible;
