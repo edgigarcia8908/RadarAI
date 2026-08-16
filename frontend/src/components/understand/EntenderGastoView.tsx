@@ -1,17 +1,17 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { HOME_NAV_ITEMS } from '../../constants/HOME';
-import {
-  UNDERSTAND_ALERTS,
-  UNDERSTAND_DEPARTMENTS,
-  UNDERSTAND_MUNICIPALITIES,
-  UNDERSTAND_PERIODS,
-  UNDERSTAND_SUMMARY,
-  UNDERSTAND_TOPICS,
-} from '../../constants/UNDERSTAND_GASTO';
+import { UNDERSTAND_PERIODS } from '../../constants/UNDERSTAND_GASTO';
 import type { HomeNavigationTarget } from '../../types/home.types';
 import type { UnderstandGastoViewProps } from '../../types/understand.types';
 import HomeIcon from '../home/HomeIcon';
 import useUnderstandGasto from './useUnderstandGasto.hook';
+import colombia from '../../colombia.json';
+
+interface DeptoColombia {
+  departamento: string;
+  ciudades: string[];
+}
+const DEPARTAMENTOS = colombia as DeptoColombia[];
 
 export default function EntenderGastoView({ onNavigate }: UnderstandGastoViewProps) {
   const {
@@ -24,7 +24,16 @@ export default function EntenderGastoView({ onNavigate }: UnderstandGastoViewPro
     setPeriodo,
     setPregunta,
     handleAnalyze,
+    status,
+    error,
+    resultado,
+    syncInfo,
   } = useUnderstandGasto();
+
+  const municipiosDisponibles = useMemo(
+    () => DEPARTAMENTOS.find((d) => d.departamento === departamento)?.ciudades ?? [],
+    [departamento],
+  );
 
   return (
     <div className="understand-page">
@@ -60,8 +69,14 @@ export default function EntenderGastoView({ onNavigate }: UnderstandGastoViewPro
           <span>Departamento</span>
           <span className="understand-select-wrap">
             <HomeIcon name="map" size={15} />
-            <select value={departamento} onChange={(event) => setDepartamento(event.target.value)}>
-              {UNDERSTAND_DEPARTMENTS.map((option) => <option key={option}>{option}</option>)}
+            <select
+              value={departamento}
+              onChange={(event) => {
+                setDepartamento(event.target.value);
+                setMunicipio(DEPARTAMENTOS.find((d) => d.departamento === event.target.value)?.ciudades[0] ?? '');
+              }}
+            >
+              {DEPARTAMENTOS.map((d) => <option key={d.departamento}>{d.departamento}</option>)}
             </select>
           </span>
         </label>
@@ -71,7 +86,7 @@ export default function EntenderGastoView({ onNavigate }: UnderstandGastoViewPro
           <span className="understand-select-wrap">
             <HomeIcon name="home" size={15} />
             <select value={municipio} onChange={(event) => setMunicipio(event.target.value)}>
-              {UNDERSTAND_MUNICIPALITIES.map((option) => <option key={option}>{option}</option>)}
+              {municipiosDisponibles.map((option) => <option key={option}>{option}</option>)}
             </select>
           </span>
         </label>
@@ -94,39 +109,58 @@ export default function EntenderGastoView({ onNavigate }: UnderstandGastoViewPro
           </span>
         </label>
 
-        <button className="understand-analyze-button" onClick={handleAnalyze} type="button">
+        <button className="understand-analyze-button" onClick={handleAnalyze} type="button" disabled={status === 'loading'}>
           <HomeIcon name="sparkle" size={16} />
-          <span>Analizar municipio</span>
+          <span>{status === 'loading' ? 'Analizando…' : 'Analizar municipio'}</span>
         </button>
+        {syncInfo && <p style={{ fontSize: 12, color: '#666', marginTop: 8 }}>{syncInfo}</p>}
+        {status === 'error' && <p style={{ fontSize: 13, color: 'crimson', marginTop: 8 }}>{error}</p>}
       </section>
 
       <section className="understand-results" aria-labelledby="understand-results-title">
         <h2 id="understand-results-title">Resultados para {municipio} ({periodo})</h2>
-        <div className="understand-result-summary">
-          <span className="understand-result-icon understand-result-icon-green"><HomeIcon name="wallet" size={22} /></span>
-          <strong>{UNDERSTAND_SUMMARY}</strong>
-        </div>
-        <div className="understand-result-summary understand-result-summary-white">
-          <span className="understand-result-icon understand-result-icon-teal"><HomeIcon name="trend" size={22} /></span>
-          <strong>{UNDERSTAND_TOPICS}</strong>
-        </div>
 
-        <h3>⚠️ Alertas para revisar</h3>
-        {UNDERSTAND_ALERTS.map((alert) => (
-          <button className="understand-alert" key={alert} type="button">
-            <HomeIcon name="alert" size={16} />
-            <span>{alert}</span>
-            <HomeIcon name="chevron-right" size={15} />
-          </button>
-        ))}
+        {!resultado && status !== 'loading' && (
+          <p style={{ color: '#666' }}>Elegí un municipio y dale "Analizar municipio" para traer datos reales de SECOP.</p>
+        )}
+        {status === 'loading' && <p style={{ color: '#666' }}>Sincronizando y analizando…</p>}
 
-        <div className="understand-cta">
-          <strong>Revisa los detalles y decide con confianza.</strong>
-          <button type="button" onClick={() => onNavigate('ciudadano')}>
-            <span>Ver detalles</span>
-            <HomeIcon name="arrow-up-right" size={16} />
-          </button>
-        </div>
+        {resultado && (
+          <>
+            <div className="understand-result-summary">
+              <span className="understand-result-icon understand-result-icon-green"><HomeIcon name="wallet" size={22} /></span>
+              <strong>
+                {resultado.resumen.territorio} ha contratado ${resultado.resumen.valorTotalContratado.toLocaleString('es-CO')} en{' '}
+                {resultado.resumen.totalContratos} contratos.
+              </strong>
+            </div>
+            <div className="understand-result-summary understand-result-summary-white">
+              <span className="understand-result-icon understand-result-icon-teal"><HomeIcon name="trend" size={22} /></span>
+              <strong>{resultado.respuesta}</strong>
+            </div>
+
+            {resultado.hallazgos.length > 0 && (
+              <>
+                <h3>⚠️ Alertas para revisar</h3>
+                {resultado.hallazgos.map((h) => (
+                  <button className="understand-alert" key={h.titulo} type="button" title={h.detalle}>
+                    <HomeIcon name="alert" size={16} />
+                    <span>{h.titulo} — {h.detalle}</span>
+                    <HomeIcon name="chevron-right" size={15} />
+                  </button>
+                ))}
+              </>
+            )}
+
+            <div className="understand-cta">
+              <strong>Revisa los detalles y decide con confianza.</strong>
+              <button type="button" onClick={() => onNavigate('veedurias')}>
+                <span>Ver veedurías</span>
+                <HomeIcon name="arrow-up-right" size={16} />
+              </button>
+            </div>
+          </>
+        )}
       </section>
     </div>
   );

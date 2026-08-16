@@ -3,8 +3,12 @@ import { CoreDatabaseModule } from './lib/database';
 import { AuthModule } from './auth/auth.module';
 import { IngestionModule } from './ingestion/ingestion.module';
 import { CivicIntelModule } from './civic-intel/civic-intel.module';
-import { SituacionModule } from './situacion/situacion.module';
-import { ChatModule } from './chat/chat.module';
+// TODO(equipo): src/situacion/ y src/chat/ (Anna María) se registraron acá pero los
+// archivos de esos módulos nunca se pushearon — el backend no arranca sin ellos
+// (MODULE_NOT_FOUND). Comentado temporalmente para no bloquear al resto del equipo;
+// descomentar en cuanto @Deibyth suba backend/src/chat/ y backend/src/situacion/.
+// import { SituacionModule } from './situacion/situacion.module';
+// import { ChatModule } from './chat/chat.module';
 import { EmpresasModule } from './empresas/empresas.module';
 import { OportunidadesModule } from './oportunidades/oportunidades.module';
 import { VeeduriasModule } from './veedurias/veedurias.module';
@@ -23,8 +27,8 @@ import { FichaTerritorialModule } from './ficha-territorial/ficha-territorial.mo
     AuthModule,
     IngestionModule,
     CivicIntelModule,
-    SituacionModule,
-    ChatModule,
+    // SituacionModule, // ver TODO arriba
+    // ChatModule, // ver TODO arriba
     EmpresasModule,
     OportunidadesModule,
     VeeduriasModule,
