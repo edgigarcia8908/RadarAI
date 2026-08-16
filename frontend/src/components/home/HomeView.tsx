@@ -71,12 +71,12 @@ export default function HomeView({ onNavigate }: HomeViewProps) {
         <DataSourcesBadge />
       </aside>
 
-      <main className="home-main">
+      <main className={`home-main${hayConversacion ? ' home-main-chatting' : ''}`}>
         <section className="home-content" aria-labelledby="home-title">
           <h1 id="home-title">RadarAI te ayuda a entender,<br />competir y decidir sobre<br />plata pública.</h1>
           <p className="home-subtitle">Haz una pregunta y conversa con RadarAI.</p>
 
-          {mensajes.length > 0 && (
+          {hayConversacion && (
             <section className="home-chat-response" aria-label="Respuesta de RadarAI" aria-live="polite">
               <span className="home-chat-response-label">Respuesta de RadarAI</span>
               <div className="home-inline-messages">
@@ -84,6 +84,7 @@ export default function HomeView({ onNavigate }: HomeViewProps) {
                   <HomeChatMessage key={mensaje.id} message={mensaje} />
                 ))}
                 {isLoading && <div className="home-inline-typing">RadarAI está pensando…</div>}
+                <div ref={finMensajesRef} />
               </div>
             </section>
           )}
@@ -115,7 +116,7 @@ export default function HomeView({ onNavigate }: HomeViewProps) {
             </form>
           </section>
 
-          {mensajes.length === 0 && (
+          {!hayConversacion && (
             <>
               <p className="home-section-label">Ejemplos para empezar</p>
               <div className="home-examples">
