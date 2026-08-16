@@ -7,6 +7,7 @@ import { completar } from '../lib/llm';
 import { normalizar } from '../common/normalizar';
 import { departamentoRealSecop } from '../common/departamento-secop';
 import { palabrasConSinonimos } from '../common/sinonimos';
+import { valorPlausible } from '../common/valores';
 
 export interface ConsultaInput {
   departamento?: string;
@@ -52,7 +53,7 @@ export class CivicIntelService {
     const porProveedor = new Map<string, { nombre: string; valor: number; contratos: string[] }>();
     let total = 0;
     for (const c of contratos) {
-      const valor = c.valorDelContrato || 0;
+      const valor = valorPlausible(c.valorDelContrato);
       total += valor;
       const key = c.nitProveedor || c.proveedorAdjudicado;
       if (!key) continue;
@@ -129,7 +130,7 @@ export class CivicIntelService {
       this.contratoModel.find(filtroContratos).sort({ fechaDeFirma: -1 }).limit(500).lean<Contrato[]>(),
     ]);
 
-    const valorTotal = contratos.reduce((s, c) => s + (c.valorDelContrato || 0), 0);
+    const valorTotal = contratos.reduce((s, c) => s + valorPlausible(c.valorDelContrato), 0);
     const proveedoresUnicos = new Set(contratos.map((c) => c.nitProveedor || c.proveedorAdjudicado).filter(Boolean));
 
     const hallazgos = [this.detectarConcentracion(contratos as Contrato[]), this.detectarContratosSimilares(contratos as Contrato[])].filter(
@@ -181,7 +182,7 @@ export class CivicIntelService {
       if (!porMunicipio.has(key)) porMunicipio.set(key, { departamento: c.departamento, ciudad: c.ciudad, contratos: [], valorTotal: 0 });
       const entry = porMunicipio.get(key)!;
       entry.contratos.push(c);
-      entry.valorTotal += c.valorDelContrato || 0;
+      entry.valorTotal += valorPlausible(c.valorDelContrato);
     }
 
     return [...porMunicipio.values()].map((m) => {
@@ -189,7 +190,7 @@ export class CivicIntelService {
       for (const c of m.contratos) {
         const key = c.nitProveedor || c.proveedorAdjudicado;
         if (!key) continue;
-        porProveedor.set(key, (porProveedor.get(key) || 0) + (c.valorDelContrato || 0));
+        porProveedor.set(key, (porProveedor.get(key) || 0) + valorPlausible(c.valorDelContrato));
       }
       const top2 = [...porProveedor.values()].sort((a, b) => b - a).slice(0, 2).reduce((s, v) => s + v, 0);
       const concentracion = m.valorTotal > 0 ? Math.round((top2 / m.valorTotal) * 100) : 0;
@@ -254,10 +255,10 @@ export class CivicIntelService {
         if (!porProveedor.has(keyProveedor)) porProveedor.set(keyProveedor, { nombre: c.proveedorAdjudicado, contratos: 0, valorTotal: 0, municipios: new Set() });
         const entry = porProveedor.get(keyProveedor)!;
         entry.contratos++;
-        entry.valorTotal += c.valorDelContrato || 0;
+        entry.valorTotal += valorPlausible(c.valorDelContrato);
         entry.municipios.add(c.ciudad);
       }
-      valorTotal += c.valorDelContrato || 0;
+      valorTotal += valorPlausible(c.valorDelContrato);
     }
 
     const proveedoresFrecuentes = [...porProveedor.values()]
@@ -325,7 +326,7 @@ export class CivicIntelService {
     });
     if (coincidencias.length === 0) return null;
 
-    const valorTotal = coincidencias.reduce((s, c) => s + (c.valorDelContrato || 0), 0);
+    const valorTotal = coincidencias.reduce((s, c) => s + valorPlausible(c.valorDelContrato), 0);
     const entidades = [...new Set(coincidencias.map((c) => c.nombreEntidad))];
     const detalle = coincidencias
       .slice(0, 5)
@@ -381,7 +382,7 @@ export class CivicIntelService {
 
     const contratosDelTema = this.filtrarPorTemaDePregunta(input.pregunta, contratos);
     if (contratosDelTema) {
-      const valorTema = contratosDelTema.reduce((s, c) => s + (c.valorDelContrato || 0), 0);
+      const valorTema = contratosDelTema.reduce((s, c) => s + valorPlausible(c.valorDelContrato), 0);
       const proveedoresTema = new Set(contratosDelTema.map((c) => c.nitProveedor || c.proveedorAdjudicado)).size;
       return `Sobre eso específicamente, en ${resumen.territorio} encontré ${contratosDelTema.length} contrato(s) relacionados por un total de $${valorTema.toLocaleString('es-CO')}, con ${proveedoresTema} proveedor(es) — de los ${resumen.totalContratos} contratos totales del territorio.`;
     }

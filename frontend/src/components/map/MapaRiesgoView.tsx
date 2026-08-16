@@ -17,6 +17,7 @@ export default function MapaRiesgoView({ onNavigate }: MapRiskViewProps) {
     totalContracts,
     totalValue,
     municipalityCount,
+    municipiosSinUbicar,
     isLoading,
     error,
     setDepartment,
@@ -104,6 +105,11 @@ export default function MapaRiesgoView({ onNavigate }: MapRiskViewProps) {
           <div className="map-stat"><span>Contratos</span><strong>{totalContracts.toLocaleString('es-CO')}</strong></div>
           <div className="map-stat"><span>Valor contratado</span><strong>${totalValue.toLocaleString('es-CO')}</strong></div>
         </div>
+        {municipiosSinUbicar > 0 && (
+          <p className="map-note">
+            {municipiosSinUbicar} municipio(s) con datos reales no se pudieron ubicar en el mapa (sin coordenadas conocidas) — no están contados arriba, pero sí en el filtro de departamento.
+          </p>
+        )}
 
         <div className="map-canvas-wrap">
           <MapContainer center={MAP_DEFAULT_CENTER} zoom={MAP_DEFAULT_ZOOM} className="map-canvas" scrollWheelZoom>

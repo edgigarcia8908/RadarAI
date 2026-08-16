@@ -37,6 +37,14 @@ export function radiusForContracts(totalContracts: number): number {
 
 export default function useMapaRiesgo(): UseMapRiskReturn {
   const [rawPoints, setRawPoints] = useState<MapRiskPoint[]>([]);
+  // Departamentos de TODOS los municipios con datos reales, incluso los que
+  // no matchearon coordenadas — antes el filtro se armaba solo desde
+  // `rawPoints` (ya filtrado), así que un departamento entero podía
+  // desaparecer del selector si su único municipio sincronizado no
+  // encontraba match en `colombiaCoords.ts` (nombre distinto, etc.),
+  // aunque sí hubiera datos reales para él.
+  const [allDepartments, setAllDepartments] = useState<string[]>([]);
+  const [municipiosSinUbicar, setMunicipiosSinUbicar] = useState(0);
   const [department, setDepartment] = useState(ALL_DEPARTMENTS);
   const [riskFilter, setRiskFilter] = useState<MapRiskFilter>('all');
   const [isLoading, setIsLoading] = useState(true);
@@ -52,15 +60,14 @@ export default function useMapaRiesgo(): UseMapRiskReturn {
           })
           .filter((point): point is MapRiskPoint => point !== null);
         setRawPoints(points);
+        setAllDepartments(Array.from(new Set(data.map((item) => item.departamento))).sort());
+        setMunicipiosSinUbicar(data.length - points.length);
       })
       .catch((requestError: Error) => setError(requestError.message))
       .finally(() => setIsLoading(false));
   }, []);
 
-  const departments = useMemo(
-    () => [ALL_DEPARTMENTS, ...Array.from(new Set(rawPoints.map((point) => point.departamento))).sort()],
-    [rawPoints],
-  );
+  const departments = useMemo(() => [ALL_DEPARTMENTS, ...allDepartments], [allDepartments]);
 
   const points = useMemo(
     () => rawPoints.filter(
@@ -78,6 +85,7 @@ export default function useMapaRiesgo(): UseMapRiskReturn {
     totalContracts: points.reduce((total, point) => total + point.totalContratos, 0),
     totalValue: points.reduce((total, point) => total + point.valorTotal, 0),
     municipalityCount: points.length,
+    municipiosSinUbicar,
     isLoading,
     error,
     setDepartment,

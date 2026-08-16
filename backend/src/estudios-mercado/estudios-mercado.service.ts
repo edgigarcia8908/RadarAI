@@ -5,6 +5,7 @@ import { Contrato } from '../ingestion/contrato.schema';
 import { normalizar } from '../common/normalizar';
 import { palabrasConSinonimos } from '../common/sinonimos';
 import { departamentoRealSecop } from '../common/departamento-secop';
+import { valorPlausible } from '../common/valores';
 
 export interface EstudioMercadoInput {
   objeto: string;
@@ -61,7 +62,11 @@ export class EstudiosMercadoService {
       };
     }
 
-    const valores = contratos.map((c) => c.valorDelContrato).filter((v) => v > 0).sort((a, b) => a - b);
+    // valorPlausible() descarta valores absurdos (errores de digitación reales
+    // de SECOP, ver common/valores.ts) — sin esto, un solo contrato corrupto
+    // dispara el máximo/promedio a una cifra sin sentido para quien está
+    // usando esto como referencia real de precio de mercado.
+    const valores = contratos.map((c) => valorPlausible(c.valorDelContrato)).filter((v) => v > 0).sort((a, b) => a - b);
     const valorMinimo = valores[0] ?? 0;
     const valorMaximo = valores[valores.length - 1] ?? 0;
     const valorPromedio = valores.length ? Math.round(valores.reduce((s, v) => s + v, 0) / valores.length) : 0;
@@ -79,7 +84,7 @@ export class EstudiosMercadoService {
       if (!porProveedor.has(key)) porProveedor.set(key, { nombre: c.proveedorAdjudicado, contratos: 0, valorTotal: 0 });
       const entry = porProveedor.get(key)!;
       entry.contratos++;
-      entry.valorTotal += c.valorDelContrato || 0;
+      entry.valorTotal += valorPlausible(c.valorDelContrato);
     }
     const proveedoresFrecuentes = [...porProveedor.values()].sort((a, b) => b.contratos - a.contratos).slice(0, 10);
 

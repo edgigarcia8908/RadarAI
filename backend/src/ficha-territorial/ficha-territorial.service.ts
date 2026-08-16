@@ -9,6 +9,7 @@ import { SiriService } from '../siri/siri.service';
 import { SigepService } from '../sigep/sigep.service';
 import { normalizar } from '../common/normalizar';
 import { departamentoRealSecop } from '../common/departamento-secop';
+import { valorPlausible } from '../common/valores';
 
 export interface ResumenContratacion {
   totalContratos: number;
@@ -58,12 +59,12 @@ export class FichaTerritorialService {
     if (departamentoReal) filtro.departamentoNormalizado = normalizar(departamentoReal);
 
     const contratos = await this.contratoModel.find(filtro).lean<Contrato[]>();
-    const valorTotal = contratos.reduce((s, c) => s + (c.valorDelContrato || 0), 0);
+    const valorTotal = contratos.reduce((s, c) => s + valorPlausible(c.valorDelContrato), 0);
     const porProveedor = new Map<string, number>();
     for (const c of contratos) {
       const key = c.nitProveedor || c.proveedorAdjudicado;
       if (!key) continue;
-      porProveedor.set(key, (porProveedor.get(key) || 0) + (c.valorDelContrato || 0));
+      porProveedor.set(key, (porProveedor.get(key) || 0) + valorPlausible(c.valorDelContrato));
     }
     const top2 = [...porProveedor.values()].sort((a, b) => b - a).slice(0, 2).reduce((s, v) => s + v, 0);
     const concentracion = valorTotal > 0 ? Math.round((top2 / valorTotal) * 100) : 0;

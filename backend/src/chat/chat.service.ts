@@ -8,6 +8,7 @@ import { completar } from '../lib/llm';
 import { normalizar } from '../common/normalizar';
 import { departamentoRealSecop } from '../common/departamento-secop';
 import { palabrasConSinonimos } from '../common/sinonimos';
+import { valorPlausible } from '../common/valores';
 import {
   Presentation,
   generarPresentacion,
@@ -130,14 +131,14 @@ export class ChatService {
       };
     }
 
-    const valorTotal = contratos.reduce((s, c) => s + (c.valorDelContrato || 0), 0);
+    const valorTotal = contratos.reduce((s, c) => s + valorPlausible(c.valorDelContrato), 0);
     const porProveedor = new Map<string, { nombre: string; valor: number; contratos: number }>();
     for (const c of contratos) {
       const key = c.nitProveedor || c.proveedorAdjudicado;
       if (!key) continue;
       if (!porProveedor.has(key)) porProveedor.set(key, { nombre: c.proveedorAdjudicado, valor: 0, contratos: 0 });
       const entry = porProveedor.get(key)!;
-      entry.valor += c.valorDelContrato || 0;
+      entry.valor += valorPlausible(c.valorDelContrato);
       entry.contratos++;
     }
     const topProveedores = [...porProveedor.values()].sort((a, b) => b.valor - a.valor).slice(0, 5);
@@ -277,7 +278,7 @@ export class ChatService {
     const filtrados = contratos.filter((c) => regex.test(c.textoNormalizado || ''));
     if (filtrados.length === 0 || filtrados.length === contratos.length) return null;
 
-    const valorTema = filtrados.reduce((s, c) => s + (c.valorDelContrato || 0), 0);
+    const valorTema = filtrados.reduce((s, c) => s + valorPlausible(c.valorDelContrato), 0);
     const proveedoresTema = new Set(filtrados.map((c) => c.nitProveedor || c.proveedorAdjudicado)).size;
     const texto = `Sobre eso específicamente, en ${territorio} encontré ${filtrados.length} contrato(s) relacionados por un total de $${valorTema.toLocaleString('es-CO')}, con ${proveedoresTema} proveedor(es) — de los ${totalTerritorio} contratos totales del territorio.`;
     const datosTema = {
@@ -311,7 +312,7 @@ export class ChatService {
     });
     if (coincidencias.length === 0) return null;
 
-    const valorTotal = coincidencias.reduce((s, c) => s + (c.valorDelContrato || 0), 0);
+    const valorTotal = coincidencias.reduce((s, c) => s + valorPlausible(c.valorDelContrato), 0);
     const entidades = [...new Set(coincidencias.map((c) => c.nombreEntidad))];
     const detalle = coincidencias
       .slice(0, 5)

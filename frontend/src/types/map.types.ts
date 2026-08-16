@@ -19,6 +19,8 @@ export interface UseMapRiskReturn {
   totalContracts: number;
   totalValue: number;
   municipalityCount: number;
+  /** Municipios con datos reales que no se pudieron ubicar en el mapa (sin match de coordenadas) — igual cuentan para el filtro de departamento. */
+  municipiosSinUbicar: number;
   isLoading: boolean;
   error: string | null;
   setDepartment: (value: string) => void;

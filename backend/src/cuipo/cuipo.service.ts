@@ -5,6 +5,7 @@ import { Contrato } from '../ingestion/contrato.schema';
 import { SocrataClient, soqlString, toNumber } from '../ingestion/socrata.client';
 import { normalizar } from '../common/normalizar';
 import { departamentoRealSecop } from '../common/departamento-secop';
+import { valorPlausible } from '../common/valores';
 
 /**
  * CUIPO (Categorización Única de Información de Presupuesto y de Operaciones
@@ -98,7 +99,7 @@ export class CuipoService {
       filtroContrato.fechaDeFirma = rango;
     }
     const contratosSecop = await this.contratoModel.find(filtroContrato).lean<Contrato[]>();
-    const valorContratadoSecop = contratosSecop.reduce((s, c) => s + (c.valorDelContrato || 0), 0);
+    const valorContratadoSecop = contratosSecop.reduce((s, c) => s + valorPlausible(c.valorDelContrato), 0);
 
     if (!periodo) {
       return {
