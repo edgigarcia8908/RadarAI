@@ -169,13 +169,13 @@ body {
 }
 
 .home-nav-item-copy small {
-  overflow: hidden;
+  display: block;
   color: #8b978a;
   font-size: 9.5px;
   font-weight: 600;
-  line-height: 1.2;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  line-height: 1.25;
+  white-space: normal;
+  overflow-wrap: break-word;
 }
 
 .home-nav-item-active .home-nav-item-copy small,
