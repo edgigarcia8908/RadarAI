@@ -7,7 +7,6 @@ import HomeView from './components/home/HomeView';
 import MapaRiesgoView from './components/map/MapaRiesgoView';
 import SecondaryViewShell from './components/navigation/SecondaryViewShell';
 import OportunidadesView from './components/opportunities/OportunidadesView';
-import EntenderGastoView from './components/understand/EntenderGastoView';
 import useApp from './useApp.hook';
 
 export default function App() {
@@ -34,9 +33,6 @@ export default function App() {
 
       {modo === 'home' && <HomeView onNavigate={navigateFromHome} />}
 
-      {modo === 'ciudadano' && (
-        <EntenderGastoView onNavigate={navigateFromHome} onTerritorioChange={handleTerritorioChange} />
-      )}
       {modo === 'empresa' && (
         <OportunidadesView onNavigate={navigateFromHome} onTerritorioChange={handleTerritorioChange} />
       )}

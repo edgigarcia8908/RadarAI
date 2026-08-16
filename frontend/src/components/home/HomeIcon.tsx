@@ -31,9 +31,6 @@ export default function HomeIcon({ name, size = 20 }: HomeIconProps) {
   if (name === 'route') {
     return <svg {...commonProps}><circle cx="6" cy="19" r="2" /><circle cx="18" cy="5" r="2" /><path d="M8 19h4a3 3 0 0 0 3-3v-8a3 3 0 0 1 3-3M16 19h2" /></svg>;
   }
-  if (name === 'clipboard') {
-    return <svg {...commonProps}><rect x="5" y="4" width="14" height="17" rx="2" /><path d="M9 4.5V3h6v1.5M9 9h6M9 13h6M9 17h3" /></svg>;
-  }
   if (name === 'calendar') {
     return <svg {...commonProps}><rect x="3" y="5" width="18" height="16" rx="2" /><path d="M8 3v4M16 3v4M3 10h18M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01" /></svg>;
   }
