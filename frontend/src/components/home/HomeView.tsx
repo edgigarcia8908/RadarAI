@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { HOME_EXAMPLES, HOME_NAV_ITEMS, HOME_PROMPT_PLACEHOLDER } from '../../constants/HOME';
 import { UNDERSTAND_PERIODS } from '../../constants/UNDERSTAND_GASTO';
 import type { HomeViewProps } from '../../types/home.types';
@@ -25,6 +25,18 @@ export default function HomeView({ onNavigate }: HomeViewProps) {
     handlePromptSubmit,
     handleExampleClick,
   } = useHome();
+
+  // Auto-scroll al último mensaje — sin esto, en móvil (donde el área de
+  // mensajes ahora tiene su propio scroll interno, ver CSS) una respuesta
+  // nueva quedaba fuera de vista y parecía que "no se guardaba" la
+  // conversación, cuando en realidad sí seguía ahí, solo había que
+  // desplazarse a mano para verla.
+  const finMensajesRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    finMensajesRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+  }, [mensajes.length, isLoading]);
+
+  const hayConversacion = mensajes.length > 0;
 
   return (
     <div className="home-layout">
