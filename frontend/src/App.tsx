@@ -84,7 +84,9 @@ export default function App() {
       {modo === 'ciudadano' && (
         <EntenderGastoView onNavigate={navigateFromHome} onTerritorioChange={(d, c) => { setDepartamentoActivo(d); setMunicipioActivo(c); }} />
       )}
-      {modo === 'empresa' && <OportunidadesView onNavigate={navigateFromHome} />}
+      {modo === 'empresa' && (
+        <OportunidadesView onNavigate={navigateFromHome} onTerritorioChange={(d, c) => { setDepartamentoActivo(d); setMunicipioActivo(c); }} />
+      )}
       {modo === 'estudio' && (
         <CompararProveedoresView onNavigate={navigateFromHome} onTerritorioChange={(d, c) => { setDepartamentoActivo(d); setMunicipioActivo(c); }} />
       )}

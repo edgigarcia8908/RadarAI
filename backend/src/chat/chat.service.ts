@@ -87,10 +87,53 @@ export class ChatService {
       proveedoresUnicos: porProveedor.size,
       topProveedores: topProveedores.map((p) => ({ nombre: p.nombre, valor: p.valor, contratos: p.contratos, porcentaje: valorTotal > 0 ? (p.valor / valorTotal) * 100 : 0 })),
       presupuesto: presupuestoResumen || null,
+      // Muestra con nombres de firmantes — si preguntan por una persona
+      // puntual ("¿cuántos contratos ha tenido Fulano?"), el LLM la busca
+      // acá. Sin esto, cualquier pregunta sobre una persona quedaba sin
+      // responder de verdad (mismo bug que tenía "Entender gasto").
+      muestraContratos: contratos.slice(0, 40).map((c) => ({
+        entidad: c.nombreEntidad,
+        objeto: (c.objetoDelContrato || '').slice(0, 100),
+        proveedor: c.proveedorAdjudicado,
+        valor: c.valorDelContrato,
+        representanteLegal: c.nombreRepresentanteLegal,
+        ordenadorDelGasto: c.nombreOrdenadorDelGasto,
+        supervisor: c.nombreSupervisor,
+      })),
     };
 
-    const respuesta = await this.redactar(input.mensaje, datosReales);
+    // Igual que en civic-intel.service.ts: si la pregunta menciona a una
+    // persona real de la muestra, responde eso directamente — determinístico,
+    // no depende de que haya API key de LLM configurada (no la hay por
+    // defecto en este repo).
+    const respuestaPorPersona = this.buscarRespuestaPorPersona(input.mensaje, contratos);
+    const respuesta = respuestaPorPersona ?? (await this.redactar(input.mensaje, datosReales));
     return { respuesta };
+  }
+
+  private buscarRespuestaPorPersona(mensaje: string, contratos: Contrato[]): string | null {
+    const tokensPregunta = new Set(normalizar(mensaje).split(' ').filter((t) => t.length >= 4));
+    if (tokensPregunta.size < 2) return null;
+
+    const coincidencias = contratos.filter((c) => {
+      for (const nombre of [c.nombreRepresentanteLegal, c.nombreOrdenadorDelGasto, c.nombreSupervisor]) {
+        if (!nombre) continue;
+        const tokensNombre = new Set(normalizar(nombre).split(' ').filter((t) => t.length >= 4));
+        const compartidos = [...tokensPregunta].filter((t) => tokensNombre.has(t)).length;
+        if (compartidos >= 3) return true;
+      }
+      return false;
+    });
+    if (coincidencias.length === 0) return null;
+
+    const valorTotal = coincidencias.reduce((s, c) => s + (c.valorDelContrato || 0), 0);
+    const entidades = [...new Set(coincidencias.map((c) => c.nombreEntidad))];
+    const detalle = coincidencias
+      .slice(0, 5)
+      .map((c) => `${c.nombreEntidad.slice(0, 30).padEnd(30)} $${c.valorDelContrato.toLocaleString('es-CO')}`)
+      .join('\n');
+
+    return `Encontré ${coincidencias.length} contrato(s) donde esa persona aparece como firmante, ordenador del gasto o supervisor, por un total de $${valorTotal.toLocaleString('es-CO')}, en: ${entidades.join(', ')}.\n\n${detalle}\n\n(Coincidencia por nombre, no por cédula — confirma que es la misma persona antes de sacar conclusiones.)`;
   }
 
   private async redactar(mensaje: string, datos: ReturnType<never> | any): Promise<string> {
@@ -111,7 +154,7 @@ export class ChatService {
     try {
       const respuesta = await completar({
         system:
-          'Eres Anna María, la asistente cívica experta de RadarAI. Respondes en español, en 3-6 frases, tono cercano para cualquier ciudadano. Analizas los datos reales que te dan (no inventas cifras) y destacas lo más relevante para la pregunta — patrones, riesgos, concentración de proveedores. Si es útil para comparar proveedores, incluye una lista con barras de progreso en texto usando bloques █ y ░ (20 caracteres de ancho) seguidas del porcentaje, una línea por proveedor.',
+          'Eres Anna María, la asistente cívica experta de RadarAI. Respondes en español, en 3-6 frases, tono cercano para cualquier ciudadano. Analizas los datos reales que te dan (no inventas cifras) y destacas lo más relevante para la pregunta — patrones, riesgos, concentración de proveedores. Si la pregunta menciona una persona o entidad puntual, búscala en "muestraContratos" (campos representanteLegal/ordenadorDelGasto/supervisor/proveedor/entidad) y responde específicamente sobre ella; si no aparece ahí, dilo explícitamente en vez de responder solo con el resumen general. Si es útil para comparar proveedores, incluye una lista con barras de progreso en texto usando bloques █ y ░ (20 caracteres de ancho) seguidas del porcentaje, una línea por proveedor.',
         prompt: `Pregunta del ciudadano: "${mensaje}"\n\nDatos reales disponibles: ${JSON.stringify(datos)}`,
         maxTokens: 500,
       });

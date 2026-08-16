@@ -121,9 +121,24 @@ export class IngestionService {
       order: 'fecha_de_firma DESC',
     });
 
+    // Un contrato ya liquidado no va a cambiar — SECOP no reabre contratos
+    // cerrados. Reescribirlo en cada sync es puro costo (escritura a Mongo +
+    // el objeto `crudo` completo) sin ningún beneficio. Se trae de una vez
+    // el set de IDs ya liquidados en este lote para saltarlos en el loop.
+    const idsDelLote = rows.map((r) => r.id_contrato).filter(Boolean);
+    const yaLiquidados = new Set(
+      (await this.contratoModel.find({ idContrato: { $in: idsDelLote }, liquidado: true }, { idContrato: 1 }).lean())
+        .map((c) => c.idContrato),
+    );
+
     let escritos = 0;
+    let sinCambios = 0;
     for (const row of rows) {
       if (!row.id_contrato) continue;
+      if (yaLiquidados.has(row.id_contrato)) {
+        sinCambios++;
+        continue;
+      }
       const objetoDelContrato = row.objeto_del_contrato || '';
       const descripcionDelProceso = row.descripcion_del_proceso || '';
       await this.contratoModel.findOneAndUpdate(
@@ -170,7 +185,7 @@ export class IngestionService {
       );
       escritos++;
     }
-    this.logger.log(`Sincronizados ${escritos} contratos (de ${rows.length} recibidos de Socrata).`);
+    this.logger.log(`Sincronizados ${escritos} contratos (de ${rows.length} recibidos de Socrata, ${sinCambios} ya liquidados sin cambios).`);
     return escritos;
   }
 

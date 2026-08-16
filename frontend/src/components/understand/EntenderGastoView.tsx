@@ -26,6 +26,7 @@ export default function EntenderGastoView({ onNavigate, onTerritorioChange }: Un
     handleAnalyze,
     status,
     paso,
+    actualizando,
     error,
     resultado,
     syncInfo,
@@ -121,7 +122,7 @@ export default function EntenderGastoView({ onNavigate, onTerritorioChange }: Un
 
         <button className="understand-analyze-button" onClick={handleAnalyze} type="button" disabled={status === 'loading'}>
           <HomeIcon name="sparkle" size={16} />
-          <span>{status === 'loading' ? 'Analizando…' : 'Analizar municipio'}</span>
+          <span>{status === 'loading' ? 'Consultando…' : 'Analizar municipio'}</span>
         </button>
         {syncInfo && <p style={{ fontSize: 12, color: '#666', marginTop: 8 }}>{syncInfo}</p>}
         {status === 'error' && <p style={{ fontSize: 13, color: 'crimson', marginTop: 8 }}>{error}</p>}
@@ -134,12 +135,12 @@ export default function EntenderGastoView({ onNavigate, onTerritorioChange }: Un
           <p style={{ color: '#666' }}>Elegí un municipio y dale "Analizar municipio" para traer datos reales de SECOP.</p>
         )}
         {status === 'loading' && (
-          <ul style={{ listStyle: 'none', padding: 0, fontSize: 14, color: '#444' }}>
-            <li>{paso === 'sincronizando' ? '⏳' : '✅'} Trayendo contratos reales de SECOP</li>
-            <li style={{ opacity: paso === 'analizando' || paso === null ? 1 : 0.4 }}>
-              {paso === 'analizando' ? '⏳' : paso === null ? '✅' : '○'} Cruzando alertas y presupuesto
-            </li>
-          </ul>
+          <p style={{ color: '#666' }}>Consultando lo que ya tenemos sincronizado de {municipio}…</p>
+        )}
+        {actualizando && (
+          <p style={{ fontSize: 13, color: '#2c8d2b', background: '#eef7ea', border: '1px solid #cfe8c4', borderRadius: 6, padding: '6px 10px', margin: '8px 0' }}>
+            ⏳ Actualizando con los datos más recientes de SECOP en segundo plano — podés seguir viendo lo de abajo mientras tanto, se refresca solo cuando termine.
+          </p>
         )}
 
         {resultado && (
